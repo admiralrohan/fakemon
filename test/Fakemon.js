@@ -18,6 +18,9 @@ describe("Fakemon Contract", () => {
       TokenContract.address,
       INITIAL_BALANCE
     );
+
+    // To prevent external people to mint new tokens
+    TokenContract.transferOwnership(FakemonContract.address);
   });
 
   describe("Deployment", () => {
@@ -28,6 +31,12 @@ describe("Fakemon Contract", () => {
       expect(await FakemonContract.initialBalance()).to.be.equal(
         INITIAL_BALANCE
       );
+    });
+
+    it("Should not mint token for random address", async () => {
+      await expect(
+        TokenContract.connect(user1).mintToken(user1.address, 1)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
     });
   });
 

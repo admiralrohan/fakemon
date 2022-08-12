@@ -18,7 +18,7 @@ contract Fakemon {
 
         users[msg.sender] = true;
         IFmon TokenContract = IFmon(tokenAddress);
-        TokenContract.faucet(
+        TokenContract.mintToken(
             msg.sender,
             initialBalance * (10**TokenContract.decimals())
         );

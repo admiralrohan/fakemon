@@ -6,6 +6,7 @@
 // global scope, and execute the script.
 const hre = require("hardhat");
 
+// You have to deploy all contracts from same address, otherwise you can't change owner
 async function main() {
   const currentTimestampInSeconds = Math.round(Date.now() / 1000);
   const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;

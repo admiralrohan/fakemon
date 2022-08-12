@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Fmon is ERC20 {
+contract Fmon is Ownable, ERC20 {
     constructor() ERC20("FMON", "FakeMON Token") {}
 
-    function faucet(address to, uint amount) external {
-        // TODO: Prevent anyone calling this
-        // I want to only let Fakemon contract to call it, but what about circular dependency?
+    // Only game contract should be able to mint new token
+    function mintToken(address to, uint amount) external onlyOwner {
         _mint(to, amount);
     }
 }
