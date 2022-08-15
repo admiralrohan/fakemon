@@ -1,30 +1,56 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
+const fs = require("fs");
+const {
+  INITIAL_BALANCE,
+  RESERVED_NFTS,
+  NFT_FEE,
+} = require("../constants/constants");
 
-// You have to deploy all contracts from same address, otherwise you can't change owner
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  // We get the contracts to deploy
+  const Token = await hre.ethers.getContractFactory("Fmon");
+  const Fakemon = await hre.ethers.getContractFactory("Fakemon");
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  const TokenContract = await Token.deploy();
+  const FakemonContract = await Fakemon.deploy(
+    TokenContract.address,
+    INITIAL_BALANCE,
+    RESERVED_NFTS,
+    NFT_FEE
+  );
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  console.log("Token contract deployed to:", TokenContract.address);
+  console.log("Fakemon contract deployed to:", FakemonContract.address);
 
-  await lock.deployed();
+  // Copy contract details to frontend directory
+  const TokenArtifact = hre.artifacts.readArtifactSync("Fmon");
+  const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
 
-  console.log("Lock with 1 ETH deployed to:", lock.address);
+  const contractDir = __dirname + "/../frontend/src/artifacts/contracts";
+  if (!fs.existsSync(contractDir))
+    fs.mkdirSync(contractDir, { recursive: true });
+
+  fs.writeFileSync(
+    contractDir + "/fmon.json",
+    JSON.stringify(
+      { address: TokenContract.address, abi: TokenArtifact.abi },
+      undefined,
+      2
+    )
+  );
+  fs.writeFileSync(
+    contractDir + "/fakemon.json",
+    JSON.stringify(
+      { address: FakemonContract.address, abi: FakemonArtifact.abi },
+      undefined,
+      2
+    )
+  );
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
