@@ -22,6 +22,10 @@ async function main() {
   console.log("Token contract deployed to:", TokenContract.address);
   console.log("Fakemon contract deployed to:", FakemonContract.address);
 
+  // To prevent external people to mint new tokens
+  await TokenContract.transferOwnership(FakemonContract.address);
+  console.log("Token contract's owner changed to Fakemon contract");
+
   // Copy contract details to frontend directory
   const TokenArtifact = hre.artifacts.readArtifactSync("Fmon");
   const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
@@ -49,6 +53,8 @@ async function main() {
       2
     )
   );
+
+  console.log("Save contract artifacts in Frontend folder");
 }
 
 main()
