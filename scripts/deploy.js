@@ -26,6 +26,9 @@ async function main() {
   const TokenArtifact = hre.artifacts.readArtifactSync("Fmon");
   const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
 
+  // TODO: Use a different folder for different envs eg. localhost, testnet, mainnet
+  // Otherwise during local development previous artifact from different env will be overwritten
+  // And push the artifacts in git
   const contractDir = __dirname + "/../frontend/src/artifacts/contracts";
   if (!fs.existsSync(contractDir))
     fs.mkdirSync(contractDir, { recursive: true });
