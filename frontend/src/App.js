@@ -6,7 +6,9 @@ import { Gym } from "./containers/Gym";
 import { Profile } from "./containers/Profile";
 import { Battle } from "./containers/Battle";
 import { getBlockchain } from "./utils/utils";
+import { ethers } from "ethers";
 
+const NFT_FEE = ethers.utils.parseEther("5");
 const DEFAULT_BLOCKCHAIN_OBJ = {
   signerAddress: undefined,
   token: undefined,
@@ -73,6 +75,30 @@ function App() {
     }
   };
 
+  const mintFakemon = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.token.approve(
+        blockchain.fakemon.address,
+        NFT_FEE
+      );
+      await tx.wait();
+
+      await blockchain.fakemon.mintNewNFT({
+        value: NFT_FEE,
+      });
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
+  const getToken = () => {
+    // TODO: Implement
+    console.log("Coming soon");
+  };
+
   // Connect our app with blockchain
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
@@ -119,20 +145,19 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
-        <Route path="/gyms" element={<Gyms blockchain={blockchain} />} />
-        <Route path="/gyms/:id" element={<Gym blockchain={blockchain} />} />
-        <Route
-          path="/gyms/:id/battle"
-          element={<Battle blockchain={blockchain} />}
-        />
+        <Route path="/gyms" element={<Gyms />} />
+        <Route path="/gyms/:id" element={<Gym />} />
+        <Route path="/gyms/:id/battle" element={<Battle />} />
         <Route
           path="/profile"
           element={
             <Profile
-              blockchain={blockchain}
+              userAddress={loginAddress}
               isRegistered={isRegistered}
-              registerUser={registerUser}
+              registerUserHandler={registerUser}
               tokenBalance={tokenBalance}
+              mintFakemonHandler={mintFakemon}
+              getTokenHandler={getToken}
             />
           }
         />

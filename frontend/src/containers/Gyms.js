@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 
-export function Gyms({ blockchain }) {
+export function Gyms() {
   // TODO: Fetch list of gyms from blockchain
   const gymIds = [1, 2, 3];
 

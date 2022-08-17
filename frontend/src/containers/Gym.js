@@ -2,7 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 
-export function Gym({ blockchain }) {
+export function Gym() {
   // TODO: Fetch squad from blockchain
   const gymSquad = [1, 2, 3];
   // TODO: Fetch from url param
