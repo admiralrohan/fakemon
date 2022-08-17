@@ -82,10 +82,23 @@ function App() {
     if (!isBcDefined) return;
 
     try {
-      const stats = await blockchain.fakemon.getAllCharacters(
+      const [ids, stats] = await blockchain.fakemon.getAllCharacters(
         blockchain.signerAddress
       );
-      console.log(stats);
+
+      const noOfFakemons = ids.length;
+      const processingFakemonList = [];
+      for (let i = 0; i < noOfFakemons; i++) {
+        processingFakemonList.push({
+          id: ids[i].toString(),
+          hp: stats[i].hp.toString(),
+          attack: stats[i].attack.toString(),
+          defense: stats[i].defense.toString(),
+        });
+      }
+
+      console.log(processingFakemonList);
+      setFakemons(processingFakemonList);
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
@@ -185,6 +198,7 @@ function App() {
               tokenBalance={tokenBalance}
               mintFakemonHandler={mintFakemon}
               getTokenHandler={getToken}
+              fakemons={fakemons}
             />
           }
         />

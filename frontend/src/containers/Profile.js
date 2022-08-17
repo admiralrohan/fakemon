@@ -15,13 +15,12 @@ export function Profile({
   // TODO: Fetch details by address
   const profileDetails = {
     userAddress,
-    fakemons: 1,
+    fakemons: fakemons.length,
     won: 1,
     totalMatches: 4,
     tokenBalance,
     joinedOn: "09-08-2022",
   };
-  const gymSquad = [1, 2, 3];
 
   const beforeWalletImportView = (
     <Card>
@@ -93,20 +92,20 @@ export function Profile({
       {isRegistered && (
         <>
           <h4 className="text-center mt-3 mb-2">Your Squad</h4>
-          {gymSquad.map((gymId) => (
-            <Card style={{ width: "500px", marginBottom: 10 }} key={gymId}>
+          {fakemons.map((fakemon) => (
+            <Card style={{ width: "500px", marginBottom: 10 }} key={fakemon.id}>
               {/* <Card.Body className="d-flex justify-content-between align-items-baseline"> */}
               <Card.Body>
-                <Card.Title>Fakemon {gymId}</Card.Title>
+                <Card.Title>Fakemon #{fakemon.id}</Card.Title>
                 <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
                   <span>
-                    <strong>HP:</strong> 7
+                    <strong>HP:</strong> {fakemon.hp}
                   </span>
                   <span>
-                    <strong>Atk:</strong> 5
+                    <strong>Attack:</strong> {fakemon.attack}
                   </span>
                   <span>
-                    <strong>Def:</strong> 4
+                    <strong>Defense:</strong> {fakemon.defense}
                   </span>
                 </Card.Subtitle>
               </Card.Body>
