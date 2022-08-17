@@ -97,7 +97,7 @@ describe("Fakemon Contract", () => {
       await tx.wait();
 
       tx = await FakemonContract.mintNewNFT({
-        value: ethers.utils.parseEther("5"),
+        value: ethers.utils.parseEther(NFT_FEE.toString()),
       });
       await tx.wait();
 
