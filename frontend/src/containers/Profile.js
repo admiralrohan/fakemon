@@ -46,10 +46,10 @@ export function Profile({
               <CardText>
                 <strong>No of fakemons:</strong> {profileDetails.fakemons}
               </CardText>
-              <CardText>
+              {/* <CardText>
                 <strong>No of battles won:</strong> {profileDetails.won} of{" "}
                 {profileDetails.totalMatches}
-              </CardText>
+              </CardText> */}
               <CardText>
                 <strong>Token balance:</strong> {profileDetails.tokenBalance}
               </CardText>

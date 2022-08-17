@@ -15,16 +15,18 @@ const DEFAULT_BLOCKCHAIN_OBJ = {
 
 function App() {
   const [blockchain, setBlockchain] = useState(DEFAULT_BLOCKCHAIN_OBJ);
-  const isLoggedIn = !!window.localStorage.getItem("isLoggedIn");
-
   // eg. "5 FMON" in string format
   const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
 
+  // Login wallet address should match signer address
+  const loginAddress = !!window.localStorage.getItem("loginAddress");
   const isBcDefined = blockchain.signerAddress;
 
   const fetchTokenBalance = useCallback(async () => {
     if (!isBcDefined) return;
+
+    window.localStorage.setItem("loginAddress", blockchain.signerAddress);
 
     try {
       // With decimals
@@ -72,19 +74,19 @@ function App() {
   };
 
   // Connect our app with blockchain
-  const connectWalletHandler = async () => {
+  const connectWallet = async () => {
     if (blockchain.signerAddress) return;
 
     setBlockchain(await getBlockchain());
-    window.localStorage.setItem("isLoggedIn", true);
   };
 
   // It doesn't disconnect wallet with metamask
   // User has to do it manually
   // This process here is to just forbid our app to connect with blockchain automatically
-  const detachWalletHandler = () => {
+  const detachWallet = () => {
+    // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
+    window.localStorage.removeItem("loginAddress");
     setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
-    window.localStorage.removeItem("isLoggedIn");
   };
 
   // Fetch and set token balance
@@ -97,20 +99,22 @@ function App() {
   // To connect on page refresh
   useEffect(() => {
     (async () => {
-      if (isLoggedIn) {
+      if (loginAddress) {
+        // TODO: Auto logout for account change in metamask
+        // TODO: Handle chain id change
         setBlockchain(await getBlockchain());
         checkIfUserRegistered();
       }
     })();
-  }, [checkIfUserRegistered, isLoggedIn]);
+  }, [checkIfUserRegistered, loginAddress]);
 
   return (
     <>
       <Header
         walletAddress={blockchain.signerAddress}
         tokenBalance={tokenBalance}
-        connectWalletHandler={connectWalletHandler}
-        detachWalletHandler={detachWalletHandler}
+        connectWalletHandler={connectWallet}
+        detachWalletHandler={detachWallet}
       />
 
       <Routes>
