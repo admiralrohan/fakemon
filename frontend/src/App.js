@@ -23,10 +23,10 @@ function App() {
   const [fakemons, setFakemons] = useState([]);
 
   // Login wallet address should match signer address
-  const loginAddress = !!window.localStorage.getItem("loginAddress");
+  const loginAddress = window.localStorage.getItem("loginAddress");
   const isBcDefined = blockchain.signerAddress;
 
-  const fetchTokenBalance = useCallback(async () => {
+  const fetchTokenBalance = async () => {
     if (!isBcDefined) return;
 
     window.localStorage.setItem("loginAddress", blockchain.signerAddress);
@@ -36,6 +36,7 @@ function App() {
       const fullBalance = await blockchain.token.balanceOf(
         blockchain.signerAddress
       );
+      // TODO: Cache tokenName and decimals, as they won't change very often
       const tokenName = await blockchain.token.name();
       const decimals = await blockchain.token.decimals();
 
@@ -46,12 +47,12 @@ function App() {
     } catch (error) {
       // TODO: Show error as toast
       console.error(error);
+      setTokenBalance("Error fetching");
     }
-  }, [blockchain.signerAddress, blockchain.token, isBcDefined]);
+  };
 
-  const checkIfUserRegistered = useCallback(async () => {
+  const checkIfUserRegistered = async () => {
     if (!isBcDefined) return;
-    console.log("Check");
 
     try {
       const isRegistered = await blockchain.fakemon.users(
@@ -63,7 +64,7 @@ function App() {
       console.error(error);
       setIsRegistered(false);
     }
-  }, [blockchain.fakemon, blockchain.signerAddress, isBcDefined]);
+  };
 
   const registerUser = async () => {
     if (!isBcDefined) return;
@@ -77,26 +78,7 @@ function App() {
     }
   };
 
-  const mintFakemon = async () => {
-    if (!isBcDefined) return;
-
-    try {
-      const tx = await blockchain.token.approve(
-        blockchain.fakemon.address,
-        NFT_FEE
-      );
-      await tx.wait();
-
-      await blockchain.fakemon.mintNewNFT({
-        value: NFT_FEE,
-      });
-    } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
-    }
-  };
-
-  const getFakemons = useCallback(async () => {
+  const fetchFakemons = async () => {
     if (!isBcDefined) return;
 
     try {
@@ -108,11 +90,34 @@ function App() {
       // TODO: Show error as toast
       console.error(error.error.data.message);
     }
-  }, [blockchain.fakemon, blockchain.signerAddress, isBcDefined]);
+  };
 
   const getToken = () => {
     // TODO: Implement
     console.log("Coming soon");
+  };
+
+  const mintFakemon = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      let tx = await blockchain.token.approve(
+        blockchain.fakemon.address,
+        NFT_FEE
+      );
+      await tx.wait();
+
+      tx = await blockchain.fakemon.mintNewNFT({
+        value: NFT_FEE,
+      });
+      await tx.wait();
+
+      await fetchTokenBalance();
+      await fetchFakemons();
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
   };
 
   // Connect our app with blockchain
@@ -131,27 +136,30 @@ function App() {
     setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
   };
 
-  // Fetch and set token balance
-  useEffect(() => {
-    (async function () {
-      // console.log("Check token balance");
-      await fetchTokenBalance();
-    })();
-  }, [fetchTokenBalance]);
-
-  // To connect on page refresh
+  // Fetch initial data if already logged in
   useEffect(() => {
     (async () => {
       if (loginAddress) {
         // TODO: Auto logout for account change in metamask
         // TODO: Handle chain id change
         setBlockchain(await getBlockchain());
-        checkIfUserRegistered();
-
-        // if (isRegistered) getFakemons();
+        await checkIfUserRegistered();
+        await fetchTokenBalance();
       }
     })();
-  }, [checkIfUserRegistered, getFakemons, isRegistered, loginAddress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loginAddress, blockchain.signerAddress]);
+
+  // Fetch these details if user already registered
+  useEffect(() => {
+    (async () => {
+      if (isRegistered) {
+        await fetchFakemons();
+        // TODO: Fetch gyms
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRegistered]);
 
   return (
     <>
