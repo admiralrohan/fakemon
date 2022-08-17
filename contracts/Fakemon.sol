@@ -59,11 +59,10 @@ contract Fakemon is ERC1155 {
         _mintNFT();
     }
 
-    // TODO: Use this to get all NFTs from user
     function getAllCharacters(address _account)
         external
         view
-        returns (Stat[] memory)
+        returns (uint[] memory, Stat[] memory)
     {
         uint[] storage _characterIds = characterIds[_account];
         Stat[] memory characters = new Stat[](_characterIds.length);
@@ -71,8 +70,7 @@ contract Fakemon is ERC1155 {
             uint characterId = _characterIds[i];
             characters[i] = fakemonStats[characterId];
         }
-        return characters;
-        // return characterIds[_account];
+        return (_characterIds, characters);
     }
 
     // Returns winner ID

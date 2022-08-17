@@ -106,9 +106,6 @@ describe("Fakemon Contract", () => {
         await FakemonContract.balanceOf(user1.address, newNftId)
       ).to.be.equal(1);
 
-      // console.log(await FakemonContract.listOfCharacters(user1.address, 0));
-      // console.log(await FakemonContract.getAllCharacters(user1.address));
-
       const stats = await FakemonContract.fakemonStats(newNftId);
       expect(stats.hp).to.be.equal(7);
       expect(stats.attack).to.be.equal(5);
@@ -127,6 +124,40 @@ describe("Fakemon Contract", () => {
           value: ethers.utils.parseEther("5"),
         })
       ).to.be.revertedWith("Transfer NFT fee and allow us to use that");
+    });
+  });
+
+  describe("Get all fakemons", () => {
+    // Register user, mint 2 NFTs
+    beforeEach(async () => {
+      let tx = await FakemonContract.connect(user1).registerUser();
+      await tx.wait();
+
+      tx = await TokenContract.approve(
+        FakemonContract.address,
+        ethers.utils.parseEther((2 * NFT_FEE).toString())
+      );
+      await tx.wait();
+
+      tx = await FakemonContract.mintNewNFT({
+        value: ethers.utils.parseEther(NFT_FEE.toString()),
+      });
+      await tx.wait();
+      tx = await FakemonContract.mintNewNFT({
+        value: ethers.utils.parseEther(NFT_FEE.toString()),
+      });
+      await tx.wait();
+    });
+
+    it("Should fetch all fakemon details properly", async () => {
+      const fakemons = await FakemonContract.getAllCharacters(user1.address);
+
+      for (let i = 0; i < fakemons[0]; i++) {
+        expect(fakemons[0]).to.be.equal(RESERVED_NFTS + i + 1);
+        expect(fakemons[1].hp).to.be.equal(7);
+        expect(fakemons[1].attack).to.be.equal(5);
+        expect(fakemons[1].defense).to.be.equal(3);
+      }
     });
   });
 
