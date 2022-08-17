@@ -10,6 +10,7 @@ export function Profile({
   tokenBalance,
   mintFakemonHandler,
   getTokenHandler,
+  fakemons,
 }) {
   // TODO: Fetch details by address
   const profileDetails = {
@@ -94,8 +95,20 @@ export function Profile({
           <h4 className="text-center mt-3 mb-2">Your Squad</h4>
           {gymSquad.map((gymId) => (
             <Card style={{ width: "500px", marginBottom: 10 }} key={gymId}>
-              <Card.Body className="d-flex justify-content-between align-items-baseline">
+              {/* <Card.Body className="d-flex justify-content-between align-items-baseline"> */}
+              <Card.Body>
                 <Card.Title>Fakemon {gymId}</Card.Title>
+                <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
+                  <span>
+                    <strong>HP:</strong> 7
+                  </span>
+                  <span>
+                    <strong>Atk:</strong> 5
+                  </span>
+                  <span>
+                    <strong>Def:</strong> 4
+                  </span>
+                </Card.Subtitle>
               </Card.Body>
             </Card>
           ))}

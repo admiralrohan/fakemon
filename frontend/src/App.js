@@ -20,6 +20,7 @@ function App() {
   // eg. "5 FMON" in string format
   const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
+  const [fakemons, setFakemons] = useState([]);
 
   // Login wallet address should match signer address
   const loginAddress = !!window.localStorage.getItem("loginAddress");
@@ -50,6 +51,7 @@ function App() {
 
   const checkIfUserRegistered = useCallback(async () => {
     if (!isBcDefined) return;
+    console.log("Check");
 
     try {
       const isRegistered = await blockchain.fakemon.users(
@@ -94,6 +96,20 @@ function App() {
     }
   };
 
+  const getFakemons = useCallback(async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const stats = await blockchain.fakemon.getAllCharacters(
+        blockchain.signerAddress
+      );
+      console.log(stats);
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  }, [blockchain.fakemon, blockchain.signerAddress, isBcDefined]);
+
   const getToken = () => {
     // TODO: Implement
     console.log("Coming soon");
@@ -118,6 +134,7 @@ function App() {
   // Fetch and set token balance
   useEffect(() => {
     (async function () {
+      // console.log("Check token balance");
       await fetchTokenBalance();
     })();
   }, [fetchTokenBalance]);
@@ -130,9 +147,11 @@ function App() {
         // TODO: Handle chain id change
         setBlockchain(await getBlockchain());
         checkIfUserRegistered();
+
+        // if (isRegistered) getFakemons();
       }
     })();
-  }, [checkIfUserRegistered, loginAddress]);
+  }, [checkIfUserRegistered, getFakemons, isRegistered, loginAddress]);
 
   return (
     <>
