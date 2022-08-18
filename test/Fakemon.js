@@ -10,6 +10,26 @@ describe("Fakemon Contract", () => {
   let FakemonContract, TokenContract;
   let user1;
 
+  async function registerUser() {
+    let tx = await FakemonContract.connect(user1).registerUser();
+    await tx.wait();
+  }
+
+  async function mintNewNfts(noOfNftsToMint) {
+    for (let i = 0; i < noOfNftsToMint; i++) {
+      tx = await TokenContract.approve(
+        FakemonContract.address,
+        ethers.utils.parseEther(NFT_FEE.toString())
+      );
+      await tx.wait();
+
+      tx = await FakemonContract.mintNewNFT({
+        value: ethers.utils.parseEther(NFT_FEE.toString()),
+      });
+      await tx.wait();
+    }
+  }
+
   beforeEach(async () => {
     [user1] = await ethers.getSigners();
 
@@ -30,9 +50,6 @@ describe("Fakemon Contract", () => {
 
   describe("Deployment", () => {
     it("Should deploy properly", async () => {
-      // expect(await FakemonContract.tokenAddress()).to.be.equal(
-      //   TokenContract.address
-      // );
       expect(await FakemonContract.initialBalance()).to.be.equal(
         INITIAL_BALANCE
       );
@@ -53,8 +70,7 @@ describe("Fakemon Contract", () => {
       expect(await FakemonContract.users(user1.address)).to.be.equal(false);
       expect(await TokenContract.balanceOf(user1.address)).to.be.equal(0);
 
-      const tx = await FakemonContract.connect(user1).registerUser();
-      await tx.wait();
+      await registerUser();
     });
 
     it("Should register user", async () => {
@@ -73,6 +89,7 @@ describe("Fakemon Contract", () => {
       expect(stats.hp).to.be.equal(7);
       expect(stats.attack).to.be.equal(5);
       expect(stats.defense).to.be.equal(3);
+      expect(stats.gymId).to.be.equal(0);
     });
 
     it("Should not register twice", async () => {
@@ -84,8 +101,7 @@ describe("Fakemon Contract", () => {
 
   describe("Mint NFT", () => {
     beforeEach(async () => {
-      const tx = await FakemonContract.connect(user1).registerUser();
-      await tx.wait();
+      await registerUser();
     });
 
     it("Should mint NFT", async () => {
@@ -110,6 +126,7 @@ describe("Fakemon Contract", () => {
       expect(stats.hp).to.be.equal(7);
       expect(stats.attack).to.be.equal(5);
       expect(stats.defense).to.be.equal(3);
+      expect(stats.gymId).to.be.equal(0);
     });
 
     it("Should not mint without fee", async () => {
@@ -128,25 +145,9 @@ describe("Fakemon Contract", () => {
   });
 
   describe("Get all fakemons", () => {
-    // Register user, mint 2 NFTs
     beforeEach(async () => {
-      let tx = await FakemonContract.connect(user1).registerUser();
-      await tx.wait();
-
-      tx = await TokenContract.approve(
-        FakemonContract.address,
-        ethers.utils.parseEther((2 * NFT_FEE).toString())
-      );
-      await tx.wait();
-
-      tx = await FakemonContract.mintNewNFT({
-        value: ethers.utils.parseEther(NFT_FEE.toString()),
-      });
-      await tx.wait();
-      tx = await FakemonContract.mintNewNFT({
-        value: ethers.utils.parseEther(NFT_FEE.toString()),
-      });
-      await tx.wait();
+      await registerUser();
+      await mintNewNfts(2);
     });
 
     it("Should fetch all fakemon details properly", async () => {
@@ -157,6 +158,7 @@ describe("Fakemon Contract", () => {
         expect(fakemons[1].hp).to.be.equal(7);
         expect(fakemons[1].attack).to.be.equal(5);
         expect(fakemons[1].defense).to.be.equal(3);
+        expect(fakemons[1].gymId).to.be.equal(0);
       }
     });
   });
