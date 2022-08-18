@@ -4,6 +4,7 @@ const {
   INITIAL_BALANCE,
   RESERVED_NFTS,
   NFT_FEE,
+  NFTS_PER_GYM,
 } = require("../constants/constants");
 
 async function main() {
@@ -16,7 +17,8 @@ async function main() {
     TokenContract.address,
     INITIAL_BALANCE,
     RESERVED_NFTS,
-    NFT_FEE
+    NFT_FEE,
+    NFTS_PER_GYM
   );
 
   console.log("Token contract deployed to:", TokenContract.address);

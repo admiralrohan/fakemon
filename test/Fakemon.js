@@ -4,6 +4,7 @@ const {
   INITIAL_BALANCE,
   RESERVED_NFTS,
   NFT_FEE,
+  NFTS_PER_GYM,
 } = require("../constants/constants");
 
 describe("Fakemon Contract", () => {
@@ -30,6 +31,11 @@ describe("Fakemon Contract", () => {
     }
   }
 
+  async function createNewGym(nftIds, signer = user1) {
+    const tx = await FakemonContract.connect(signer).createNewGym(nftIds);
+    await tx.wait();
+  }
+
   // @param `expectedNftState` - desired `gymId` in `fakemonStats`
   async function checkNftState(expectedNftState) {
     for (let i = 0; i < 4; i++) {
@@ -50,7 +56,8 @@ describe("Fakemon Contract", () => {
       TokenContract.address,
       INITIAL_BALANCE,
       RESERVED_NFTS,
-      NFT_FEE
+      NFT_FEE,
+      NFTS_PER_GYM
     );
 
     // To prevent external people to mint new tokens
@@ -179,28 +186,23 @@ describe("Fakemon Contract", () => {
 
       await registerUser(user2); // +5
       await mintNewNfts(3, user2); // +6, 7, 8
-
-      const tx = await FakemonContract.connect(user1).createNewGym([
-        RESERVED_NFTS + 1,
-        RESERVED_NFTS + 2,
-      ]);
-      await tx.wait();
     });
 
     it("Should create new gym", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+
       await checkNftState([1, 1, 0, 0]);
     });
 
     it("Should be able to create multiple gyms by same user", async () => {
-      const tx = await FakemonContract.connect(user1).createNewGym([
-        RESERVED_NFTS + 3,
-      ]);
-      await tx.wait();
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await createNewGym([RESERVED_NFTS + 3], user1);
 
       await checkNftState([1, 1, 2, 0]);
     });
 
     it("Should not create gym with other user's NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
       await expect(
         FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5])
       ).to.be.revertedWith("All NFTs need to be owned by user");
@@ -210,6 +212,7 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should not create gym with reserved NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
       await expect(
         FakemonContract.connect(user1).createNewGym([RESERVED_NFTS - 2])
       ).to.be.revertedWith("All NFTs need to be owned by user");
@@ -218,6 +221,7 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should not create gym with uncreated NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
       await expect(
         FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 20])
       ).to.be.revertedWith("All NFTs need to be owned by user");
@@ -226,12 +230,28 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should not create gym with locked NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
       await expect(
         FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 2])
       ).to.be.revertedWith("All NFTs need to be unlocked");
 
       await checkNftState([1, 1, 0, 0]);
     });
+
+    it("Should not create gym with more than NFT limit", async () => {
+      await expect(
+        FakemonContract.connect(user1).createNewGym([
+          RESERVED_NFTS + 1,
+          RESERVED_NFTS + 2,
+          RESERVED_NFTS + 3,
+          RESERVED_NFTS + 4,
+        ])
+      ).to.be.revertedWith("Max NFT per gym limit breached");
+
+      await checkNftState([0, 0, 0, 0]);
+    });
+  });
+
   });
 
   // TODO: Get fixed HP for testing, mocking VRF?

@@ -35,20 +35,22 @@ contract Fakemon is ERC1155 {
     mapping(address => uint[]) public characterIds;
 
     // TODO: Should we save gymId in 2 different places, or retrieve it from `fakemonStats`
-    // gymId => list of fakemon IDs
-    mapping(uint => uint[]) public gyms;
+    mapping(uint => Gym) public gyms;
+    uint public nftsPerGym;
 
     // TODO: Add `uri`, keeping metadata onchain for now
     constructor(
         address _tokenAddress,
         uint _initialBalance,
         uint _noOfReservedNFTs,
-        uint _nftFee
+        uint _nftFee,
+        uint _nftsPerGym
     ) ERC1155("https://game.example/api/item/{id}.json") {
         TokenContract = IFmon(_tokenAddress);
         initialBalance = _initialBalance;
         lastCharacterId = _noOfReservedNFTs;
         nftFee = _nftFee * (10**TokenContract.decimals());
+        nftsPerGym = _nftsPerGym;
     }
 
     function registerUser() external {
@@ -122,6 +124,9 @@ contract Fakemon is ERC1155 {
     function createNewGym(uint[] memory nftIds) external {
         lastGymId += 1;
 
+        // TODO: Add max limit in string
+        require(nftIds.length <= nftsPerGym, "Max NFT per gym limit breached");
+
         // Check if all NFTs are unlocked
         for (uint i = 0; i < nftIds.length; i++) {
             require(
@@ -136,6 +141,6 @@ contract Fakemon is ERC1155 {
             fakemonStats[nftIds[i]].gymId = lastGymId;
         }
 
-        gyms[lastGymId] = nftIds;
+        gyms[lastGymId] = Gym(lastGymId, nftIds, true, msg.sender);
     }
 }

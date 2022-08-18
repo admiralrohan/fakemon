@@ -1,5 +1,6 @@
 const INITIAL_BALANCE = 50;
 const RESERVED_NFTS = 100;
 const NFT_FEE = 5;
+const NFTS_PER_GYM = 3;
 
-module.exports = { INITIAL_BALANCE, RESERVED_NFTS, NFT_FEE };
+module.exports = { INITIAL_BALANCE, RESERVED_NFTS, NFT_FEE, NFTS_PER_GYM };
