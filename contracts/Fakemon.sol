@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 contract Fakemon is ERC1155 {
     // TODO: Add exp points
     mapping(address => bool) public users;
-    // address public tokenAddress;
     uint public initialBalance;
 
     IFmon private TokenContract;
@@ -39,10 +38,9 @@ contract Fakemon is ERC1155 {
         uint _nftFee
     ) ERC1155("https://game.example/api/item/{id}.json") {
         TokenContract = IFmon(_tokenAddress);
-        // tokenAddress = _tokenAddress;
         initialBalance = _initialBalance;
         lastCharacterId = _noOfReservedNFTs;
-        nftFee = _nftFee * (10**IFmon(_tokenAddress).decimals());
+        nftFee = _nftFee * (10**TokenContract.decimals());
     }
 
     function registerUser() external {
@@ -50,7 +48,6 @@ contract Fakemon is ERC1155 {
         users[msg.sender] = true;
 
         // Upon registration assign 50 $FMON and 1 NFT
-        // IFmon TokenContract = IFmon(tokenAddress);
         TokenContract.mintToken(
             msg.sender,
             initialBalance * (10**TokenContract.decimals())
