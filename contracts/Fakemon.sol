@@ -23,6 +23,7 @@ contract Fakemon is ERC1155 {
     uint public nftFee;
 
     struct Stat {
+        // TODO: Add nftId
         uint hp;
         uint attack;
         uint defense;
@@ -34,6 +35,12 @@ contract Fakemon is ERC1155 {
     // mapping(uint => Stat) public battles;
     mapping(address => uint[]) public characterIds;
 
+    struct Gym {
+        uint id;
+        uint[] charIds; // NFTs
+        bool isOpen;
+        address owner;
+    }
     // TODO: Should we save gymId in 2 different places, or retrieve it from `fakemonStats`
     mapping(uint => Gym) public gyms;
     uint public nftsPerGym;
@@ -72,6 +79,30 @@ contract Fakemon is ERC1155 {
         returns (uint[] memory, Stat[] memory)
     {
         uint[] storage _characterIds = characterIds[_account];
+        Stat[] memory characters = new Stat[](_characterIds.length);
+        for (uint i = 0; i < _characterIds.length; i++) {
+            uint characterId = _characterIds[i];
+            characters[i] = fakemonStats[characterId];
+        }
+        return (_characterIds, characters);
+    }
+
+    // TODO: Get all gyms by user
+    function getAllGyms() external view returns (Gym[] memory) {
+        Gym[] memory gymList = new Gym[](lastGymId);
+        for (uint i = 1; i <= lastGymId; i++) {
+            gymList[i - 1] = gyms[i];
+        }
+        return gymList;
+    }
+
+    function getAllCharactersByGym(uint _gymId)
+        external
+        view
+        returns (uint[] memory, Stat[] memory)
+    {
+        uint[] storage _characterIds = gyms[_gymId].charIds;
+        // TODO: Modularize
         Stat[] memory characters = new Stat[](_characterIds.length);
         for (uint i = 0; i < _characterIds.length; i++) {
             uint characterId = _characterIds[i];

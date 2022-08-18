@@ -32,6 +32,7 @@ export function Gym() {
         </Card>
       ))}
 
+      {/* TODO: Can't battle if it's own gym */}
       <Link to={`/gyms/${gymId}/battle`}>
         <Button>Battle</Button>
       </Link>

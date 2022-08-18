@@ -7,6 +7,7 @@ const {
   NFTS_PER_GYM,
 } = require("../constants/constants");
 
+// TODO: Get fixed HP for testing, mocking VRF?
 describe("Fakemon Contract", () => {
   let FakemonContract, TokenContract;
   let user1, user2;
@@ -160,7 +161,7 @@ describe("Fakemon Contract", () => {
     });
   });
 
-  describe("Get all fakemons", () => {
+  describe("Fakemon details", () => {
     beforeEach(async () => {
       await registerUser();
       await mintNewNfts(2);
@@ -252,7 +253,50 @@ describe("Fakemon Contract", () => {
     });
   });
 
-  });
+  describe("Gym details", () => {
+    beforeEach(async () => {
+      await registerUser(user1);
+      await mintNewNfts(2, user1);
 
-  // TODO: Get fixed HP for testing, mocking VRF?
+      await registerUser(user2);
+      await mintNewNfts(2, user2);
+
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await createNewGym([RESERVED_NFTS + 5, RESERVED_NFTS + 6], user2);
+    });
+
+    it("Should fetch all gym details properly", async () => {
+      const gyms = await FakemonContract.getAllGyms();
+
+      expect(gyms.length).to.be.equal(2);
+
+      expect(gyms[0].id).to.be.equal(1);
+      expect(gyms[0].charIds).to.be.deep.equal([
+        RESERVED_NFTS + 1,
+        RESERVED_NFTS + 2,
+      ]);
+      expect(gyms[0].isOpen).to.be.equal(true);
+      expect(gyms[0].owner).to.be.equal(user1.address);
+
+      expect(gyms[1].id).to.be.equal(2);
+      expect(gyms[1].charIds).to.be.deep.equal([
+        RESERVED_NFTS + 5,
+        RESERVED_NFTS + 6,
+      ]);
+      expect(gyms[1].isOpen).to.be.equal(true);
+      expect(gyms[1].owner).to.be.equal(user2.address);
+    });
+
+    it("Should fetch all fakemons for a gym", async () => {
+      const fakemons = await FakemonContract.getAllCharactersByGym(1);
+
+      for (let i = 0; i < fakemons[0]; i++) {
+        expect(fakemons[0]).to.be.equal(RESERVED_NFTS + i + 1);
+        expect(fakemons[1].hp).to.be.equal(7);
+        expect(fakemons[1].attack).to.be.equal(5);
+        expect(fakemons[1].defense).to.be.equal(3);
+        expect(fakemons[1].gymId).to.be.equal(0);
+      }
+    });
+  });
 });
