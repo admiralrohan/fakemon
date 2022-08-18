@@ -78,6 +78,7 @@ function App() {
     }
   };
 
+  // TODO: Simplify this logic
   const fetchFakemons = async () => {
     if (!isBcDefined) return;
 
@@ -185,7 +186,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
-        <Route path="/gyms" element={<Gyms />} />
+        <Route path="/gyms" element={<Gyms gyms={[]} />} />
         <Route path="/gyms/:id" element={<Gym />} />
         <Route path="/gyms/:id/battle" element={<Battle />} />
         <Route

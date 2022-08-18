@@ -1,16 +1,25 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { CreateGymModal } from "../components/CreateGymModal";
 
-export function Gyms() {
+export function Gyms({ gyms }) {
   // TODO: Fetch list of gyms from blockchain
   const gymIds = [1, 2, 3];
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
-      <Card.Title style={{ marginBottom: 10, textAlign: "center" }}>
-        Gym Leaders
-      </Card.Title>
+      <div className="text-end">
+        {/* TODO: Open modal with NFT list, select from there */}
+        <Button size="sm" onClick={() => setShowModal(true)}>
+          Create gym
+        </Button>
+      </div>
+      <Card.Title className="mb-3 text-center">Gyms</Card.Title>
+
+      <CreateGymModal show={showModal} close={() => setShowModal(false)} />
 
       {gymIds.map((gymId) => (
         <Card style={{ width: "500px", marginBottom: 10 }} key={gymId}>
@@ -21,10 +30,10 @@ export function Gyms() {
               alignItems: "baseline",
             }}
           >
-            <Card.Title>Gym {gymId}</Card.Title>
+            <Card.Title>Gym #{gymId}</Card.Title>
 
             <Link to={"/gyms/" + gymId}>
-              <Button size="sm">Check your opponent</Button>
+              <Button size="sm">Check squad</Button>
             </Link>
           </Card.Body>
         </Card>
