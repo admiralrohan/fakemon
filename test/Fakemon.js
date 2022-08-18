@@ -8,30 +8,39 @@ const {
 
 describe("Fakemon Contract", () => {
   let FakemonContract, TokenContract;
-  let user1;
+  let user1, user2;
 
-  async function registerUser() {
-    let tx = await FakemonContract.connect(user1).registerUser();
+  async function registerUser(signer = user1) {
+    const tx = await FakemonContract.connect(signer).registerUser();
     await tx.wait();
   }
 
-  async function mintNewNfts(noOfNftsToMint) {
+  async function mintNewNfts(noOfNftsToMint, signer = user1) {
     for (let i = 0; i < noOfNftsToMint; i++) {
-      tx = await TokenContract.approve(
+      let tx = await TokenContract.connect(signer).approve(
         FakemonContract.address,
         ethers.utils.parseEther(NFT_FEE.toString())
       );
       await tx.wait();
 
-      tx = await FakemonContract.mintNewNFT({
+      tx = await FakemonContract.connect(signer).mintNewNFT({
         value: ethers.utils.parseEther(NFT_FEE.toString()),
       });
       await tx.wait();
     }
   }
 
+  // @param `expectedNftState` - desired `gymId` in `fakemonStats`
+  async function checkNftState(expectedNftState) {
+    for (let i = 0; i < 4; i++) {
+      expect(
+        (await FakemonContract.fakemonStats(RESERVED_NFTS + i + 1)).gymId
+      ).to.be.equal(expectedNftState[i]);
+    }
+  }
+
   beforeEach(async () => {
-    [user1] = await ethers.getSigners();
+    [user1, user2] = await ethers.getSigners();
 
     let Token = await ethers.getContractFactory("Fmon");
     TokenContract = await Token.deploy();
@@ -160,6 +169,68 @@ describe("Fakemon Contract", () => {
         expect(fakemons[1].defense).to.be.equal(3);
         expect(fakemons[1].gymId).to.be.equal(0);
       }
+    });
+  });
+
+  describe("Gyms", () => {
+    beforeEach(async () => {
+      await registerUser(user1); // nftId = RESERVED_NFTS + 1
+      await mintNewNfts(3, user1); // +2, 3, 4
+
+      await registerUser(user2); // +5
+      await mintNewNfts(3, user2); // +6, 7, 8
+
+      const tx = await FakemonContract.connect(user1).createNewGym([
+        RESERVED_NFTS + 1,
+        RESERVED_NFTS + 2,
+      ]);
+      await tx.wait();
+    });
+
+    it("Should create new gym", async () => {
+      await checkNftState([1, 1, 0, 0]);
+    });
+
+    it("Should be able to create multiple gyms by same user", async () => {
+      const tx = await FakemonContract.connect(user1).createNewGym([
+        RESERVED_NFTS + 3,
+      ]);
+      await tx.wait();
+
+      await checkNftState([1, 1, 2, 0]);
+    });
+
+    it("Should not create gym with other user's NFTs", async () => {
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      // Check if still maintains the old state after tx failure
+      await checkNftState([1, 1, 0, 0, 0]);
+    });
+
+    it("Should not create gym with reserved NFTs", async () => {
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS - 2])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      await checkNftState([1, 1, 0, 0]);
+    });
+
+    it("Should not create gym with uncreated NFTs", async () => {
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 20])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      await checkNftState([1, 1, 0, 0]);
+    });
+
+    it("Should not create gym with locked NFTs", async () => {
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 2])
+      ).to.be.revertedWith("All NFTs need to be unlocked");
+
+      await checkNftState([1, 1, 0, 0]);
     });
   });
 

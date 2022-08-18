@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "./IFmon.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
+// TODO: Use consistent terminology eg. NFT vs Fakemon vs Character. nftFee vs fakemonFee
 contract Fakemon is ERC1155 {
     // TODO: Add exp points
     mapping(address => bool) public users;
@@ -16,6 +17,7 @@ contract Fakemon is ERC1155 {
      * Used for getting ID for new NFT
      */
     uint public lastCharacterId;
+    uint public lastGymId;
     mapping(uint => string) private _tokenURIs;
     // 5 $FMON
     uint public nftFee;
@@ -24,11 +26,17 @@ contract Fakemon is ERC1155 {
         uint hp;
         uint attack;
         uint defense;
+        uint gymId; // zero if not part of a gym, so it can be staked going forward. Acting as Foreign key.
+        address owner;
     }
     mapping(uint => Stat) public fakemonStats;
 
     // mapping(uint => Stat) public battles;
     mapping(address => uint[]) public characterIds;
+
+    // TODO: Should we save gymId in 2 different places, or retrieve it from `fakemonStats`
+    // gymId => list of fakemon IDs
+    mapping(uint => uint[]) public gyms;
 
     // TODO: Add `uri`, keeping metadata onchain for now
     constructor(
@@ -103,10 +111,12 @@ contract Fakemon is ERC1155 {
     function _mintNFT() internal {
         lastCharacterId += 1;
         _mint(msg.sender, lastCharacterId, 1, "");
+        characterIds[msg.sender].push(lastCharacterId);
+
         // TODO: Use random number for HP
         // TODO: Use decentralized VRF for this stat allocation
         // TODO: Reduce quality of free NFT
-        fakemonStats[lastCharacterId] = Stat(7, 5, 3);
+        fakemonStats[lastCharacterId] = Stat(7, 5, 3, 0, msg.sender);
     }
 
     function _afterTokenTransfer(
@@ -118,6 +128,26 @@ contract Fakemon is ERC1155 {
         bytes memory data
     ) internal virtual override {
         super._afterTokenTransfer(operator, from, to, ids, amounts, data);
-        characterIds[to].push(ids[0]);
+        // characterIds[to].push(ids[0]);
+    }
+
+    function createNewGym(uint[] memory nftIds) external {
+        lastGymId += 1;
+
+        // Check if all NFTs are unlocked
+        for (uint i = 0; i < nftIds.length; i++) {
+            require(
+                fakemonStats[nftIds[i]].owner == msg.sender,
+                "All NFTs need to be owned by user"
+            );
+            require(
+                fakemonStats[nftIds[i]].gymId == 0,
+                "All NFTs need to be unlocked"
+            );
+
+            fakemonStats[nftIds[i]].gymId = lastGymId;
+        }
+
+        gyms[lastGymId] = nftIds;
     }
 }
