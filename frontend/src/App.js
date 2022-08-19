@@ -7,6 +7,7 @@ import { Profile } from "./containers/Profile";
 import { Battle } from "./containers/Battle";
 import { getBlockchain } from "./utils/utils";
 import { ethers } from "ethers";
+import { Toastr } from "./components/Toast";
 
 const NFT_FEE = ethers.utils.parseEther("5");
 const DEFAULT_BLOCKCHAIN_OBJ = {
@@ -21,10 +22,18 @@ function App() {
   const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
   const [fakemons, setFakemons] = useState([]);
+  // To trigger toast showing for 2s
+  const [toastCount, setToastCount] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
 
   // Login wallet address should match signer address
   const loginAddress = window.localStorage.getItem("loginAddress");
   const isBcDefined = blockchain.signerAddress;
+
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setToastCount((curr) => curr + 1);
+  };
 
   const fetchTokenBalance = async () => {
     if (!isBcDefined) return;
@@ -72,6 +81,9 @@ function App() {
     try {
       await blockchain.fakemon.registerUser();
       setIsRegistered(true);
+
+      await fetchTokenBalance();
+      await fetchFakemons();
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
@@ -108,7 +120,7 @@ function App() {
 
   const getToken = () => {
     // TODO: Implement
-    console.log("Coming soon");
+    showToastMessage("Coming soon");
   };
 
   const mintFakemon = async () => {
@@ -128,6 +140,8 @@ function App() {
 
       await fetchTokenBalance();
       await fetchFakemons();
+
+      showToastMessage("New fakemon minted");
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
@@ -148,6 +162,8 @@ function App() {
     // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
     window.localStorage.removeItem("loginAddress");
     setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
+
+    showToastMessage("Wallet detached");
   };
 
   // Fetch initial data if already logged in
@@ -204,6 +220,8 @@ function App() {
           }
         />
       </Routes>
+
+      <Toastr message={toastMessage} toastCount={toastCount} />
     </>
   );
 }
