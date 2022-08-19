@@ -22,10 +22,8 @@ export function Gym({ userAddress, fakemons, gyms }) {
 
   const existingGymView = () => (
     <div>
-      <Card.Title style={{ marginBottom: 10, textAlign: "center" }}>
-        Gym #{gymId}
-      </Card.Title>
-      <Card.Subtitle style={{ marginBottom: 20, textAlign: "center" }}>
+      <Card.Title className="text-center mb-2">Gym #{gymId}</Card.Title>
+      <Card.Subtitle className="text-center mb-3">
         Owner {gymDetails.owner}
       </Card.Subtitle>
 
