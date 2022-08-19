@@ -1,6 +1,7 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
+import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 
 export function Gym({ userAddress, fakemons, gyms }) {
   const { id: gymId } = useParams();
@@ -58,7 +59,13 @@ export function Gym({ userAddress, fakemons, gyms }) {
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
-      {gymDetails ? existingGymView() : gymNotExistView()}
+      {!userAddress ? (
+        <BeforeWalletImportNotice />
+      ) : gymDetails ? (
+        existingGymView()
+      ) : (
+        gymNotExistView()
+      )}
     </div>
   );
 }
