@@ -9,7 +9,7 @@ export function Gyms({ userAddress, gyms, fakemons, createGym }) {
   const [showModal, setShowModal] = useState(false);
 
   const afterWalletImportView = (
-    <div style={{ width: 500, margin: "25px auto" }}>
+    <>
       <div className="text-end">
         <Button size="sm" onClick={() => setShowModal(true)}>
           Create gym
@@ -44,7 +44,7 @@ export function Gyms({ userAddress, gyms, fakemons, createGym }) {
           </Card.Body>
         </Card>
       ))}
-    </div>
+    </>
   );
 
   return (
