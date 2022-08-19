@@ -22,6 +22,8 @@ function App() {
   const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
   const [fakemons, setFakemons] = useState([]);
+  const [gyms, setGyms] = useState([]);
+
   // To trigger toast showing for 2s
   const [toastCount, setToastCount] = useState(0);
   const [toastMessage, setToastMessage] = useState("");
@@ -117,6 +119,30 @@ function App() {
     }
   };
 
+  const fetchGyms = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const rawGymList = await blockchain.fakemon.getAllGyms();
+
+      const processedList = [];
+      for (let i = 0; i < rawGymList.length; i++) {
+        processedList.push({
+          id: rawGymList[i].id.toString(),
+          charIds: rawGymList[i].charIds.map((charId) => charId.toString()),
+          isOpen: rawGymList[i].isOpen.toString(),
+          owner: rawGymList[i].owner.toString(),
+        });
+      }
+
+      console.log("Gyms:", processedList);
+      setGyms(processedList);
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
   const getToken = () => {
     // TODO: Implement
     showToastMessage("Coming soon");
@@ -184,7 +210,7 @@ function App() {
     (async () => {
       if (isRegistered) {
         await fetchFakemons();
-        // TODO: Fetch gyms
+        await fetchGyms();
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
