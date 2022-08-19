@@ -155,7 +155,8 @@ contract Fakemon is ERC1155 {
     function createNewGym(uint[] memory nftIds) external {
         lastGymId += 1;
 
-        // TODO: Add max limit in string
+        require(nftIds.length > 0, "Need atleast one unstacked NFT");
+        // TODO: Add max limit in error string
         require(nftIds.length <= nftsPerGym, "Max NFT per gym limit breached");
 
         // Check if all NFTs are unlocked

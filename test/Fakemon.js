@@ -36,7 +36,7 @@ describe("Fakemon Contract", () => {
   }
 
   // @param `expectedNftState` - desired `gymId` in `fakemonStats`
-  async function checkNftState(expectedNftState) {
+  async function checkGymIdInNftStatsMapping(expectedNftState) {
     for (let i = 0; i < 4; i++) {
       expect(
         (await FakemonContract.fakemonStats(RESERVED_NFTS + i + 1)).gymId
@@ -178,51 +178,23 @@ describe("Fakemon Contract", () => {
     it("Should create new gym", async () => {
       await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
 
-      await checkNftState([1, 1, 0, 0]);
+      await checkGymIdInNftStatsMapping([1, 1, 0, 0]);
     });
 
     it("Should be able to create multiple gyms by same user", async () => {
       await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
       await createNewGym([RESERVED_NFTS + 3], user1);
 
-      await checkNftState([1, 1, 2, 0]);
+      await checkGymIdInNftStatsMapping([1, 1, 2, 0]);
     });
 
-    it("Should not create gym with other user's NFTs", async () => {
-      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+    it("Should not create gym without any NFT", async () => {
       await expect(
-        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5])
-      ).to.be.revertedWith("All NFTs need to be owned by user");
+        FakemonContract.connect(user1).createNewGym([])
+      ).to.be.revertedWith("Need atleast one unstacked NFT");
 
       // Check if still maintains the old state after tx failure
-      await checkNftState([1, 1, 0, 0, 0]);
-    });
-
-    it("Should not create gym with reserved NFTs", async () => {
-      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
-      await expect(
-        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS - 2])
-      ).to.be.revertedWith("All NFTs need to be owned by user");
-
-      await checkNftState([1, 1, 0, 0]);
-    });
-
-    it("Should not create gym with uncreated NFTs", async () => {
-      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
-      await expect(
-        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 20])
-      ).to.be.revertedWith("All NFTs need to be owned by user");
-
-      await checkNftState([1, 1, 0, 0]);
-    });
-
-    it("Should not create gym with locked NFTs", async () => {
-      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
-      await expect(
-        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 2])
-      ).to.be.revertedWith("All NFTs need to be unlocked");
-
-      await checkNftState([1, 1, 0, 0]);
+      await checkGymIdInNftStatsMapping([0, 0, 0, 0]);
     });
 
     it("Should not create gym with more than NFT limit", async () => {
@@ -235,7 +207,44 @@ describe("Fakemon Contract", () => {
         ])
       ).to.be.revertedWith("Max NFT per gym limit breached");
 
-      await checkNftState([0, 0, 0, 0]);
+      await checkGymIdInNftStatsMapping([0, 0, 0, 0]);
+    });
+
+    it("Should not create gym with other user's NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      // Check if still maintains the old state after tx failure
+      await checkGymIdInNftStatsMapping([1, 1, 0, 0, 0]);
+    });
+
+    it("Should not create gym with reserved NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS - 2])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      await checkGymIdInNftStatsMapping([1, 1, 0, 0]);
+    });
+
+    it("Should not create gym with uncreated NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 20])
+      ).to.be.revertedWith("All NFTs need to be owned by user");
+
+      await checkGymIdInNftStatsMapping([1, 1, 0, 0]);
+    });
+
+    it("Should not create gym with locked NFTs", async () => {
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await expect(
+        FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 2])
+      ).to.be.revertedWith("All NFTs need to be unlocked");
+
+      await checkGymIdInNftStatsMapping([1, 1, 0, 0]);
     });
   });
 
