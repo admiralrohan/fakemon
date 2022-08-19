@@ -38,8 +38,6 @@ function App() {
   const fetchTokenBalance = async () => {
     if (!isBcDefined) return;
 
-    window.localStorage.setItem("loginAddress", blockchain.signerAddress);
-
     try {
       // With decimals
       const fullBalance = await blockchain.token.balanceOf(
@@ -152,7 +150,9 @@ function App() {
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
 
-    setBlockchain(await getBlockchain());
+    const bcDetails = await getBlockchain();
+    setBlockchain(bcDetails);
+    window.localStorage.setItem("loginAddress", bcDetails.signerAddress);
   };
 
   // It doesn't disconnect wallet with metamask
