@@ -171,6 +171,24 @@ function App() {
     }
   };
 
+  const createGym = async (selectedIds) => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.fakemon.createNewGym(selectedIds);
+      await tx.wait();
+
+      await fetchTokenBalance();
+      await fetchFakemons();
+      await fetchGyms();
+
+      showToastMessage("New gym created");
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
   // Connect our app with blockchain
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
@@ -227,7 +245,17 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
-        <Route path="/gyms" element={<Gyms gyms={[]} />} />
+        <Route
+          path="/gyms"
+          element={
+            <Gyms
+              userAddress={loginAddress}
+              gyms={gyms}
+              fakemons={fakemons}
+              createGym={createGym}
+            />
+          }
+        />
         <Route path="/gyms/:id" element={<Gym />} />
         <Route path="/gyms/:id/battle" element={<Battle />} />
         <Route
