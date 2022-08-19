@@ -99,9 +99,9 @@ function App() {
       );
 
       const noOfFakemons = ids.length;
-      const processingFakemonList = [];
+      const processedList = [];
       for (let i = 0; i < noOfFakemons; i++) {
-        processingFakemonList.push({
+        processedList.push({
           id: ids[i].toString(),
           hp: stats[i].hp.toString(),
           attack: stats[i].attack.toString(),
@@ -109,8 +109,8 @@ function App() {
         });
       }
 
-      console.log(processingFakemonList);
-      setFakemons(processingFakemonList);
+      console.log("Fakemons:", processedList);
+      setFakemons(processedList);
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
