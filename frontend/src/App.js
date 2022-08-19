@@ -258,7 +258,12 @@ function App() {
             />
           }
         />
-        <Route path="/gyms/:id" element={<Gym />} />
+        <Route
+          path="/gyms/:id"
+          element={
+            <Gym userAddress={loginAddress} fakemons={fakemons} gyms={gyms} />
+          }
+        />
         <Route path="/gyms/:id/battle" element={<Battle />} />
         <Route
           path="/profile"

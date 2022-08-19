@@ -85,7 +85,6 @@ export function Profile({
           <h4 className="text-center mt-3 mb-2">Your Squad</h4>
           {fakemons.map((fakemon) => (
             <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
-              {/* <Card.Body className="d-flex justify-content-between align-items-baseline"> */}
               <Card.Body>
                 <Card.Title>Fakemon #{fakemon.id}</Card.Title>
                 <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
