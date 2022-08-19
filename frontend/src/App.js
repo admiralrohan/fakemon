@@ -108,6 +108,8 @@ function App() {
           hp: stats[i].hp.toString(),
           attack: stats[i].attack.toString(),
           defense: stats[i].defense.toString(),
+          gymId: stats[i].gymId.toString(),
+          owner: stats[i].owner,
         });
       }
 
@@ -131,7 +133,7 @@ function App() {
           id: rawGymList[i].id.toString(),
           charIds: rawGymList[i].charIds.map((charId) => charId.toString()),
           isOpen: rawGymList[i].isOpen.toString(),
-          owner: rawGymList[i].owner.toString(),
+          owner: rawGymList[i].owner,
         });
       }
 

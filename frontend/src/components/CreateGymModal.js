@@ -6,6 +6,32 @@ import Modal from "react-bootstrap/Modal";
 export function CreateGymModal({ show, dismiss, close, fakemons }) {
   const [selectedIds, setSelectedIds] = useState([]);
 
+  const stakedButton = () => (
+    <Button variant="secondary" disabled>
+      Staked
+    </Button>
+  );
+  const addButton = (fakemon) => (
+    <Button
+      variant="secondary"
+      onClick={() => {
+        setSelectedIds([...selectedIds, fakemon.id]);
+      }}
+    >
+      Add
+    </Button>
+  );
+  const removeButton = (fakemon) => (
+    <Button
+      variant="secondary"
+      onClick={() => {
+        setSelectedIds([...selectedIds.filter((id) => id !== fakemon.id)]);
+      }}
+    >
+      Remove
+    </Button>
+  );
+
   return (
     <Modal show={show} onHide={dismiss}>
       <Modal.Header closeButton>
@@ -32,29 +58,12 @@ export function CreateGymModal({ show, dismiss, close, fakemons }) {
               </Card.Body>
             </Card>
 
-            {/* TODO: Optimize searching from array, use mapping */}
-            {!selectedIds.includes(fakemon.id) ? (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setSelectedIds([...selectedIds, fakemon.id]);
-                }}
-              >
-                Add
-              </Button>
-            ) : (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setSelectedIds([
-                    ...selectedIds,
-                    selectedIds.filter((id) => id !== fakemon.id),
-                  ]);
-                }}
-              >
-                Remove
-              </Button>
-            )}
+            {/* TODO: Optimize use of `array.includes()`, use mapping */}
+            {fakemon.gymId > 0
+              ? stakedButton()
+              : !selectedIds.includes(fakemon.id)
+              ? addButton(fakemon)
+              : removeButton(fakemon)}
           </div>
         ))}
       </Modal.Body>
@@ -65,7 +74,10 @@ export function CreateGymModal({ show, dismiss, close, fakemons }) {
         </Button>
         <Button
           variant="primary"
-          onClick={() => close(selectedIds)}
+          onClick={() => {
+            close(selectedIds);
+            setSelectedIds([]);
+          }}
           disabled={selectedIds.length === 0}
         >
           Create
