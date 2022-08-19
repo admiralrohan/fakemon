@@ -2,6 +2,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { CardText } from "../utils/utils";
 import { Link } from "react-router-dom";
+import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 
 export function Profile({
   userAddress,
@@ -21,16 +22,6 @@ export function Profile({
     tokenBalance,
     joinedOn: "09-08-2022",
   };
-
-  const beforeWalletImportView = (
-    <Card>
-      <Card.Body>
-        <Card.Subtitle className="text-center">
-          Import your wallet to see profile details
-        </Card.Subtitle>
-      </Card.Body>
-    </Card>
-  );
 
   const afterWalletImportView = (
     <>
@@ -93,7 +84,7 @@ export function Profile({
         <>
           <h4 className="text-center mt-3 mb-2">Your Squad</h4>
           {fakemons.map((fakemon) => (
-            <Card style={{ width: "500px", marginBottom: 10 }} key={fakemon.id}>
+            <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
               {/* <Card.Body className="d-flex justify-content-between align-items-baseline"> */}
               <Card.Body>
                 <Card.Title>Fakemon #{fakemon.id}</Card.Title>
@@ -118,9 +109,7 @@ export function Profile({
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {profileDetails.userAddress
-        ? afterWalletImportView
-        : beforeWalletImportView}
+      {userAddress ? afterWalletImportView : <BeforeWalletImportNotice />}
     </div>
   );
 }
