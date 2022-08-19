@@ -15,7 +15,12 @@ export function Toastr({ message, toastCount }) {
   }, [toastCount]);
 
   return (
-    <ToastContainer hidden={!show} className="p-3" position="top-end">
+    <ToastContainer
+      hidden={!show}
+      className="p-3"
+      position="top-end"
+      onClick={() => setShow(false)}
+    >
       <Toast onClose={() => setShow(false)}>
         <Toast.Header>
           <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
