@@ -27,6 +27,7 @@ contract Fakemon is ERC1155 {
         uint hp;
         uint attack;
         uint defense;
+        // TODO: Add speed
         uint gymId; // zero if not part of a gym, so it can be staked going forward. Acting as Foreign key.
         address owner;
     }
@@ -132,8 +133,7 @@ contract Fakemon is ERC1155 {
     function mintNewNFT() external payable {
         // Checking allownace balance instead of wallet balance, as I can't use wallet balance directly
         require(
-            msg.value >= nftFee &&
-                TokenContract.allowance(msg.sender, address(this)) >= nftFee,
+            TokenContract.allowance(msg.sender, address(this)) >= nftFee,
             "Transfer NFT fee and allow us to use that"
         );
 

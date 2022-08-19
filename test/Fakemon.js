@@ -17,7 +17,7 @@ describe("Fakemon Contract", () => {
     await tx.wait();
   }
 
-  async function mintNewNfts(noOfNftsToMint, signer = user1) {
+  async function mintNewNfts(noOfNftsToMint = 1, signer = user1) {
     for (let i = 0; i < noOfNftsToMint; i++) {
       let tx = await TokenContract.connect(signer).approve(
         FakemonContract.address,
@@ -25,9 +25,7 @@ describe("Fakemon Contract", () => {
       );
       await tx.wait();
 
-      tx = await FakemonContract.connect(signer).mintNewNFT({
-        value: ethers.utils.parseEther(NFT_FEE.toString()),
-      });
+      tx = await FakemonContract.connect(signer).mintNewNFT();
       await tx.wait();
     }
   }
@@ -122,24 +120,14 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should mint NFT", async () => {
-      let tx;
-      tx = await TokenContract.approve(
-        FakemonContract.address,
-        ethers.utils.parseEther(NFT_FEE.toString())
-      );
-      await tx.wait();
+      await mintNewNfts();
 
-      tx = await FakemonContract.mintNewNFT({
-        value: ethers.utils.parseEther(NFT_FEE.toString()),
-      });
-      await tx.wait();
-
-      const newNftId = RESERVED_NFTS + 2;
+      const lastNftId = RESERVED_NFTS + 2;
       expect(
-        await FakemonContract.balanceOf(user1.address, newNftId)
+        await FakemonContract.balanceOf(user1.address, lastNftId)
       ).to.be.equal(1);
 
-      const stats = await FakemonContract.fakemonStats(newNftId);
+      const stats = await FakemonContract.fakemonStats(lastNftId);
       expect(stats.hp).to.be.equal(7);
       expect(stats.attack).to.be.equal(5);
       expect(stats.defense).to.be.equal(3);
@@ -154,9 +142,7 @@ describe("Fakemon Contract", () => {
 
     it("Should not mint without approval", async () => {
       await expect(
-        FakemonContract.connect(user1).mintNewNFT({
-          value: ethers.utils.parseEther("5"),
-        })
+        FakemonContract.connect(user1).mintNewNFT()
       ).to.be.revertedWith("Transfer NFT fee and allow us to use that");
     });
   });

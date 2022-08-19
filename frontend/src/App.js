@@ -131,9 +131,7 @@ function App() {
       );
       await tx.wait();
 
-      tx = await blockchain.fakemon.mintNewNFT({
-        value: NFT_FEE,
-      });
+      tx = await blockchain.fakemon.mintNewNFT();
       await tx.wait();
 
       await fetchTokenBalance();
