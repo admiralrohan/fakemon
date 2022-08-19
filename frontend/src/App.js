@@ -77,7 +77,8 @@ function App() {
     if (!isBcDefined) return;
 
     try {
-      await blockchain.fakemon.registerUser();
+      const tx = await blockchain.fakemon.registerUser();
+      await tx.wait();
       setIsRegistered(true);
 
       await fetchTokenBalance();
