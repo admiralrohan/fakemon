@@ -29,7 +29,6 @@ describe("Fakemon Contract", () => {
       await tx.wait();
     }
   }
-
   async function createNewGym(nftIds, signer = user1) {
     const tx = await FakemonContract.connect(signer).createNewGym(nftIds);
     await tx.wait();
@@ -154,14 +153,16 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should fetch all fakemon details properly", async () => {
-      const fakemons = await FakemonContract.getAllCharacters(user1.address);
+      const fakemons = await FakemonContract.getAllCharactersByUser(
+        user1.address
+      );
 
-      for (let i = 0; i < fakemons[0]; i++) {
-        expect(fakemons[0]).to.be.equal(RESERVED_NFTS + i + 1);
-        expect(fakemons[1].hp).to.be.equal(7);
-        expect(fakemons[1].attack).to.be.equal(5);
-        expect(fakemons[1].defense).to.be.equal(3);
-        expect(fakemons[1].gymId).to.be.equal(0);
+      for (let i = 0; i < fakemons[0].length; i++) {
+        expect(fakemons[0][i]).to.be.equal(RESERVED_NFTS + i + 1);
+        expect(fakemons[1][i].hp).to.be.equal(7);
+        expect(fakemons[1][i].attack).to.be.equal(5);
+        expect(fakemons[1][i].defense).to.be.equal(3);
+        expect(fakemons[1][i].gymId).to.be.equal(0);
       }
     });
   });
@@ -283,14 +284,22 @@ describe("Fakemon Contract", () => {
     });
 
     it("Should fetch all fakemons for a gym", async () => {
-      const fakemons = await FakemonContract.getAllCharactersByGym(1);
+      let fakemons = await FakemonContract.getAllCharactersByGym(1);
+      for (let i = 0; i < fakemons[0].length; i++) {
+        expect(fakemons[0][i]).to.be.equal(RESERVED_NFTS + i + 1);
+        expect(fakemons[1][i].hp).to.be.equal(7);
+        expect(fakemons[1][i].attack).to.be.equal(5);
+        expect(fakemons[1][i].defense).to.be.equal(3);
+        expect(fakemons[1][i].gymId).to.be.equal(1);
+      }
 
-      for (let i = 0; i < fakemons[0]; i++) {
-        expect(fakemons[0]).to.be.equal(RESERVED_NFTS + i + 1);
-        expect(fakemons[1].hp).to.be.equal(7);
-        expect(fakemons[1].attack).to.be.equal(5);
-        expect(fakemons[1].defense).to.be.equal(3);
-        expect(fakemons[1].gymId).to.be.equal(0);
+      fakemons = await FakemonContract.getAllCharactersByGym(2);
+      for (let i = 0; i < fakemons[0].length; i++) {
+        expect(fakemons[0][i]).to.be.equal(RESERVED_NFTS + i + 5);
+        expect(fakemons[1][i].hp).to.be.equal(7);
+        expect(fakemons[1][i].attack).to.be.equal(5);
+        expect(fakemons[1][i].defense).to.be.equal(3);
+        expect(fakemons[1][i].gymId).to.be.equal(2);
       }
     });
   });
