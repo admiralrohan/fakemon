@@ -84,7 +84,7 @@ function App() {
       setIsRegistered(true);
 
       await fetchTokenBalance();
-      await fetchFakemons();
+      await fetchFakemonsByUser();
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
@@ -92,11 +92,11 @@ function App() {
   };
 
   // TODO: Simplify this logic
-  const fetchFakemons = async () => {
+  const fetchFakemonsByUser = async () => {
     if (!isBcDefined) return;
 
     try {
-      const [ids, stats] = await blockchain.fakemon.getAllCharacters(
+      const [ids, stats] = await blockchain.fakemon.getAllCharactersByUser(
         blockchain.signerAddress
       );
 
@@ -145,6 +145,35 @@ function App() {
     }
   };
 
+  const fetchFakemonsByGym = async (gymId) => {
+    if (!isBcDefined) return null;
+
+    try {
+      const [ids, stats] = await blockchain.fakemon.getAllCharactersByGym(
+        gymId
+      );
+
+      const noOfFakemons = ids.length;
+      const processedList = [];
+      for (let i = 0; i < noOfFakemons; i++) {
+        processedList.push({
+          id: ids[i].toString(),
+          hp: stats[i].hp.toString(),
+          attack: stats[i].attack.toString(),
+          defense: stats[i].defense.toString(),
+          gymId: stats[i].gymId.toString(),
+          owner: stats[i].owner,
+        });
+      }
+
+      return processedList;
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+      return null;
+    }
+  };
+
   const getToken = () => {
     // TODO: Implement
     showToastMessage("Coming soon");
@@ -164,7 +193,7 @@ function App() {
       await tx.wait();
 
       await fetchTokenBalance();
-      await fetchFakemons();
+      await fetchFakemonsByUser();
 
       showToastMessage("New fakemon minted");
     } catch (error) {
@@ -181,7 +210,7 @@ function App() {
       await tx.wait();
 
       await fetchTokenBalance();
-      await fetchFakemons();
+      await fetchFakemonsByUser();
       await fetchGyms();
 
       showToastMessage("New gym created");
@@ -229,7 +258,7 @@ function App() {
   useEffect(() => {
     (async () => {
       if (isRegistered) {
-        await fetchFakemons();
+        await fetchFakemonsByUser();
         await fetchGyms();
       }
     })();
@@ -251,7 +280,7 @@ function App() {
           path="/gyms"
           element={
             <Gyms
-              userAddress={loginAddress}
+              userAddress={blockchain.signerAddress}
               gyms={gyms}
               fakemons={fakemons}
               createGym={createGym}
@@ -261,7 +290,11 @@ function App() {
         <Route
           path="/gyms/:id"
           element={
-            <Gym userAddress={loginAddress} fakemons={fakemons} gyms={gyms} />
+            <Gym
+              userAddress={blockchain.signerAddress}
+              fetchFakemonsByGym={fetchFakemonsByGym}
+              gyms={gyms}
+            />
           }
         />
         <Route path="/gyms/:id/battle" element={<Battle />} />
@@ -269,7 +302,7 @@ function App() {
           path="/profile"
           element={
             <Profile
-              userAddress={loginAddress}
+              userAddress={blockchain.signerAddress}
               isRegistered={isRegistered}
               registerUserHandler={registerUser}
               tokenBalance={tokenBalance}
