@@ -4,17 +4,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { AlertLayout } from "../components/AlertLayout";
 
 export function Gyms({ userAddress, gyms, fakemons, createGym }) {
   const [showModal, setShowModal] = useState(false);
 
-  const noGymsView = (
-    <Card>
-      <Card.Body>
-        <Card.Subtitle className="text-center">No gyms yet</Card.Subtitle>
-      </Card.Body>
-    </Card>
-  );
+  const noGymsView = <AlertLayout content="No gyms yet" />;
 
   const gymList = gyms.map((gym) => (
     <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>

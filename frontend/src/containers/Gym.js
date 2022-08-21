@@ -68,7 +68,7 @@ export function Gym({ userAddress, fakemons, gyms }) {
       ) : gymDetails ? (
         existingGymView()
       ) : (
-        gymNotExistView()
+        <AlertLayout content="Gym doesn't exist" />
       )}
     </div>
   );
