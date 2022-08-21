@@ -18,7 +18,10 @@ export function Gyms({ userAddress, gyms, fakemons, createGym, isRegistered }) {
           alignItems: "baseline",
         }}
       >
-        <Card.Title>Gym #{gym.id}</Card.Title>
+        <Card.Title>
+          Gym #{gym.id}{" "}
+          {gym.owner === userAddress && <span className="fs-6">(Mine)</span>}
+        </Card.Title>
 
         <Link to={"/gyms/" + gym.id}>
           <Button size="sm">Check squad</Button>
