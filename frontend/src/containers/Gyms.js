@@ -6,10 +6,8 @@ import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { AlertLayout } from "../components/AlertLayout";
 
-export function Gyms({ userAddress, gyms, fakemons, createGym }) {
+export function Gyms({ userAddress, gyms, fakemons, createGym, isRegistered }) {
   const [showModal, setShowModal] = useState(false);
-
-  const noGymsView = <AlertLayout content="No gyms yet" />;
 
   const gymList = gyms.map((gym) => (
     <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
@@ -48,13 +46,19 @@ export function Gyms({ userAddress, gyms, fakemons, createGym }) {
         fakemons={fakemons}
       />
 
-      {gyms.length === 0 ? noGymsView : gymList}
+      {gyms.length === 0 ? <AlertLayout content="No gyms yet" /> : gymList}
     </>
   );
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {!userAddress ? <BeforeWalletImportNotice /> : afterWalletImportView}
+      {!userAddress ? (
+        <BeforeWalletImportNotice />
+      ) : !isRegistered ? (
+        <AlertLayout content="Register to see gyms" />
+      ) : (
+        afterWalletImportView
+      )}
     </div>
   );
 }

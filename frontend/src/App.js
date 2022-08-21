@@ -284,6 +284,7 @@ function App() {
               gyms={gyms}
               fakemons={fakemons}
               createGym={createGym}
+              isRegistered={isRegistered}
             />
           }
         />
