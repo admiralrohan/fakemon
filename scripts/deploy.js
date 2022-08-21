@@ -57,6 +57,42 @@ async function main() {
   );
 
   console.log("Save contract artifacts in Frontend folder");
+
+  // TODO: Add multiple envs to trigger this code only for "dev"
+  await loadDummyData(TokenContract, FakemonContract);
+  console.log("Dummy data loaded in blockchain");
+}
+
+// Used during development. To quickly prepare FE with some data.
+async function loadDummyData(TokenContract, FakemonContract) {
+  const [user1, user2] = await ethers.getSigners();
+
+  // Registers 2 users
+  let tx = await FakemonContract.connect(user1).registerUser();
+  await tx.wait();
+  tx = await FakemonContract.connect(user2).registerUser();
+  await tx.wait();
+
+  // Mint 3 NFTs
+  for (let i = 0; i < 5; i++) {
+    tx = await TokenContract.connect(user1).approve(
+      FakemonContract.address,
+      ethers.utils.parseEther(NFT_FEE.toString())
+    );
+    await tx.wait();
+
+    tx = await FakemonContract.connect(user1).mintNewNFT();
+    await tx.wait();
+  }
+
+  // Create 2 gyms
+  tx = await FakemonContract.connect(user1).createNewGym([
+    RESERVED_NFTS + 3,
+    RESERVED_NFTS + 4,
+  ]);
+  await tx.wait();
+  tx = await FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5]);
+  await tx.wait();
 }
 
 main()
