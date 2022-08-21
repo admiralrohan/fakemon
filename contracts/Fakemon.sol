@@ -74,7 +74,7 @@ contract Fakemon is ERC1155 {
         _mintNFT();
     }
 
-    function getAllCharacters(address _account)
+    function getAllCharactersByUser(address _account)
         external
         view
         returns (uint[] memory, Stat[] memory)
