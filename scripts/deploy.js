@@ -6,6 +6,7 @@ const {
   NFT_FEE,
   NFTS_PER_GYM,
 } = require("../constants/constants");
+const { testHelpers } = require("../utils/helper");
 
 async function main() {
   // We get the contracts to deploy
@@ -66,33 +67,22 @@ async function main() {
 // Used during development. To quickly prepare FE with some data.
 async function loadDummyData(TokenContract, FakemonContract) {
   const [user1, user2] = await ethers.getSigners();
+  const { registerUser, mintNewNfts, createNewGym } = testHelpers(
+    FakemonContract,
+    TokenContract,
+    user1,
+    user2
+  );
 
-  // Registers 2 users
-  let tx = await FakemonContract.connect(user1).registerUser();
-  await tx.wait();
-  tx = await FakemonContract.connect(user2).registerUser();
-  await tx.wait();
+  await registerUser(user1);
+  await registerUser(user2);
 
-  // Mint 3 NFTs
-  for (let i = 0; i < 5; i++) {
-    tx = await TokenContract.connect(user1).approve(
-      FakemonContract.address,
-      ethers.utils.parseEther(NFT_FEE.toString())
-    );
-    await tx.wait();
+  await mintNewNfts(5, user1);
+  await mintNewNfts(3, user2);
 
-    tx = await FakemonContract.connect(user1).mintNewNFT();
-    await tx.wait();
-  }
-
-  // Create 2 gyms
-  tx = await FakemonContract.connect(user1).createNewGym([
-    RESERVED_NFTS + 3,
-    RESERVED_NFTS + 4,
-  ]);
-  await tx.wait();
-  tx = await FakemonContract.connect(user1).createNewGym([RESERVED_NFTS + 5]);
-  await tx.wait();
+  await createNewGym([RESERVED_NFTS + 3, RESERVED_NFTS + 4], user1);
+  await createNewGym([RESERVED_NFTS + 5], user1);
+  await createNewGym([RESERVED_NFTS + 9, RESERVED_NFTS + 10], user2);
 }
 
 main()
