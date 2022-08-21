@@ -276,6 +276,22 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
+
+        <Route
+          path="/profile"
+          element={
+            <Profile
+              userAddress={blockchain.signerAddress}
+              isRegistered={isRegistered}
+              registerUserHandler={registerUser}
+              tokenBalance={tokenBalance}
+              mintFakemonHandler={mintFakemon}
+              getTokenHandler={getToken}
+              fakemons={fakemons}
+            />
+          }
+        />
+
         <Route
           path="/gyms"
           element={
@@ -298,18 +314,14 @@ function App() {
             />
           }
         />
-        <Route path="/gyms/:id/battle" element={<Battle />} />
         <Route
-          path="/profile"
+          path="/gyms/:id/battle"
           element={
-            <Profile
+            <Battle
               userAddress={blockchain.signerAddress}
-              isRegistered={isRegistered}
-              registerUserHandler={registerUser}
-              tokenBalance={tokenBalance}
-              mintFakemonHandler={mintFakemon}
-              getTokenHandler={getToken}
-              fakemons={fakemons}
+              fakemonsInUserSquad={fakemons}
+              gyms={gyms}
+              fetchFakemonsByGym={fetchFakemonsByGym}
             />
           }
         />
