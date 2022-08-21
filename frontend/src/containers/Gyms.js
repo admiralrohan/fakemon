@@ -8,6 +8,32 @@ import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice
 export function Gyms({ userAddress, gyms, fakemons, createGym }) {
   const [showModal, setShowModal] = useState(false);
 
+  const noGymsView = (
+    <Card>
+      <Card.Body>
+        <Card.Subtitle className="text-center">No gyms yet</Card.Subtitle>
+      </Card.Body>
+    </Card>
+  );
+
+  const gymList = gyms.map((gym) => (
+    <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
+      <Card.Body
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+        }}
+      >
+        <Card.Title>Gym #{gym.id}</Card.Title>
+
+        <Link to={"/gyms/" + gym.id}>
+          <Button size="sm">Check squad</Button>
+        </Link>
+      </Card.Body>
+    </Card>
+  ));
+
   const afterWalletImportView = (
     <>
       <div className="text-end">
@@ -27,29 +53,13 @@ export function Gyms({ userAddress, gyms, fakemons, createGym }) {
         fakemons={fakemons}
       />
 
-      {gyms.map((gym) => (
-        <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
-          <Card.Body
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "baseline",
-            }}
-          >
-            <Card.Title>Gym #{gym.id}</Card.Title>
-
-            <Link to={"/gyms/" + gym.id}>
-              <Button size="sm">Check squad</Button>
-            </Link>
-          </Card.Body>
-        </Card>
-      ))}
+      {gyms.length === 0 ? noGymsView : gymList}
     </>
   );
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {userAddress ? afterWalletImportView : <BeforeWalletImportNotice />}
+      {!userAddress ? <BeforeWalletImportNotice /> : afterWalletImportView}
     </div>
   );
 }
