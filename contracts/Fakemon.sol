@@ -152,27 +152,27 @@ contract Fakemon is ERC1155 {
         fakemonStats[lastCharacterId] = Stat(7, 5, 3, 0, msg.sender);
     }
 
-    function createNewGym(uint[] memory nftIds) external {
+    function createNewGym(uint[] memory _nftIds) external {
         lastGymId += 1;
 
-        require(nftIds.length > 0, "Need atleast one unstacked NFT");
+        require(_nftIds.length > 0, "Need atleast one unstacked NFT");
         // TODO: Add max limit in error string
-        require(nftIds.length <= nftsPerGym, "Max NFT per gym limit breached");
+        require(_nftIds.length <= nftsPerGym, "Max NFT per gym limit breached");
 
         // Check if all NFTs are unlocked
-        for (uint i = 0; i < nftIds.length; i++) {
+        for (uint i = 0; i < _nftIds.length; i++) {
             require(
-                fakemonStats[nftIds[i]].owner == msg.sender,
+                fakemonStats[_nftIds[i]].owner == msg.sender,
                 "All NFTs need to be owned by user"
             );
             require(
-                fakemonStats[nftIds[i]].gymId == 0,
+                fakemonStats[_nftIds[i]].gymId == 0,
                 "All NFTs need to be unlocked"
             );
 
-            fakemonStats[nftIds[i]].gymId = lastGymId;
+            fakemonStats[_nftIds[i]].gymId = lastGymId;
         }
 
-        gyms[lastGymId] = Gym(lastGymId, nftIds, true, msg.sender);
+        gyms[lastGymId] = Gym(lastGymId, _nftIds, true, msg.sender);
     }
 }
