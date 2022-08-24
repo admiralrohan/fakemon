@@ -134,7 +134,7 @@ contract Fakemon is ERC1155 {
         // Checking allownace balance instead of wallet balance, as I can't use wallet balance directly
         require(
             TokenContract.allowance(msg.sender, address(this)) >= nftFee,
-            "Transfer NFT fee and allow us to use that"
+            "Approve us to use NFT fee"
         );
 
         TokenContract.transferFrom(msg.sender, address(this), nftFee);

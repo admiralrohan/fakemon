@@ -111,13 +111,13 @@ describe("Fakemon Contract", () => {
     it("Should not mint without fee", async () => {
       await expect(
         FakemonContract.connect(user1).mintNewNFT()
-      ).to.be.revertedWith("Transfer NFT fee and allow us to use that");
+      ).to.be.revertedWith("Approve us to use NFT fee");
     });
 
     it("Should not mint without approval", async () => {
       await expect(
         FakemonContract.connect(user1).mintNewNFT()
-      ).to.be.revertedWith("Transfer NFT fee and allow us to use that");
+      ).to.be.revertedWith("Approve us to use NFT fee");
     });
   });
 
