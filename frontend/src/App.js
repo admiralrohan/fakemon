@@ -74,8 +74,7 @@ function App() {
 
       setTokenBalance(`${balance} ${tokenName}`);
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error);
+      showError(error);
       setTokenBalance("Error fetching");
     }
   };
@@ -89,8 +88,7 @@ function App() {
       );
       setIsRegistered(isRegistered);
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error);
+      showError(error);
       setIsRegistered(false);
     }
   };
@@ -110,8 +108,7 @@ function App() {
         isWon: rawCurrentBattle.isWon,
       });
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error);
+      showError(error);
       setCurrentBattle({});
     }
   };
@@ -127,8 +124,7 @@ function App() {
       await fetchTokenBalance();
       await fetchFakemonsByUser();
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -157,8 +153,7 @@ function App() {
       console.log("Fakemons:", processedList);
       setFakemons(processedList);
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -181,8 +176,7 @@ function App() {
       console.log("Gyms:", processedList);
       setGyms(processedList);
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -209,8 +203,7 @@ function App() {
 
       setFakemonsInGym({ id: gymId, fakemons: processedList });
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
       setFakemonsInGym({ id: "0", fakemons: [] });
     }
   };
@@ -238,8 +231,7 @@ function App() {
 
       showToastMessage("New fakemon minted");
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -256,8 +248,7 @@ function App() {
 
       showToastMessage("New gym created");
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -276,8 +267,7 @@ function App() {
 
       await getCurrentBattleDetails();
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -290,8 +280,7 @@ function App() {
 
       await updateBattleView();
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
@@ -304,8 +293,7 @@ function App() {
 
       await updateBattleView();
     } catch (error) {
-      // TODO: Show error as toast
-      console.error(error.error.data.message);
+      showError(error);
     }
   };
 
