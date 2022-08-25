@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 const { NFT_FEE, RESERVED_NFTS } = require("../constants/constants");
 
 function testHelpers(FakemonContract, TokenContract, user1, user2) {
@@ -41,4 +42,8 @@ function testHelpers(FakemonContract, TokenContract, user1, user2) {
   };
 }
 
-module.exports = { testHelpers };
+async function getBlockTimestamp() {
+  return (await ethers.provider._getBlock()).timestamp;
+}
+
+module.exports = { testHelpers, getBlockTimestamp };

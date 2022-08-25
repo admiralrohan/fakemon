@@ -5,6 +5,8 @@ const {
   RESERVED_NFTS,
   NFT_FEE,
   NFTS_PER_GYM,
+  BATTLE_DURATION,
+  HEAL_FEE,
 } = require("../constants/constants");
 const { testHelpers } = require("../utils/helper");
 
@@ -19,7 +21,9 @@ async function main() {
     INITIAL_BALANCE,
     RESERVED_NFTS,
     NFT_FEE,
-    NFTS_PER_GYM
+    NFTS_PER_GYM,
+    BATTLE_DURATION,
+    HEAL_FEE
   );
 
   console.log("Token contract deployed to:", TokenContract.address);

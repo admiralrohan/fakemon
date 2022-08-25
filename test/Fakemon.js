@@ -5,8 +5,10 @@ const {
   RESERVED_NFTS,
   NFT_FEE,
   NFTS_PER_GYM,
+  BATTLE_DURATION,
+  HEAL_FEE,
 } = require("../constants/constants");
-const { testHelpers } = require("../utils/helper");
+const { testHelpers, getBlockTimestamp } = require("../utils/helper");
 
 // TODO: Get fixed HP for testing, mocking VRF?
 describe("Fakemon Contract", () => {
@@ -27,7 +29,9 @@ describe("Fakemon Contract", () => {
       INITIAL_BALANCE,
       RESERVED_NFTS,
       NFT_FEE,
-      NFTS_PER_GYM
+      NFTS_PER_GYM,
+      BATTLE_DURATION,
+      HEAL_FEE
     );
 
     // To prevent external people to mint new tokens
@@ -276,6 +280,88 @@ describe("Fakemon Contract", () => {
         expect(fakemons[1][i].defense).to.be.equal(3);
         expect(fakemons[1][i].gymId).to.be.equal(2);
       }
+    });
+  });
+
+  describe("Battle", () => {
+    beforeEach(async () => {
+      await registerUser(user1);
+      await mintNewNfts(2, user1);
+
+      await registerUser(user2);
+      await mintNewNfts(2, user2);
+
+      await createNewGym([RESERVED_NFTS + 1, RESERVED_NFTS + 2], user1);
+      await createNewGym([RESERVED_NFTS + 5, RESERVED_NFTS + 6], user2);
+    });
+
+    it("Should create battle against any gym", async () => {
+      const tx = await FakemonContract.connect(user1).startBattle(1);
+      await tx.wait();
+
+      expect(await FakemonContract.ongoingBattle(user1.address)).to.be.equal(1);
+
+      const battle = await FakemonContract.battles(1);
+      expect(battle.id).to.be.equal(1);
+      expect(battle.attacker).to.be.equal(user1.address);
+      expect(battle.gymId).to.be.equal(1);
+      expect(battle.isEnded).to.be.equal(false);
+      expect(battle.isWon).to.be.equal(false);
+      expect(battle.expirationTime).to.be.equal(
+        (await getBlockTimestamp()) + BATTLE_DURATION
+      );
+    });
+
+    it("Should not create multiple battles at same time", async () => {
+      const tx = await FakemonContract.connect(user1).startBattle(1);
+      await tx.wait();
+
+      await expect(
+        FakemonContract.connect(user1).startBattle(2)
+      ).to.be.revertedWith("First finish existing battle");
+
+      expect(await FakemonContract.ongoingBattle(user1.address)).to.be.equal(1);
+    });
+
+    it("Should be able to flee from any battle", async () => {
+      let tx = await FakemonContract.connect(user1).startBattle(1);
+      await tx.wait();
+
+      tx = await FakemonContract.connect(user1).fleeBattle();
+      await tx.wait();
+
+      expect((await FakemonContract.battles(1)).isEnded).to.be.true;
+      expect(await FakemonContract.ongoingBattle(user1.address)).to.be.equal(0);
+    });
+
+    it("Should not flee when no battle is ongoing", async () => {
+      await expect(
+        FakemonContract.connect(user1).fleeBattle()
+      ).to.be.revertedWith("Don't have any ongoing battle");
+
+      expect(await FakemonContract.ongoingBattle(user1.address)).to.be.equal(0);
+    });
+
+    it("Should return gym ID of current battle properly", async () => {
+      expect(
+        (await FakemonContract.connect(user1).getCurrentBattleDetails()).gymId
+      ).to.be.equal(0);
+
+      let tx = await FakemonContract.connect(user1).startBattle(1);
+      await tx.wait();
+
+      expect(
+        (await FakemonContract.connect(user1).getCurrentBattleDetails()).gymId
+      ).to.be.equal(1);
+
+      tx = await FakemonContract.connect(user1).fleeBattle();
+      await tx.wait();
+      tx = await FakemonContract.connect(user1).startBattle(2);
+      await tx.wait();
+
+      expect(
+        (await FakemonContract.connect(user1).getCurrentBattleDetails()).gymId
+      ).to.be.equal(2);
     });
   });
 });

@@ -20,7 +20,7 @@ export function Profile({
     won: 1,
     totalMatches: 4,
     tokenBalance,
-    joinedOn: "09-08-2022",
+    // joinedOn: "09-08-2022",
   };
 
   const afterWalletImportView = (

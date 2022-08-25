@@ -10,8 +10,14 @@ export function Battle({
   fakemonsInUserSquad,
   gyms,
   fetchFakemonsByGym,
+  startBattle,
+  fleeBattle,
+  endBattle,
+  attackFakemon,
+  currentBattle,
+  fakemonsInGym,
 }) {
-  const [fakemonsInGym, setFakemonsInGym] = useState([]);
+  const [selectedFakemon, setSelectedFakemon] = useState(null);
 
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
@@ -21,8 +27,7 @@ export function Battle({
 
   useEffect(() => {
     (async () => {
-      const fakemonList = await fetchFakemonsByGym(gymId);
-      if (fakemonList) setFakemonsInGym(fakemonList);
+      await fetchFakemonsByGym(gymId);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress]);
@@ -43,13 +48,78 @@ export function Battle({
           </span>
 
           {showUseButton && (
-            <Button size="sm" className="mt-2 text-end">
-              Use
-            </Button>
+            <div>
+              {!selectedFakemon && (
+                <span
+                  title={fakemon.hp === "0" ? "Don't have HP to fight" : null}
+                >
+                  <Button
+                    size="sm"
+                    className="text-end"
+                    disabled={fakemon.hp === "0"}
+                    onClick={() => setSelectedFakemon(fakemon.id)}
+                  >
+                    Use
+                  </Button>
+                </span>
+              )}
+
+              {selectedFakemon === fakemon.id && (
+                <Button
+                  size="sm"
+                  className="text-end"
+                  onClick={() => setSelectedFakemon(null)}
+                >
+                  De-select
+                </Button>
+              )}
+            </div>
           )}
         </Card.Subtitle>
       </Card.Body>
     </Card>
+  );
+
+  const buttonView = (
+    <>
+      {currentBattle.isWon ? (
+        <>
+          <Card.Title className="mb-2 mt-3">You Won!</Card.Title>
+
+          <Button className="me-2" onClick={() => endBattle(gymId)}>
+            End Battle
+          </Button>
+        </>
+      ) : currentBattle.gymId === "0" ? (
+        <Button className="me-2" onClick={() => startBattle(gymId)}>
+          Start Battle
+        </Button>
+      ) : (
+        <div>
+          <span title={!selectedFakemon ? "Select an fakemon to attack" : null}>
+            <Button
+              className="me-2"
+              disabled={!selectedFakemon}
+              onClick={() => {
+                attackFakemon(selectedFakemon);
+                setSelectedFakemon(null); // To prevent highlighted button "De-select" after attack
+              }}
+            >
+              Attack
+            </Button>
+          </span>
+
+          {/* Flee would save remaining energy, but the user will lose the match on record */}
+          <span
+            title={!selectedFakemon ? null : "De-select an fakemons to flee"}
+          >
+            <Button disabled={selectedFakemon} onClick={() => fleeBattle()}>
+              Flee
+            </Button>
+          </span>
+        </div>
+      )}
+    </>
   );
 
   const battleView = (
@@ -57,34 +127,27 @@ export function Battle({
       <Link to={"/gyms/" + gymId}>
         <Button size="sm">Back</Button>
       </Link>
-      <Card.Title style={{ marginBottom: 10, textAlign: "center" }}>
+
+      <Card.Title className="mb-2 text-center">
         Battle with Gym #{gymId}
       </Card.Title>
+      {currentBattle.gymId > 0 && (
+        <div className="mb-2 text-center fs-6">
+          Battle expiring at {`${currentBattle.expirationTime}`}
+        </div>
+      )}
 
-      <Card.Subtitle style={{ marginBottom: 10, textAlign: "center" }}>
-        Your squad
-      </Card.Subtitle>
+      <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
 
       {/* Only non-staked fakemons can be used for attack */}
       {fakemonsInUserSquad
         .filter((fakemon) => fakemon.gymId !== "0")
         .map((fakemon) => getFakemonView(fakemon, true))}
 
-      <Card.Subtitle
-        className="text-center my-3"
-        style={{ marginTop: 20, marginBottom: 10, textAlign: "center" }}
-      >
-        Gym squad
-      </Card.Subtitle>
+      <Card.Subtitle className="text-center my-3">Gym squad</Card.Subtitle>
 
       {fakemonsInGym.map((fakemon) => getFakemonView(fakemon))}
-
-      <div>
-        <Button className="me-2">Battle</Button>
-
-        {/* Flee would save remaining energy, but the user will lose the match on record */}
-        {/* <Button>Flee</Button> */}
-      </div>
+      {buttonView}
     </div>
   );
 

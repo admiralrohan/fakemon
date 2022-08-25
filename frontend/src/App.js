@@ -23,6 +23,13 @@ function App() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [fakemons, setFakemons] = useState([]);
   const [gyms, setGyms] = useState([]);
+  const [currentBattle, setCurrentBattle] = useState({});
+
+  // To show fakemons on gym and battle page
+  const [fakemonsInGym, setFakemonsInGym] = useState({
+    id: "0",
+    fakemons: [],
+  });
 
   // To trigger toast showing for 2s
   const [toastCount, setToastCount] = useState(0);
@@ -35,6 +42,19 @@ function App() {
   const showToastMessage = (message) => {
     setToastMessage(message);
     setToastCount((curr) => curr + 1);
+  };
+
+  const showError = (error) => {
+    // Convert "Error: VM Exception while processing transaction: reverted with reason string 'Battle expired'" into "Battle expired"
+    const errorMessage = error.error
+      ? error.error.data.message
+          .split(
+            "Error: VM Exception while processing transaction: reverted with reason string "
+          )[1]
+          .split("'")[1]
+      : error.message;
+
+    showToastMessage(errorMessage);
   };
 
   const fetchTokenBalance = async () => {
@@ -72,6 +92,27 @@ function App() {
       // TODO: Show error as toast
       console.error(error);
       setIsRegistered(false);
+    }
+  };
+
+  const getCurrentBattleDetails = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const rawCurrentBattle =
+        await blockchain.fakemon.getCurrentBattleDetails();
+
+      setCurrentBattle({
+        id: rawCurrentBattle.id.toString(),
+        gymId: rawCurrentBattle.gymId.toString(),
+        expirationTime: new Date(rawCurrentBattle.expirationTime * 1000), // Converting sec to ms
+        isEnded: rawCurrentBattle.isEnded,
+        isWon: rawCurrentBattle.isWon,
+      });
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error);
+      setCurrentBattle({});
     }
   };
 
@@ -166,11 +207,11 @@ function App() {
         });
       }
 
-      return processedList;
+      setFakemonsInGym({ id: gymId, fakemons: processedList });
     } catch (error) {
       // TODO: Show error as toast
       console.error(error.error.data.message);
-      return null;
+      setFakemonsInGym({ id: "0", fakemons: [] });
     }
   };
 
@@ -220,6 +261,67 @@ function App() {
     }
   };
 
+  const updateBattleView = async () => {
+    await getCurrentBattleDetails();
+    await fetchFakemonsByUser();
+    await fetchFakemonsByGym(currentBattle.gymId);
+  };
+
+  const startBattle = async (gymId) => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.fakemon.startBattle(gymId);
+      await tx.wait();
+
+      await getCurrentBattleDetails();
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
+  const fleeBattle = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.fakemon.fleeBattle();
+      await tx.wait();
+
+      await updateBattleView();
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
+  const endBattle = async () => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.fakemon.endBattle();
+      await tx.wait();
+
+      await updateBattleView();
+    } catch (error) {
+      // TODO: Show error as toast
+      console.error(error.error.data.message);
+    }
+  };
+
+  const attackFakemon = async (attackerId) => {
+    if (!isBcDefined) return;
+
+    try {
+      const tx = await blockchain.fakemon.attack(attackerId);
+      await tx.wait();
+
+      await updateBattleView();
+    } catch (error) {
+      showError(error);
+    }
+  };
+
   // Connect our app with blockchain
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
@@ -260,6 +362,7 @@ function App() {
       if (isRegistered) {
         await fetchFakemonsByUser();
         await fetchGyms();
+        await getCurrentBattleDetails();
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -310,6 +413,7 @@ function App() {
             <Gym
               userAddress={blockchain.signerAddress}
               fetchFakemonsByGym={fetchFakemonsByGym}
+              fakemonsInGym={fakemonsInGym.fakemons}
               gyms={gyms}
             />
           }
@@ -322,6 +426,12 @@ function App() {
               fakemonsInUserSquad={fakemons}
               gyms={gyms}
               fetchFakemonsByGym={fetchFakemonsByGym}
+              fakemonsInGym={fakemonsInGym.fakemons}
+              attackFakemon={attackFakemon}
+              startBattle={startBattle}
+              fleeBattle={fleeBattle}
+              endBattle={endBattle}
+              currentBattle={currentBattle}
             />
           }
         />

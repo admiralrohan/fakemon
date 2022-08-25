@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 
-export function Gym({ userAddress, fetchFakemonsByGym, gyms }) {
-  const [fakemonsInGym, setFakemonsInGym] = useState([]);
-
+export function Gym({ userAddress, fetchFakemonsByGym, gyms, fakemonsInGym }) {
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
@@ -16,8 +14,7 @@ export function Gym({ userAddress, fetchFakemonsByGym, gyms }) {
 
   useEffect(() => {
     (async () => {
-      const fakemonList = await fetchFakemonsByGym(gymId);
-      if (fakemonList) setFakemonsInGym(fakemonList);
+      await fetchFakemonsByGym(gymId);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress]);
