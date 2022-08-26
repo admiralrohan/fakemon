@@ -1,29 +1,94 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
-const hre = require("hardhat");
+const fs = require("fs");
+const {
+  INITIAL_BALANCE,
+  RESERVED_NFTS,
+  NFT_FEE,
+  NFTS_PER_GYM,
+  BATTLE_DURATION,
+  HEAL_FEE,
+} = require("../constants/constants");
+const { testHelpers } = require("../utils/helper");
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+async function deployContracts(network) {
+  // We get the contracts to deploy
+  const Token = await hre.ethers.getContractFactory("Fmon");
+  const Fakemon = await hre.ethers.getContractFactory("Fakemon");
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  const TokenContract = await Token.deploy();
+  const FakemonContract = await Fakemon.deploy(
+    TokenContract.address,
+    INITIAL_BALANCE,
+    RESERVED_NFTS,
+    NFT_FEE,
+    NFTS_PER_GYM,
+    BATTLE_DURATION,
+    HEAL_FEE
+  );
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  console.log("Token contract deployed to:", TokenContract.address);
+  console.log("Fakemon contract deployed to:", FakemonContract.address);
 
-  await lock.deployed();
+  // To prevent external people to mint new tokens
+  await TokenContract.transferOwnership(FakemonContract.address);
+  console.log("Token contract's owner changed to Fakemon contract");
 
-  console.log("Lock with 1 ETH deployed to:", lock.address);
+  // Copy contract details to frontend directory
+  const TokenArtifact = hre.artifacts.readArtifactSync("Fmon");
+  const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
+
+  // We will have one deployment for one network at a time
+  // Using different folders for different networks eg. localhost, rinkeby, etc
+  // Otherwise during local development previous artifact from different network will be overwritten
+  // And push the artifacts in git
+  const contractDir =
+    __dirname + "/../frontend/src/artifacts/contracts/" + network;
+  if (!fs.existsSync(contractDir))
+    fs.mkdirSync(contractDir, { recursive: true });
+
+  fs.writeFileSync(
+    contractDir + "/fmon.json",
+    JSON.stringify(
+      { address: TokenContract.address, abi: TokenArtifact.abi },
+      undefined,
+      2
+    )
+  );
+  fs.writeFileSync(
+    contractDir + "/fakemon.json",
+    JSON.stringify(
+      { address: FakemonContract.address, abi: FakemonArtifact.abi },
+      undefined,
+      2
+    )
+  );
+
+  console.log("Save contract artifacts in Frontend folder");
+
+  if (network === "localhost") {
+    await loadDummyData(TokenContract, FakemonContract);
+    console.log("Dummy data loaded in blockchain");
+  }
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// Used during development. To quickly prepare FE with some data.
+async function loadDummyData(TokenContract, FakemonContract) {
+  const [user1, user2] = await ethers.getSigners();
+  const { registerUser, mintNewNfts, createNewGym } = testHelpers(
+    FakemonContract,
+    TokenContract,
+    user1,
+    user2
+  );
+
+  await registerUser(user1);
+  await registerUser(user2);
+
+  await mintNewNfts(5, user1);
+  await mintNewNfts(3, user2);
+
+  await createNewGym([RESERVED_NFTS + 3, RESERVED_NFTS + 4], user1);
+  await createNewGym([RESERVED_NFTS + 5], user1);
+  await createNewGym([RESERVED_NFTS + 9, RESERVED_NFTS + 10], user2);
+}
+
+module.exports = { deployContracts };
