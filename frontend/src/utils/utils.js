@@ -1,7 +1,5 @@
 import styled from "@emotion/styled";
 import { ethers } from "ethers";
-import TokenContract from "../artifacts/contracts/fmon.json";
-import FakemonContract from "../artifacts/contracts/fakemon.json";
 
 export const CardText = styled.p`
   margin-bottom: 0;
@@ -14,6 +12,16 @@ export const getBlockchain = () =>
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const signerAddress = await signer.getAddress();
+
+      const network = process.env.REACT_APP_NETWORK
+        ? process.env.REACT_APP_NETWORK
+        : "localhost";
+      const TokenContract = await import(
+        `../artifacts/contracts/${network}/fmon.json`
+      );
+      const FakemonContract = await import(
+        `../artifacts/contracts/${network}/fakemon.json`
+      );
 
       const token = new ethers.Contract(
         TokenContract.address,

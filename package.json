@@ -1,11 +1,12 @@
 {
   "name": "fakemon",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pokemon type turn-based battle game on-chain",
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test --grep Fakemon",
-    "deploy": "npx hardhat run scripts/deploy.js --network localhost"
+    "deploy": "npx hardhat deploy --network localhost",
+    "deploy-rinkeby": "npx hardhat deploy --network rinkeby"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
   },
   "dependencies": {
     "@chainlink/contracts": "^0.4.2",
-    "@openzeppelin/contracts": "^4.7.2"
+    "@openzeppelin/contracts": "^4.7.2",
+    "dotenv": "^16.0.1"
   }
 }

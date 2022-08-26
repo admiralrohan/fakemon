@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
 const { NFT_FEE, RESERVED_NFTS } = require("../constants/constants");
 
 function testHelpers(FakemonContract, TokenContract, user1, user2) {
