@@ -35,7 +35,8 @@ describe("Fakemon Contract", () => {
     );
 
     // To prevent external people to mint new tokens
-    TokenContract.transferOwnership(FakemonContract.address);
+    const tx = await TokenContract.transferOwnership(FakemonContract.address);
+    await tx.wait();
 
     ({ registerUser, mintNewNfts, createNewGym, checkGymIdInNftStatsMapping } =
       testHelpers(FakemonContract, TokenContract, user1, user2));

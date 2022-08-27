@@ -29,7 +29,8 @@ async function deployContracts(network) {
   console.log("Fakemon contract deployed to:", FakemonContract.address);
 
   // To prevent external people to mint new tokens
-  await TokenContract.transferOwnership(FakemonContract.address);
+  const tx = await TokenContract.transferOwnership(FakemonContract.address);
+  await tx.wait();
   console.log("Token contract's owner changed to Fakemon contract");
 
   // Copy contract details to frontend directory
