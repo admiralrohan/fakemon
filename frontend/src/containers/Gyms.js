@@ -11,13 +11,7 @@ export function Gyms({ userAddress, gyms, fakemons, createGym, isRegistered }) {
 
   const gymList = gyms.map((gym) => (
     <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
-      <Card.Body
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
-        }}
-      >
+      <Card.Body className="d-flex justify-content-between">
         <Card.Title>
           Gym #{gym.id}{" "}
           {gym.owner === userAddress && <span className="fs-6">(Mine)</span>}
