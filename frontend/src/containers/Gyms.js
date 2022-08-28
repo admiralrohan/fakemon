@@ -5,8 +5,16 @@ import { useState } from "react";
 import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { AlertLayout } from "../components/AlertLayout";
+import { ButtonWithLoader } from "../components/ButtonWithLoader";
 
-export function Gyms({ userAddress, gyms, fakemons, createGym, isRegistered }) {
+export function Gyms({
+  userAddress,
+  gyms,
+  fakemons,
+  createGym,
+  isRegistered,
+  showLoader,
+}) {
   const [showModal, setShowModal] = useState(false);
 
   const gymList = gyms.map((gym) => (
@@ -27,9 +35,13 @@ export function Gyms({ userAddress, gyms, fakemons, createGym, isRegistered }) {
   const afterWalletImportView = (
     <>
       <div className="text-end">
-        <Button size="sm" onClick={() => setShowModal(true)}>
+        <ButtonWithLoader
+          showLoader={showLoader.createGym}
+          size="sm"
+          onClick={() => setShowModal(true)}
+        >
           Create gym
-        </Button>
+        </ButtonWithLoader>
       </div>
       <Card.Title className="mb-3 text-center">Gyms</Card.Title>
 

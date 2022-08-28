@@ -18,6 +18,14 @@ const DEFAULT_BLOCKCHAIN_OBJ = {
 
 function App() {
   const [blockchain, setBlockchain] = useState(DEFAULT_BLOCKCHAIN_OBJ);
+  const [showLoader, setShowLoader] = useState({
+    mintFakemon: false,
+    createGym: false,
+    battle: false,
+    attackFakemon: false,
+    fleeBattle: false,
+  });
+
   // eg. "5 FMON" in string format
   const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
@@ -42,6 +50,10 @@ function App() {
   const showToastMessage = (message) => {
     setToastMessage(message);
     setToastCount((curr) => curr + 1);
+  };
+
+  const setIndividualShowLoader = (loaderStatus) => {
+    setShowLoader({ ...showLoader, ...loaderStatus });
   };
 
   const showError = (error) => {
@@ -217,6 +229,7 @@ function App() {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ mintFakemon: true });
       let tx = await blockchain.token.approve(
         blockchain.fakemon.address,
         NFT_FEE
@@ -233,12 +246,14 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ mintFakemon: false });
   };
 
   const createGym = async (selectedIds) => {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ createGym: true });
       const tx = await blockchain.fakemon.createNewGym(selectedIds);
       await tx.wait();
 
@@ -250,6 +265,7 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ createGym: false });
   };
 
   const updateBattleView = async () => {
@@ -262,6 +278,7 @@ function App() {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ battle: true });
       const tx = await blockchain.fakemon.startBattle(gymId);
       await tx.wait();
 
@@ -269,12 +286,14 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ battle: false });
   };
 
   const fleeBattle = async () => {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ fleeBattle: true });
       const tx = await blockchain.fakemon.fleeBattle();
       await tx.wait();
 
@@ -282,12 +301,14 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ fleeBattle: false });
   };
 
   const endBattle = async () => {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ battle: true });
       const tx = await blockchain.fakemon.endBattle();
       await tx.wait();
 
@@ -295,12 +316,14 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ battle: false });
   };
 
   const attackFakemon = async (attackerId) => {
     if (!isBcDefined) return;
 
     try {
+      setIndividualShowLoader({ attackFakemon: true });
       const tx = await blockchain.fakemon.attack(attackerId);
       await tx.wait();
 
@@ -308,6 +331,7 @@ function App() {
     } catch (error) {
       showError(error);
     }
+    setIndividualShowLoader({ attackFakemon: false });
   };
 
   // Connect our app with blockchain
@@ -379,6 +403,7 @@ function App() {
               mintFakemonHandler={mintFakemon}
               getTokenHandler={getToken}
               fakemons={fakemons}
+              showLoader={showLoader}
             />
           }
         />
@@ -392,6 +417,7 @@ function App() {
               fakemons={fakemons}
               createGym={createGym}
               isRegistered={isRegistered}
+              showLoader={showLoader}
             />
           }
         />
@@ -403,6 +429,7 @@ function App() {
               fetchFakemonsByGym={fetchFakemonsByGym}
               fakemonsInGym={fakemonsInGym.fakemons}
               gyms={gyms}
+              showLoader={showLoader}
             />
           }
         />
@@ -420,6 +447,7 @@ function App() {
               fleeBattle={fleeBattle}
               endBattle={endBattle}
               currentBattle={currentBattle}
+              showLoader={showLoader}
             />
           }
         />

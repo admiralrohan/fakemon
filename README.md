@@ -12,13 +12,13 @@ A pokemon type turn-based battle game on-chain.
 
 ### Upcoming features
 
-- Page loaders in FE
 - Battle history
 - Close gym (Would free up staked NFTs)
 - Buying token
 - Dynamic NFT stats
 - Healing using tokens, and better tokenomics
 - Playing game without using metamask (using meta transactions)
+- Moving NFT metadata to IPFS
 
 ## How to run locally
 
