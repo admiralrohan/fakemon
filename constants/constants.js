@@ -2,7 +2,7 @@ const INITIAL_BALANCE = 50;
 const RESERVED_NFTS = 100;
 const NFT_FEE = 5;
 const NFTS_PER_GYM = 3;
-const BATTLE_DURATION = 60; // 1 min
+const BATTLE_DURATION = 300; // 5 mins
 const HEAL_FEE = 1;
 
 module.exports = {
