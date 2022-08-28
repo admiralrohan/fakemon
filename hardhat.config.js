@@ -15,6 +15,7 @@ module.exports = {
   solidity: "0.8.9",
   defaultNetwork: "localhost",
   networks: {
+    hardhat: { mining: { auto: false, interval: 1000 } },
     rinkeby: {
       url: PROVIDER_URL,
       accounts: [RINKEBY_PRIVATE_KEY],
