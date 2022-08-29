@@ -3,6 +3,7 @@ import Card from "react-bootstrap/Card";
 import { CardText } from "../utils/utils";
 import { Link } from "react-router-dom";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { ButtonWithLoader } from "../components/ButtonWithLoader";
 
 export function Profile({
   userAddress,
@@ -12,6 +13,7 @@ export function Profile({
   mintFakemonHandler,
   getTokenHandler,
   fakemons,
+  showLoader,
 }) {
   // TODO: Fetch details by address
   const profileDetails = {
@@ -54,13 +56,14 @@ export function Profile({
                 </Button>
               </Link>
 
-              <Button
+              <ButtonWithLoader
+                showLoader={showLoader.mintFakemon}
                 size="sm"
                 className="mt-2 ms-2"
                 onClick={mintFakemonHandler}
               >
                 Mint fakemon
-              </Button>
+              </ButtonWithLoader>
 
               <Button size="sm" className="mt-2 ms-2" onClick={getTokenHandler}>
                 Get token

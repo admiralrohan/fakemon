@@ -13,8 +13,8 @@ task("deploy", "Deploy all contracts").setAction(async () => {
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   solidity: "0.8.9",
-  defaultNetwork: "localhost",
   networks: {
+    hardhat: { mining: { auto: true, interval: 0 } },
     rinkeby: {
       url: PROVIDER_URL,
       accounts: [RINKEBY_PRIVATE_KEY],

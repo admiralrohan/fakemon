@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { ButtonWithLoader } from "../components/ButtonWithLoader";
 
 export function Battle({
   userAddress,
@@ -16,6 +17,7 @@ export function Battle({
   attackFakemon,
   currentBattle,
   fakemonsInGym,
+  showLoader,
 }) {
   const [selectedFakemon, setSelectedFakemon] = useState(null);
 
@@ -50,28 +52,25 @@ export function Battle({
           {showUseButton && (
             <div>
               {!selectedFakemon && (
-                <span
+                <ButtonWithLoader
+                  size="sm"
+                  className="text-end"
+                  disabled={fakemon.hp === "0" || showLoader.attackFakemon}
                   title={fakemon.hp === "0" ? "Don't have HP to fight" : null}
+                  onClick={() => setSelectedFakemon(fakemon.id)}
                 >
-                  <Button
-                    size="sm"
-                    className="text-end"
-                    disabled={fakemon.hp === "0"}
-                    onClick={() => setSelectedFakemon(fakemon.id)}
-                  >
-                    Use
-                  </Button>
-                </span>
+                  Use
+                </ButtonWithLoader>
               )}
 
               {selectedFakemon === fakemon.id && (
-                <Button
+                <ButtonWithLoader
                   size="sm"
                   className="text-end"
                   onClick={() => setSelectedFakemon(null)}
                 >
                   De-select
-                </Button>
+                </ButtonWithLoader>
               )}
             </div>
           )}
@@ -86,37 +85,48 @@ export function Battle({
         <>
           <Card.Title className="mb-2 mt-3">You Won!</Card.Title>
 
-          <Button className="me-2" onClick={() => endBattle(gymId)}>
+          <ButtonWithLoader
+            showLoader={showLoader.battle}
+            className="me-2"
+            onClick={() => endBattle(gymId)}
+          >
             End Battle
-          </Button>
+          </ButtonWithLoader>
         </>
       ) : currentBattle.gymId === "0" ? (
-        <Button className="me-2" onClick={() => startBattle(gymId)}>
+        <ButtonWithLoader
+          showLoader={showLoader.battle}
+          className="me-2"
+          onClick={() => startBattle(gymId)}
+        >
           Start Battle
-        </Button>
+        </ButtonWithLoader>
       ) : (
         <div>
-          <span title={!selectedFakemon ? "Select an fakemon to attack" : null}>
-            <Button
-              className="me-2"
-              disabled={!selectedFakemon}
-              onClick={() => {
-                attackFakemon(selectedFakemon);
-                setSelectedFakemon(null); // To prevent highlighted button "De-select" after attack
-              }}
-            >
-              Attack
-            </Button>
-          </span>
+          {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
+          <ButtonWithLoader
+            showLoader={showLoader.attackFakemon}
+            className="me-2"
+            disabled={!selectedFakemon}
+            title={!selectedFakemon ? "Select an fakemon to attack" : null}
+            onClick={() => {
+              attackFakemon(selectedFakemon);
+              setSelectedFakemon(null); // To prevent highlighted button "De-select" after attack
+            }}
+          >
+            Attack
+          </ButtonWithLoader>
 
           {/* Flee would save remaining energy, but the user will lose the match on record */}
-          <span
+          {/* You shouldn't flee while an attack is ongoing, so added extra condition for `disabled` */}
+          <ButtonWithLoader
+            showLoader={showLoader.fleeBattle}
+            disabled={selectedFakemon || showLoader.attackFakemon}
             title={!selectedFakemon ? null : "De-select an fakemons to flee"}
+            onClick={() => fleeBattle()}
           >
-            <Button disabled={selectedFakemon} onClick={() => fleeBattle()}>
-              Flee
-            </Button>
-          </span>
+            Flee
+          </ButtonWithLoader>
         </div>
       )}
     </>

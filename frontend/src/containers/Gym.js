@@ -5,7 +5,13 @@ import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 
-export function Gym({ userAddress, fetchFakemonsByGym, gyms, fakemonsInGym }) {
+export function Gym({
+  userAddress,
+  fetchFakemonsByGym,
+  gyms,
+  fakemonsInGym,
+  showLoader,
+}) {
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
