@@ -19,6 +19,9 @@ export function Battle({
   fakemonsInGym,
   showLoader,
 }) {
+  const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
+    (fakemon) => fakemon.gymId === "0"
+  );
   const [selectedFakemon, setSelectedFakemon] = useState(null);
 
   const { id: gymId } = useParams();
@@ -150,9 +153,9 @@ export function Battle({
       <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
 
       {/* Only non-staked fakemons can be used for attack */}
-      {fakemonsInUserSquad
-        .filter((fakemon) => fakemon.gymId !== "0")
-        .map((fakemon) => getFakemonView(fakemon, true))}
+      {nonStakedFakemonsInUserSquad.map((fakemon) =>
+        getFakemonView(fakemon, true)
+      )}
 
       <Card.Subtitle className="text-center my-3">Gym squad</Card.Subtitle>
 
