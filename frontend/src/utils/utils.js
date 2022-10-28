@@ -5,8 +5,8 @@ export const CardText = styled.p`
   margin-bottom: 0;
 `;
 
-export const getBlockchain = () =>
-  new Promise(async (resolve, reject) => {
+export const getBlockchain = () => {
+  return new Promise(async (resolve, reject) => {
     if (window.ethereum) {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -43,3 +43,4 @@ export const getBlockchain = () =>
       fakemon: undefined,
     });
   });
+};

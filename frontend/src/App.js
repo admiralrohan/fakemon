@@ -8,6 +8,8 @@ import { Battle } from "./containers/Battle";
 import { getBlockchain } from "./utils/utils";
 import { ethers } from "ethers";
 import { Toastr } from "./components/Toast";
+import { useTokenBalance } from "./utils/data.service";
+import { useQueryClient } from "@tanstack/react-query";
 
 const NFT_FEE = ethers.utils.parseEther("5");
 const DEFAULT_BLOCKCHAIN_OBJ = {
@@ -27,11 +29,14 @@ function App() {
   });
 
   // eg. "5 FMON" in string format
-  const [tokenBalance, setTokenBalance] = useState("Loading...");
+  // const [tokenBalance, setTokenBalance] = useState("Loading...");
   const [isRegistered, setIsRegistered] = useState(false);
   const [fakemons, setFakemons] = useState([]);
   const [gyms, setGyms] = useState([]);
   const [currentBattle, setCurrentBattle] = useState({});
+
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
 
   // To show fakemons on gym and battle page
   const [fakemonsInGym, setFakemonsInGym] = useState({
@@ -46,6 +51,8 @@ function App() {
   // Login wallet address should match signer address
   const loginAddress = window.localStorage.getItem("loginAddress");
   const isBcDefined = Boolean(blockchain.signerAddress);
+
+  const { data: tokenBalance } = useTokenBalance(blockchain, isBcDefined);
 
   const showToastMessage = (message) => {
     setToastMessage(message);
@@ -69,6 +76,7 @@ function App() {
     showToastMessage(errorMessage);
   };
 
+  /** @deprecated */
   const fetchTokenBalance = async () => {
     if (!isBcDefined) return;
 
@@ -84,10 +92,10 @@ function App() {
       // 50000000000000000000 Tokens -> 50 FMON
       const balance = fullBalance / 10 ** decimals;
 
-      setTokenBalance(`${balance} ${tokenName}`);
+      // setTokenBalance(`${balance} ${tokenName}`);
     } catch (error) {
       showError(error);
-      setTokenBalance("Error fetching");
+      // setTokenBalance("Error fetching");
     }
   };
 
@@ -133,7 +141,7 @@ function App() {
       await tx.wait();
       setIsRegistered(true);
 
-      await fetchTokenBalance();
+      // await fetchTokenBalance();
       await fetchFakemonsByUser();
     } catch (error) {
       showError(error);
@@ -162,7 +170,7 @@ function App() {
         });
       }
 
-      console.log("Fakemons:", processedList);
+      // console.log("Fakemons:", processedList);
       setFakemons(processedList);
     } catch (error) {
       showError(error);
@@ -185,7 +193,7 @@ function App() {
         });
       }
 
-      console.log("Gyms:", processedList);
+      // console.log("Gyms:", processedList);
       setGyms(processedList);
     } catch (error) {
       showError(error);
@@ -239,7 +247,7 @@ function App() {
       tx = await blockchain.fakemon.mintNewNFT();
       await tx.wait();
 
-      await fetchTokenBalance();
+      // await fetchTokenBalance();
       await fetchFakemonsByUser();
 
       showToastMessage("New fakemon minted");
@@ -257,7 +265,7 @@ function App() {
       const tx = await blockchain.fakemon.createNewGym(selectedIds);
       await tx.wait();
 
-      await fetchTokenBalance();
+      // await fetchTokenBalance();
       await fetchFakemonsByUser();
       await fetchGyms();
 
@@ -362,7 +370,8 @@ function App() {
         // TODO: Handle chain id change
         setBlockchain(await getBlockchain());
         await checkIfUserRegistered();
-        await fetchTokenBalance();
+        // await fetchTokenBalance();
+        queryClient.invalidateQueries(["tokenBalance"]);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
