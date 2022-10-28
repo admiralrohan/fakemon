@@ -90,6 +90,7 @@ contract Fakemon is ERC1155 {
         require(!users[msg.sender], "User already registered");
         users[msg.sender] = true;
 
+        // TODO: Add `ether`
         // Upon registration assign 50 $FMON and 1 NFT
         TokenContract.mintToken(
             msg.sender,
