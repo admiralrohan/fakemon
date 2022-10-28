@@ -99,6 +99,12 @@ export function Battle({
       ) : currentBattle.gymId === "0" ? (
         <ButtonWithLoader
           showLoader={showLoader.battle}
+          disabled={nonStakedFakemonsInUserSquad.length === 0}
+          title={
+            nonStakedFakemonsInUserSquad.length === 0
+              ? "No pokemon to fight with"
+              : null
+          }
           className="me-2"
           onClick={() => startBattle(gymId)}
         >
@@ -151,6 +157,8 @@ export function Battle({
       )}
 
       <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
+
+      <AlertLayout content="You have no non-staked Fakemon" />
 
       {/* Only non-staked fakemons can be used for attack */}
       {nonStakedFakemonsInUserSquad.map((fakemon) =>
