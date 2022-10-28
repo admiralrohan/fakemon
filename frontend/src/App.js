@@ -45,7 +45,7 @@ function App() {
 
   // Login wallet address should match signer address
   const loginAddress = window.localStorage.getItem("loginAddress");
-  const isBcDefined = blockchain.signerAddress;
+  const isBcDefined = Boolean(blockchain.signerAddress);
 
   const showToastMessage = (message) => {
     setToastMessage(message);
