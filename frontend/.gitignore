@@ -22,5 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# artifacts in localhost (it is creating unnecessary git changes, and user will have to deploy contracts anyways on their machine)
-src/artifacts/contracts/localhost
+# Artifacts in hardhat network (it is creating unnecessary git changes, and user will have to deploy contracts anyways on their machine)
+src/artifacts/contracts/hardhat

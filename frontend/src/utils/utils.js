@@ -15,7 +15,7 @@ export const getBlockchain = () =>
 
       const network = process.env.REACT_APP_NETWORK
         ? process.env.REACT_APP_NETWORK
-        : "localhost";
+        : "hardhat";
       const TokenContract = await import(
         `../artifacts/contracts/${network}/fmon.json`
       );

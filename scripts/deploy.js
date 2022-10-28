@@ -38,11 +38,13 @@ async function deployContracts(network) {
   const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
 
   // We will have one deployment for one network at a time
-  // Using different folders for different networks eg. localhost, rinkeby, etc
+  // Using different folders for different networks eg. hardhat, rinkeby, etc
   // Otherwise during local development previous artifact from different network will be overwritten
   // And push the artifacts in git
   const contractDir =
-    __dirname + "/../frontend/src/artifacts/contracts/" + network;
+    __dirname +
+    "/../frontend/src/artifacts/contracts/" +
+    (network === "localhost" ? "hardhat" : network);
   if (!fs.existsSync(contractDir))
     fs.mkdirSync(contractDir, { recursive: true });
 
@@ -65,6 +67,7 @@ async function deployContracts(network) {
 
   console.log("Save contract artifacts in Frontend folder");
 
+  // We are deploying in Hardhat network, but in "localhost" mode. To clear confusion, see "Deployment" section of the project readme
   if (network === "localhost") {
     await loadDummyData(TokenContract, FakemonContract);
     console.log("Dummy data loaded in blockchain");
