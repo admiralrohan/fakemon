@@ -4,7 +4,6 @@ import { CardText } from "../utils/utils";
 import { Link } from "react-router-dom";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function Profile({
   userAddress,
@@ -25,28 +24,6 @@ export function Profile({
     tokenBalance,
     // joinedOn: "09-08-2022",
   };
-
-  // Access the client
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation(() => "there", {
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries(["todos"]);
-    },
-  });
-
-  const { isLoading, error, data, isFetching } = useQuery(["todos"], () =>
-    Promise.resolve("Hi")
-  );
-  // console.log(data);
-  // console.log(isLoading, error, data, isFetching);
-
-  // const { isLoading, error, data, isFetching } = useQuery(["repoData"], () =>
-  //   axios
-  //     .get("https://api.github.com/repos/tannerlinsley/react-query")
-  //     .then((res) => res.data)
-  // );
 
   const afterWalletImportView = (
     <>
