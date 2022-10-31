@@ -5,11 +5,19 @@ import { Header } from "./components/Header";
 import { Gym } from "./containers/Gym";
 import { Profile } from "./containers/Profile";
 import { Battle } from "./containers/Battle";
-import { getBlockchain } from "./utils/utils";
+import { getBlockchain, useBlockchain } from "./utils/utils";
 import { ethers } from "ethers";
 import { Toastr } from "./components/Toast";
-import { useTokenBalance } from "./utils/data.service";
+import {
+  QueryKeys,
+  useCurrentBattle,
+  useFakemonsByUser,
+  useGyms,
+  useIsRegistered,
+  useTokenBalance,
+} from "./utils/data.service";
 import { useQueryClient } from "@tanstack/react-query";
+import { useCreateGym, useMintFakemon, useRegister } from "./utils/mutations";
 
 const NFT_FEE = ethers.utils.parseEther("5");
 const DEFAULT_BLOCKCHAIN_OBJ = {
@@ -19,7 +27,7 @@ const DEFAULT_BLOCKCHAIN_OBJ = {
 };
 
 function App() {
-  const [blockchain, setBlockchain] = useState(DEFAULT_BLOCKCHAIN_OBJ);
+  // const [blockchain, setBlockchain] = useState(DEFAULT_BLOCKCHAIN_OBJ);
   const [showLoader, setShowLoader] = useState({
     mintFakemon: false,
     createGym: false,
@@ -30,13 +38,10 @@ function App() {
 
   // eg. "5 FMON" in string format
   // const [tokenBalance, setTokenBalance] = useState("Loading...");
-  const [isRegistered, setIsRegistered] = useState(false);
-  const [fakemons, setFakemons] = useState([]);
-  const [gyms, setGyms] = useState([]);
-  const [currentBattle, setCurrentBattle] = useState({});
-
-  // Get QueryClient from the context
-  const queryClient = useQueryClient();
+  // const [isRegistered, setIsRegistered] = useState(false);
+  // const [fakemons, setFakemons] = useState([]);
+  // const [gyms, setGyms] = useState([]);
+  // const [currentBattle, setCurrentBattle] = useState({});
 
   // To show fakemons on gym and battle page
   const [fakemonsInGym, setFakemonsInGym] = useState({
@@ -50,9 +55,24 @@ function App() {
 
   // Login wallet address should match signer address
   const loginAddress = window.localStorage.getItem("loginAddress");
+
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
+  const [connected, setConnected] = useState(false);
+  const { data: blockchain } = useBlockchain(connected);
+  /** @deprecated */
   const isBcDefined = Boolean(blockchain.signerAddress);
 
-  const { data: tokenBalance } = useTokenBalance(blockchain, isBcDefined);
+  const { data: tokenBalance } = useTokenBalance();
+  const { data: isRegistered } = useIsRegistered();
+  const { data: fakemons } = useFakemonsByUser();
+  const { data: gyms } = useGyms();
+  const { data: currentBattle } = useCurrentBattle();
+
+  const { mutate: registerUser } = useRegister();
+  const { mutate: mintFakemon } = useMintFakemon();
+  const { mutate: createGym } = useCreateGym();
 
   const showToastMessage = (message) => {
     setToastMessage(message);
@@ -99,6 +119,7 @@ function App() {
     }
   };
 
+  /** @deprecated */
   const checkIfUserRegistered = async () => {
     if (!isBcDefined) return;
 
@@ -106,13 +127,14 @@ function App() {
       const isRegistered = await blockchain.fakemon.users(
         blockchain.signerAddress
       );
-      setIsRegistered(isRegistered);
+      // setIsRegistered(isRegistered);
     } catch (error) {
       showError(error);
-      setIsRegistered(false);
+      // setIsRegistered(false);
     }
   };
 
+  /** @deprecated */
   const getCurrentBattleDetails = async () => {
     if (!isBcDefined) return;
 
@@ -120,34 +142,38 @@ function App() {
       const rawCurrentBattle =
         await blockchain.fakemon.getCurrentBattleDetails();
 
-      setCurrentBattle({
-        id: rawCurrentBattle.id.toString(),
-        gymId: rawCurrentBattle.gymId.toString(),
-        expirationTime: new Date(rawCurrentBattle.expirationTime * 1000), // Converting sec to ms
-        isEnded: rawCurrentBattle.isEnded,
-        isWon: rawCurrentBattle.isWon,
-      });
+      // setCurrentBattle({
+      //   id: rawCurrentBattle.id.toString(),
+      //   gymId: rawCurrentBattle.gymId.toString(),
+      //   expirationTime: new Date(rawCurrentBattle.expirationTime * 1000), // Converting sec to ms
+      //   isEnded: rawCurrentBattle.isEnded,
+      //   isWon: rawCurrentBattle.isWon,
+      // });
     } catch (error) {
       showError(error);
-      setCurrentBattle({});
+      // setCurrentBattle({});
     }
   };
 
-  const registerUser = async () => {
-    if (!isBcDefined) return;
+  // const registerUser = async () => {
+  //   if (!isBcDefined) return;
 
-    try {
-      const tx = await blockchain.fakemon.registerUser();
-      await tx.wait();
-      setIsRegistered(true);
+  //   try {
+  //     const tx = await blockchain.fakemon.registerUser();
+  //     await tx.wait();
+  //     // setIsRegistered(true);
+  //     queryClient.setQueryData([QueryKeys.IS_REGISTERED], true);
 
-      // await fetchTokenBalance();
-      await fetchFakemonsByUser();
-    } catch (error) {
-      showError(error);
-    }
-  };
+  //     queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
+  //     queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  //     // await fetchTokenBalance();
+  //     // await fetchFakemonsByUser();
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  // };
 
+  /** @deprecated */
   // TODO: Simplify this logic
   const fetchFakemonsByUser = async () => {
     if (!isBcDefined) return;
@@ -171,12 +197,14 @@ function App() {
       }
 
       // console.log("Fakemons:", processedList);
-      setFakemons(processedList);
+      // setFakemons(processedList);
     } catch (error) {
       showError(error);
+      // setFakemons([]);
     }
   };
 
+  /** @deprecated */
   const fetchGyms = async () => {
     if (!isBcDefined) return;
 
@@ -194,12 +222,14 @@ function App() {
       }
 
       // console.log("Gyms:", processedList);
-      setGyms(processedList);
+      // setGyms(processedList);
     } catch (error) {
       showError(error);
+      // setGyms([]);
     }
   };
 
+  /** @deprecated */
   const fetchFakemonsByGym = async (gymId) => {
     if (!isBcDefined) return null;
 
@@ -233,53 +263,64 @@ function App() {
     showToastMessage("Coming soon");
   };
 
-  const mintFakemon = async () => {
-    if (!isBcDefined) return;
+  // const mintFakemon = async () => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ mintFakemon: true });
-      let tx = await blockchain.token.approve(
-        blockchain.fakemon.address,
-        NFT_FEE
-      );
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ mintFakemon: true });
+  //     let tx = await blockchain.token.approve(
+  //       blockchain.fakemon.address,
+  //       NFT_FEE
+  //     );
+  //     await tx.wait();
 
-      tx = await blockchain.fakemon.mintNewNFT();
-      await tx.wait();
+  //     tx = await blockchain.fakemon.mintNewNFT();
+  //     await tx.wait();
 
-      // await fetchTokenBalance();
-      await fetchFakemonsByUser();
+  //     // await fetchTokenBalance();
+  //     // await fetchFakemonsByUser();
+  //     queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE])
+  //     queryClient.invalidateQueries([QueryKeys.FAKEMONS])
 
-      showToastMessage("New fakemon minted");
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ mintFakemon: false });
-  };
+  //     showToastMessage("New fakemon minted");
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ mintFakemon: false });
+  // };
 
-  const createGym = async (selectedIds) => {
-    if (!isBcDefined) return;
+  // const createGym = async (selectedIds) => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ createGym: true });
-      const tx = await blockchain.fakemon.createNewGym(selectedIds);
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ createGym: true });
+  //     const tx = await blockchain.fakemon.createNewGym(selectedIds);
+  //     await tx.wait();
 
-      // await fetchTokenBalance();
-      await fetchFakemonsByUser();
-      await fetchGyms();
+  //     // await fetchTokenBalance();
+  //     // await fetchFakemonsByUser();
+  //     // await fetchGyms();
 
-      showToastMessage("New gym created");
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ createGym: false });
-  };
+  //     queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
+  //     queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  //     queryClient.invalidateQueries([QueryKeys.GYMS]);
+
+  //     showToastMessage("New gym created");
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ createGym: false });
+  // };
 
   const updateBattleView = async () => {
-    await getCurrentBattleDetails();
-    await fetchFakemonsByUser();
-    await fetchFakemonsByGym(currentBattle.gymId);
+    // await getCurrentBattleDetails();
+    // await fetchFakemonsByUser();
+    // await fetchFakemonsByGym(currentBattle.gymId);
+
+    queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+    queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+    //  TODO: How to pass on gymId?
+    queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
   };
 
   const startBattle = async (gymId) => {
@@ -290,7 +331,8 @@ function App() {
       const tx = await blockchain.fakemon.startBattle(gymId);
       await tx.wait();
 
-      await getCurrentBattleDetails();
+      queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+      // await getCurrentBattleDetails();
     } catch (error) {
       showError(error);
     }
@@ -346,9 +388,11 @@ function App() {
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
 
-    const bcDetails = await getBlockchain();
-    setBlockchain(bcDetails);
-    window.localStorage.setItem("loginAddress", bcDetails.signerAddress);
+    setConnected(true);
+    queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
+    // const bcDetails = await getBlockchain();
+    // setBlockchain(bcDetails);
+    // window.localStorage.setItem("loginAddress", bcDetails.signerAddress);
   };
 
   // It doesn't disconnect wallet with metamask
@@ -357,7 +401,9 @@ function App() {
   const detachWallet = () => {
     // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
     window.localStorage.removeItem("loginAddress");
-    setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
+    queryClient.setQueryData(QueryKeys.BLOCKCHAIN, DEFAULT_BLOCKCHAIN_OBJ);
+    // setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
+    // TODO: Fix
 
     showToastMessage("Wallet detached");
   };
@@ -368,10 +414,17 @@ function App() {
       if (loginAddress) {
         // TODO: Auto logout for account change in metamask
         // TODO: Handle chain id change
-        setBlockchain(await getBlockchain());
-        await checkIfUserRegistered();
+        // setBlockchain(await getBlockchain());
+        queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
+
+        // await checkIfUserRegistered();
         // await fetchTokenBalance();
-        queryClient.invalidateQueries(["tokenBalance"]);
+        queryClient.invalidateQueries([QueryKeys.IS_REGISTERED]);
+        queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
+
+        queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+        queryClient.invalidateQueries([QueryKeys.GYMS]);
+        queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -380,11 +433,15 @@ function App() {
   // Fetch these details if user already registered
   useEffect(() => {
     (async () => {
-      if (isRegistered) {
-        await fetchFakemonsByUser();
-        await fetchGyms();
-        await getCurrentBattleDetails();
-      }
+      // if (isRegistered) {
+      // console.log("Invalidating cache", !!blockchain.signerAddress);
+      // queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+      // queryClient.invalidateQueries([QueryKeys.GYMS]);
+      // queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+      // await fetchFakemonsByUser();
+      // await fetchGyms();
+      // await getCurrentBattleDetails();
+      // }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRegistered]);

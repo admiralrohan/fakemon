@@ -1,9 +1,17 @@
 import styled from "@emotion/styled";
+import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
+import { QueryKeys } from "./data.service";
 
 export const CardText = styled.p`
   margin-bottom: 0;
 `;
+
+const DEFAULT_BLOCKCHAIN_OBJ = {
+  signerAddress: undefined,
+  token: undefined,
+  fakemon: undefined,
+};
 
 export const getBlockchain = () => {
   return new Promise(async (resolve, reject) => {
@@ -34,13 +42,22 @@ export const getBlockchain = () => {
         signer
       );
 
+      // TODO: Calling thrice - 1 is due to React strict mode
+      // console.log("getBlockchain call");
       resolve({ signerAddress, token, fakemon });
     }
 
-    resolve({
-      signerAddress: undefined,
-      token: undefined,
-      fakemon: undefined,
-    });
+    resolve(DEFAULT_BLOCKCHAIN_OBJ);
   });
 };
+
+export function useBlockchain(shouldConnect = true) {
+  return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
+    enabled: !shouldConnect,
+    initialData: DEFAULT_BLOCKCHAIN_OBJ,
+    onSuccess: (data) => {
+      // console.log("useBlockchain", data);
+      window.localStorage.setItem("loginAddress", data.signerAddress);
+    },
+  });
+}
