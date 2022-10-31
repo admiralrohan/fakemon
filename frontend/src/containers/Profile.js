@@ -4,6 +4,7 @@ import { CardText } from "../utils/utils";
 import { Link } from "react-router-dom";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import { AlertLayout } from "../components/AlertLayout";
 
 export function Profile({
   userAddress,
@@ -83,29 +84,27 @@ export function Profile({
       </Card>
 
       {/* User squad */}
-      {isRegistered && (
-        <>
-          <h4 className="text-center mt-3 mb-2">Your Squad</h4>
-          {fakemons.map((fakemon) => (
-            <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
-              <Card.Body>
-                <Card.Title>Fakemon #{fakemon.id}</Card.Title>
-                <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
-                  <span>
-                    <strong>HP:</strong> {fakemon.hp}
-                  </span>
-                  <span>
-                    <strong>Attack:</strong> {fakemon.attack}
-                  </span>
-                  <span>
-                    <strong>Defense:</strong> {fakemon.defense}
-                  </span>
-                </Card.Subtitle>
-              </Card.Body>
-            </Card>
-          ))}
-        </>
-      )}
+      <h4 className="text-center mt-3 mb-2">Your Squad</h4>
+      {fakemons.length === 0 && <AlertLayout content="You have no fakemons" />}
+
+      {fakemons.map((fakemon) => (
+        <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
+          <Card.Body>
+            <Card.Title>Fakemon #{fakemon.id}</Card.Title>
+            <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
+              <span>
+                <strong>HP:</strong> {fakemon.hp}
+              </span>
+              <span>
+                <strong>Attack:</strong> {fakemon.attack}
+              </span>
+              <span>
+                <strong>Defense:</strong> {fakemon.defense}
+              </span>
+            </Card.Subtitle>
+          </Card.Body>
+        </Card>
+      ))}
     </>
   );
 

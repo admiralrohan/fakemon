@@ -77,32 +77,6 @@ export function useIsRegistered() {
   );
 }
 
-export function useCurrentBattle() {
-  const { data: blockchain } = useBlockchain();
-
-  return useQuery(
-    [QueryKeys.CURRENT_BATTLE],
-    async () => {
-      try {
-        const rawCurrentBattle =
-          await blockchain.fakemon.getCurrentBattleDetails();
-
-        return {
-          id: rawCurrentBattle.id.toString(),
-          gymId: rawCurrentBattle.gymId.toString(),
-          expirationTime: new Date(rawCurrentBattle.expirationTime * 1000), // Converting sec to ms
-          isEnded: rawCurrentBattle.isEnded,
-          isWon: rawCurrentBattle.isWon,
-        };
-      } catch (error) {
-        console.error(error.message);
-        return {};
-      }
-    },
-    { enabled: !!blockchain.signerAddress, initialData: {} }
-  );
-}
-
 export function useFakemonsByUser() {
   const { data: blockchain } = useBlockchain();
   // console.log(!!blockchain.signerAddress);
@@ -179,19 +153,12 @@ export function useFakemonsByGym(gymId) {
 
 export function useGyms() {
   const { data: blockchain } = useBlockchain();
-  const { data: isRegistered } = useIsRegistered();
-  console.log(
-    "Gym outside",
-    !!blockchain.signerAddress,
-    isRegistered,
-    !!blockchain.signerAddress && isRegistered
-  );
 
   return useQuery(
     [QueryKeys.GYMS],
     async () => {
       try {
-        console.log("Inside gym", blockchain.signerAddress);
+        // console.log("Inside gym", blockchain.signerAddress);
         const rawGymList = await blockchain.fakemon.getAllGyms();
 
         const processedList = [];
@@ -212,6 +179,33 @@ export function useGyms() {
         return [];
       }
     },
-    { enabled: !!blockchain.signerAddress && isRegistered, initialData: [] }
+    { enabled: !!blockchain.signerAddress, initialData: [] }
+  );
+}
+
+export function useCurrentBattle() {
+  const { data: blockchain } = useBlockchain();
+  const { data: isRegistered } = useIsRegistered();
+
+  return useQuery(
+    [QueryKeys.CURRENT_BATTLE],
+    async () => {
+      try {
+        const rawCurrentBattle =
+          await blockchain.fakemon.getCurrentBattleDetails();
+
+        return {
+          id: rawCurrentBattle.id.toString(),
+          gymId: rawCurrentBattle.gymId.toString(),
+          expirationTime: new Date(rawCurrentBattle.expirationTime * 1000), // Converting sec to ms
+          isEnded: rawCurrentBattle.isEnded,
+          isWon: rawCurrentBattle.isWon,
+        };
+      } catch (error) {
+        console.error(error.message);
+        return {};
+      }
+    },
+    { enabled: !!blockchain.signerAddress && isRegistered, initialData: {} }
   );
 }

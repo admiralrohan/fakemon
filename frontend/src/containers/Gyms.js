@@ -38,6 +38,8 @@ export function Gyms({
         <ButtonWithLoader
           showLoader={showLoader.createGym}
           size="sm"
+          disabled={!isRegistered}
+          title={!isRegistered ? "You need to register to create gym" : null}
           onClick={() => setShowModal(true)}
         >
           Create gym
@@ -45,15 +47,17 @@ export function Gyms({
       </div>
       <Card.Title className="mb-3 text-center">Gyms</Card.Title>
 
-      <CreateGymModal
-        show={showModal}
-        dismiss={() => setShowModal(false)}
-        close={(selectedIds) => {
-          setShowModal(false);
-          createGym(selectedIds);
-        }}
-        fakemons={fakemons}
-      />
+      {isRegistered && (
+        <CreateGymModal
+          show={showModal}
+          dismiss={() => setShowModal(false)}
+          close={(selectedIds) => {
+            setShowModal(false);
+            createGym(selectedIds);
+          }}
+          fakemons={fakemons}
+        />
+      )}
 
       {gyms.length === 0 ? <AlertLayout content="No gyms yet" /> : gymList}
     </>
@@ -61,13 +65,7 @@ export function Gyms({
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {!userAddress ? (
-        <BeforeWalletImportNotice />
-      ) : !isRegistered ? (
-        <AlertLayout content="Register to see gyms" />
-      ) : (
-        afterWalletImportView
-      )}
+      {!userAddress ? <BeforeWalletImportNotice /> : afterWalletImportView}
     </div>
   );
 }
