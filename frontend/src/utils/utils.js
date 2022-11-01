@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { useAuth } from "../context/auth-context";
 import { QueryKeys } from "./data.service";
@@ -8,7 +8,7 @@ export const CardText = styled.p`
   margin-bottom: 0;
 `;
 
-const DEFAULT_BLOCKCHAIN_OBJ = {
+export const DEFAULT_BLOCKCHAIN_OBJ = {
   signerAddress: undefined,
   token: undefined,
   fakemon: undefined,

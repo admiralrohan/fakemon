@@ -62,7 +62,6 @@ function App() {
 
   // const [connected, setConnected] = useState(false);
   // console.log("App `connected` =", connected);
-  const [walletConnected, setWalletConnected] = useAuth();
   const { data: blockchain } = useBlockchain();
   /** @deprecated */
   const isBcDefined = Boolean(blockchain.signerAddress);
@@ -388,31 +387,30 @@ function App() {
   };
 
   // Connect our app with blockchain
-  const connectWallet = async () => {
-    if (blockchain.signerAddress) return;
+  // const connectWallet = async () => {
+  //   if (blockchain.signerAddress) return;
 
-    setWalletConnected(true);
-    queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
-    // const bcDetails = await getBlockchain();
-    // setBlockchain(bcDetails);
-    // window.localStorage.setItem("loginAddress", bcDetails.signerAddress);
-  };
+  //   setWalletConnected(true);
+  //   queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
+  //   // const bcDetails = await getBlockchain();
+  //   // setBlockchain(bcDetails);
+  //   // window.localStorage.setItem("loginAddress", bcDetails.signerAddress);
+  // };
 
   // It doesn't disconnect wallet with metamask
   // User has to do it manually
   // This process here is to just forbid our app to connect with blockchain automatically
-  const detachWallet = () => {
-    // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
-    setWalletConnected(false);
+  // const detachWallet = () => {
+  //   // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
+  //   setWalletConnected(false);
 
-    window.localStorage.removeItem("loginAddress");
-    queryClient.setQueryData([QueryKeys.BLOCKCHAIN], DEFAULT_BLOCKCHAIN_OBJ);
-    // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], undefined);
-    // setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
-    // TODO: Fix
+  //   window.localStorage.removeItem("loginAddress");
+  //   queryClient.setQueryData([QueryKeys.BLOCKCHAIN], DEFAULT_BLOCKCHAIN_OBJ);
+  //   // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], undefined);
+  //   // setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
 
-    showToastMessage("Wallet detached");
-  };
+  //   showToastMessage("Wallet detached");
+  // };
 
   // Fetch initial data if already logged in
   useEffect(() => {
@@ -421,8 +419,10 @@ function App() {
         // TODO: Auto logout for account change in metamask
         // TODO: Handle chain id change
         // setBlockchain(await getBlockchain());
-        setWalletConnected(true);
-        queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
+
+        // // For automatically connecting to
+        // setWalletConnected(true);
+        // queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
 
         // await checkIfUserRegistered();
         // await fetchTokenBalance();
@@ -458,8 +458,8 @@ function App() {
       <Header
         walletAddress={blockchain.signerAddress}
         tokenBalance={tokenBalance}
-        connectWalletHandler={connectWallet}
-        detachWalletHandler={detachWallet}
+        // connectWalletHandler={connectWallet}
+        // detachWalletHandler={detachWallet}
       />
 
       <Routes>
