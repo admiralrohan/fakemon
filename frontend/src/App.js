@@ -18,6 +18,7 @@ import {
 } from "./utils/data.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { useCreateGym, useMintFakemon, useRegister } from "./utils/mutations";
+import { useAuth } from "./context/auth-context";
 
 const NFT_FEE = ethers.utils.parseEther("5");
 const DEFAULT_BLOCKCHAIN_OBJ = {
@@ -59,8 +60,10 @@ function App() {
   // Get QueryClient from the context
   const queryClient = useQueryClient();
 
-  const [connected, setConnected] = useState(false);
-  const { data: blockchain } = useBlockchain(connected);
+  // const [connected, setConnected] = useState(false);
+  // console.log("App `connected` =", connected);
+  const [walletConnected, setWalletConnected] = useAuth();
+  const { data: blockchain } = useBlockchain();
   /** @deprecated */
   const isBcDefined = Boolean(blockchain.signerAddress);
 
@@ -388,7 +391,7 @@ function App() {
   const connectWallet = async () => {
     if (blockchain.signerAddress) return;
 
-    setConnected(true);
+    setWalletConnected(true);
     queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
     // const bcDetails = await getBlockchain();
     // setBlockchain(bcDetails);
@@ -400,8 +403,11 @@ function App() {
   // This process here is to just forbid our app to connect with blockchain automatically
   const detachWallet = () => {
     // TODO: Fix bug, sometimes user needs to click twice on the button to see effect
+    setWalletConnected(false);
+
     window.localStorage.removeItem("loginAddress");
-    queryClient.setQueryData(QueryKeys.BLOCKCHAIN, DEFAULT_BLOCKCHAIN_OBJ);
+    queryClient.setQueryData([QueryKeys.BLOCKCHAIN], DEFAULT_BLOCKCHAIN_OBJ);
+    // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], undefined);
     // setBlockchain(DEFAULT_BLOCKCHAIN_OBJ);
     // TODO: Fix
 
@@ -415,6 +421,7 @@ function App() {
         // TODO: Auto logout for account change in metamask
         // TODO: Handle chain id change
         // setBlockchain(await getBlockchain());
+        setWalletConnected(true);
         queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
 
         // await checkIfUserRegistered();

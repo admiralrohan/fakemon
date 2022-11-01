@@ -1,12 +1,17 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 AuthContext.displayName = "AuthContext";
 
 export function AuthProvider(props) {
-  const value = { hi: true };
+  const [walletConnected, setWalletConnected] = useState(false);
 
-  return <AuthContext.Provider value={value} {...props} />;
+  return (
+    <AuthContext.Provider
+      value={[walletConnected, setWalletConnected]}
+      {...props}
+    />
+  );
 }
 
 export function useAuth() {

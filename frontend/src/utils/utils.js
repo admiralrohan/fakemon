@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
+import { useAuth } from "../context/auth-context";
 import { QueryKeys } from "./data.service";
 
 export const CardText = styled.p`
@@ -51,13 +52,24 @@ export const getBlockchain = () => {
   });
 };
 
-export function useBlockchain(shouldConnect = true) {
+export function useBlockchain() {
+  const [walletConnected] = useAuth();
+
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
-    enabled: !shouldConnect,
+    enabled: walletConnected,
     initialData: DEFAULT_BLOCKCHAIN_OBJ,
     onSuccess: (data) => {
-      // console.log("useBlockchain", data);
+      // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], data.signerAddress);
       window.localStorage.setItem("loginAddress", data.signerAddress);
     },
   });
 }
+
+// export function useSignerAddress() {
+//   const { data: blockchain } = useBlockchain();
+
+//   return useQuery([QueryKeys.SIGNER_ADDRESS], () => blockchain.signerAddress, {onSuccess: (data) => {
+//     window.localStorage.setItem("loginAddress", data.signerAddress);
+
+//   }});
+// }
