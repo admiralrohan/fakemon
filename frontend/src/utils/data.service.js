@@ -25,7 +25,7 @@ export function useTokenName() {
         return Promise.reject(error.message);
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData: "Loading..." }
+    { enabled: !!blockchain.signerAddress, placeholderData: "Loading..." }
   );
 }
 
@@ -56,7 +56,10 @@ export function useTokenBalance() {
         return Promise.reject(error.message);
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData: "Loading..." }
+    {
+      enabled: !!blockchain.signerAddress,
+      placeholderData: "Loading...",
+    }
   );
 }
 
@@ -74,7 +77,7 @@ export function useIsRegistered() {
         return Promise.reject(error.message);
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData: false }
+    { enabled: !!blockchain.signerAddress, placeholderData: false }
   );
 }
 
@@ -113,7 +116,7 @@ export function useFakemonsByUser() {
         return [];
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData: [] }
+    { enabled: !!blockchain.signerAddress, placeholderData: [] }
   );
 }
 
@@ -180,7 +183,7 @@ export function useGyms() {
         return [];
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData: [] }
+    { enabled: !!blockchain.signerAddress, placeholderData: [] }
   );
 }
 
@@ -207,6 +210,6 @@ export function useCurrentBattle() {
         return {};
       }
     },
-    { enabled: !!blockchain.signerAddress && isRegistered, initialData: {} }
+    { enabled: !!blockchain.signerAddress && isRegistered, placeholderData: {} }
   );
 }

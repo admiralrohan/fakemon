@@ -57,7 +57,7 @@ export function useBlockchain() {
 
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
     enabled: walletConnected,
-    initialData: DEFAULT_BLOCKCHAIN_OBJ,
+    placeholderData: DEFAULT_BLOCKCHAIN_OBJ,
     onSuccess: (data) => {
       // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], data.signerAddress);
       window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
