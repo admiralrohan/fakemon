@@ -163,7 +163,9 @@ export function Battle({
 
       <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
 
-      <AlertLayout content="You have no non-staked Fakemon" />
+      {nonStakedFakemonsInUserSquad.length === 0 && (
+        <AlertLayout content="You have no non-staked Fakemon" />
+      )}
 
       {/* Only non-staked fakemons can be used for attack */}
       {nonStakedFakemonsInUserSquad.map((fakemon) =>
