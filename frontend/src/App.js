@@ -471,22 +471,9 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
-
         <Route path="/profile" element={<Profile showLoader={showLoader} />} />
-
         <Route path="/gyms" element={<Gyms showLoader={showLoader} />} />
-        <Route
-          path="/gyms/:id"
-          element={
-            <Gym
-              userAddress={blockchain.signerAddress}
-              // fetchFakemonsByGym={fetchFakemonsByGym}
-              // fakemonsInGym={fakemonsInGym.fakemons}
-              gyms={gyms}
-              showLoader={showLoader}
-            />
-          }
-        />
+        <Route path="/gyms/:id" element={<Gym />} />
         <Route
           path="/gyms/:id/battle"
           element={
