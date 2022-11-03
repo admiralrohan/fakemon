@@ -11,13 +11,22 @@ import { Toastr } from "./components/Toast";
 import {
   QueryKeys,
   useCurrentBattle,
+  useFakemonsByGym,
   useFakemonsByUser,
   useGyms,
   useIsRegistered,
   useTokenBalance,
 } from "./utils/data.service";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCreateGym, useMintFakemon, useRegister } from "./utils/mutations";
+import {
+  useAttackFakemon,
+  useCreateGym,
+  useEndBattle,
+  useFleeBattle,
+  useMintFakemon,
+  useRegister,
+  useStartBattle,
+} from "./utils/mutations";
 import { useAuth } from "./context/auth-context";
 
 const NFT_FEE = ethers.utils.parseEther("5");
@@ -75,6 +84,10 @@ function App() {
   const { mutate: registerUser } = useRegister();
   const { mutate: mintFakemon } = useMintFakemon();
   const { mutate: createGym } = useCreateGym();
+  const { mutate: startBattle } = useStartBattle();
+  const { mutate: fleeBattle } = useFleeBattle();
+  const { mutate: endBattle } = useEndBattle();
+  const { mutate: attackFakemon } = useAttackFakemon();
 
   const showToastMessage = (message) => {
     setToastMessage(message);
@@ -314,77 +327,77 @@ function App() {
   //   setIndividualShowLoader({ createGym: false });
   // };
 
-  const updateBattleView = async () => {
-    // await getCurrentBattleDetails();
-    // await fetchFakemonsByUser();
-    // await fetchFakemonsByGym(currentBattle.gymId);
+  // const updateBattleView = async () => {
+  //   // await getCurrentBattleDetails();
+  //   // await fetchFakemonsByUser();
+  //   // await fetchFakemonsByGym(currentBattle.gymId);
 
-    queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-    queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
-    //  TODO: How to pass on gymId?
-    queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
-  };
+  //   queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  //   queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  //   //  TODO: How to pass on gymId?
+  //   queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
+  // };
 
-  const startBattle = async (gymId) => {
-    if (!isBcDefined) return;
+  // const startBattle = async (gymId) => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ battle: true });
-      const tx = await blockchain.fakemon.startBattle(gymId);
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ battle: true });
+  //     const tx = await blockchain.fakemon.startBattle(gymId);
+  //     await tx.wait();
 
-      queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-      // await getCurrentBattleDetails();
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ battle: false });
-  };
+  //     queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  //     // await getCurrentBattleDetails();
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ battle: false });
+  // };
 
-  const fleeBattle = async () => {
-    if (!isBcDefined) return;
+  // const fleeBattle = async () => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ fleeBattle: true });
-      const tx = await blockchain.fakemon.fleeBattle();
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ fleeBattle: true });
+  //     const tx = await blockchain.fakemon.fleeBattle();
+  //     await tx.wait();
 
-      await updateBattleView();
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ fleeBattle: false });
-  };
+  //     await updateBattleView();
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ fleeBattle: false });
+  // };
 
-  const endBattle = async () => {
-    if (!isBcDefined) return;
+  // const endBattle = async () => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ battle: true });
-      const tx = await blockchain.fakemon.endBattle();
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ battle: true });
+  //     const tx = await blockchain.fakemon.endBattle();
+  //     await tx.wait();
 
-      await updateBattleView();
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ battle: false });
-  };
+  //     await updateBattleView();
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ battle: false });
+  // };
 
-  const attackFakemon = async (attackerId) => {
-    if (!isBcDefined) return;
+  // const attackFakemon = async (attackerId) => {
+  //   if (!isBcDefined) return;
 
-    try {
-      setIndividualShowLoader({ attackFakemon: true });
-      const tx = await blockchain.fakemon.attack(attackerId);
-      await tx.wait();
+  //   try {
+  //     setIndividualShowLoader({ attackFakemon: true });
+  //     const tx = await blockchain.fakemon.attack(attackerId);
+  //     await tx.wait();
 
-      await updateBattleView();
-    } catch (error) {
-      showError(error);
-    }
-    setIndividualShowLoader({ attackFakemon: false });
-  };
+  //     await updateBattleView();
+  //   } catch (error) {
+  //     showError(error);
+  //   }
+  //   setIndividualShowLoader({ attackFakemon: false });
+  // };
 
   // Connect our app with blockchain
   // const connectWallet = async () => {
