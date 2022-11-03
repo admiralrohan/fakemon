@@ -1,24 +1,36 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { CardText } from "../utils/utils";
+import { CardText, useBlockchain } from "../utils/utils";
 import { Link } from "react-router-dom";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
 import { AlertLayout } from "../components/AlertLayout";
+import {
+  useFakemonsByUser,
+  useIsRegistered,
+  useTokenBalance,
+} from "../utils/data.service";
+import { useMintFakemon, useRegister } from "../utils/mutations";
 
-export function Profile({
-  userAddress,
-  isRegistered,
-  registerUserHandler,
-  tokenBalance,
-  mintFakemonHandler,
-  getTokenHandler,
-  fakemons,
-  showLoader,
-}) {
+export function Profile({ showLoader }) {
+  const {
+    data: { signerAddress: walletAddress },
+  } = useBlockchain();
+  const { data: isRegistered } = useIsRegistered();
+  const { data: tokenBalance } = useTokenBalance();
+  const { data: fakemons } = useFakemonsByUser();
+
+  const { mutate: registerUser } = useRegister();
+  const { mutate: mintFakemon } = useMintFakemon();
+
+  const getToken = () => {
+    // TODO: Implement
+    // showToastMessage("Coming soon");
+  };
+
   // TODO: Fetch details by address
   const profileDetails = {
-    userAddress,
+    userAddress: walletAddress,
     fakemons: fakemons.length,
     won: 1,
     totalMatches: 4,
@@ -61,12 +73,12 @@ export function Profile({
                 showLoader={showLoader.mintFakemon}
                 size="sm"
                 className="mt-2 ms-2"
-                onClick={mintFakemonHandler}
+                onClick={mintFakemon}
               >
                 Mint fakemon
               </ButtonWithLoader>
 
-              <Button size="sm" className="mt-2 ms-2" onClick={getTokenHandler}>
+              <Button size="sm" className="mt-2 ms-2" onClick={getToken}>
                 Get token
               </Button>
             </>
@@ -75,7 +87,7 @@ export function Profile({
               <CardText>
                 <strong>Status:</strong> Unregistered
               </CardText>
-              <Button size="sm" className="mt-2" onClick={registerUserHandler}>
+              <Button size="sm" className="mt-2" onClick={registerUser}>
                 Register now
               </Button>
             </>
@@ -110,7 +122,7 @@ export function Profile({
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {userAddress ? afterWalletImportView : <BeforeWalletImportNotice />}
+      {walletAddress ? afterWalletImportView : <BeforeWalletImportNotice />}
     </div>
   );
 }

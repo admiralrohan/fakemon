@@ -472,21 +472,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
 
-        <Route
-          path="/profile"
-          element={
-            <Profile
-              userAddress={blockchain.signerAddress}
-              isRegistered={isRegistered}
-              registerUserHandler={registerUser}
-              tokenBalance={tokenBalance}
-              mintFakemonHandler={mintFakemon}
-              getTokenHandler={getToken}
-              fakemons={fakemons}
-              showLoader={showLoader}
-            />
-          }
-        />
+        <Route path="/profile" element={<Profile showLoader={showLoader} />} />
 
         <Route
           path="/gyms"
