@@ -1,29 +1,33 @@
-import { useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { useFakemonsByGym } from "../utils/data.service";
 
 export function Gym({
   userAddress,
-  fetchFakemonsByGym,
+  // fetchFakemonsByGym,
   gyms,
-  fakemonsInGym,
+  // fakemonsInGym,
   showLoader,
 }) {
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
+  const {
+    data: { fakemons: fakemonsInGym },
+  } = useFakemonsByGym(gymId);
+
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
 
-  useEffect(() => {
-    (async () => {
-      await fetchFakemonsByGym(gymId);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress]);
+  // useEffect(() => {
+  //   (async () => {
+  //     await fetchFakemonsByGym(gymId);
+  //   })();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [userAddress]);
 
   const existingGymView = () => (
     <div>

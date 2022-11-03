@@ -54,10 +54,10 @@ function App() {
   // const [currentBattle, setCurrentBattle] = useState({});
 
   // To show fakemons on gym and battle page
-  const [fakemonsInGym, setFakemonsInGym] = useState({
-    id: "0",
-    fakemons: [],
-  });
+  // const [fakemonsInGym, setFakemonsInGym] = useState({
+  //   id: "0",
+  //   fakemons: [],
+  // });
 
   // To trigger toast showing for 2s
   const [toastCount, setToastCount] = useState(0);
@@ -78,6 +78,7 @@ function App() {
   const { data: tokenBalance } = useTokenBalance();
   const { data: isRegistered } = useIsRegistered();
   const { data: fakemons } = useFakemonsByUser();
+  // const { data: fakemonsInGym } = useFakemonsByGym();
   const { data: gyms } = useGyms();
   const { data: currentBattle } = useCurrentBattle();
 
@@ -266,10 +267,10 @@ function App() {
         });
       }
 
-      setFakemonsInGym({ id: gymId, fakemons: processedList });
+      // setFakemonsInGym({ id: gymId, fakemons: processedList });
     } catch (error) {
       showError(error);
-      setFakemonsInGym({ id: "0", fakemons: [] });
+      // setFakemonsInGym({ id: "0", fakemons: [] });
     }
   };
 
@@ -505,8 +506,8 @@ function App() {
           element={
             <Gym
               userAddress={blockchain.signerAddress}
-              fetchFakemonsByGym={fetchFakemonsByGym}
-              fakemonsInGym={fakemonsInGym.fakemons}
+              // fetchFakemonsByGym={fetchFakemonsByGym}
+              // fakemonsInGym={fakemonsInGym.fakemons}
               gyms={gyms}
               showLoader={showLoader}
             />
@@ -519,8 +520,8 @@ function App() {
               userAddress={blockchain.signerAddress}
               fakemonsInUserSquad={fakemons}
               gyms={gyms}
-              fetchFakemonsByGym={fetchFakemonsByGym}
-              fakemonsInGym={fakemonsInGym.fakemons}
+              // fetchFakemonsByGym={fetchFakemonsByGym}
+              // fakemonsInGym={fakemonsInGym.fakemons}
               attackFakemon={attackFakemon}
               startBattle={startBattle}
               fleeBattle={fleeBattle}

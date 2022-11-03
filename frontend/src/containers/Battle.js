@@ -10,13 +10,13 @@ export function Battle({
   userAddress,
   fakemonsInUserSquad,
   gyms,
-  fetchFakemonsByGym,
+  // fetchFakemonsByGym,
   startBattle,
   fleeBattle,
   endBattle,
   attackFakemon,
   currentBattle,
-  fakemonsInGym,
+  // fakemonsInGym,
   showLoader,
 }) {
   const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
@@ -27,15 +27,17 @@ export function Battle({
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
+  const fakemonsInGym = [];
+
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
 
-  useEffect(() => {
-    (async () => {
-      await fetchFakemonsByGym(gymId);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress]);
+  // useEffect(() => {
+  //   (async () => {
+  //     await fetchFakemonsByGym(gymId);
+  //   })();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [userAddress]);
 
   const getFakemonView = (fakemon, showUseButton = false) => (
     <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>

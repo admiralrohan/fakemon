@@ -119,11 +119,11 @@ export function useFakemonsByUser() {
 
 export function useFakemonsByGym(gymId) {
   const { data: blockchain } = useBlockchain();
-  const initialData = { id: "0", fakemons: [] };
+  const placeholderData = { id: "0", fakemons: [] };
 
   return useQuery(
-    [QueryKeys.FAKEMONS_IN_GYM],
-    async () => {
+    [QueryKeys.FAKEMONS_IN_GYM, gymId],
+    async ({ queryKey: [, gymId] }) => {
       try {
         const [ids, stats] = await blockchain.fakemon.getAllCharactersByGym(
           gymId
@@ -145,10 +145,10 @@ export function useFakemonsByGym(gymId) {
         return Promise.resolve({ id: gymId, fakemons: processedList });
       } catch (error) {
         // showError(error);
-        Promise.resolve(initialData);
+        return Promise.resolve(placeholderData);
       }
     },
-    { enabled: !!blockchain.signerAddress, initialData }
+    { enabled: !!blockchain.signerAddress, placeholderData }
   );
 }
 

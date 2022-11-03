@@ -22,6 +22,7 @@ export function useConnectWallet() {
 
         queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
         queryClient.invalidateQueries([QueryKeys.GYMS]);
+        queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
         queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
       },
     }
