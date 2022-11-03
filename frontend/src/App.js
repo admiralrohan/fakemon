@@ -453,12 +453,7 @@ function App() {
 
   return (
     <>
-      <Header
-        // walletAddress={blockchain.signerAddress}
-        tokenBalance={tokenBalance}
-        // connectWalletHandler={connectWallet}
-        // detachWalletHandler={detachWallet}
-      />
+      <Header />
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />

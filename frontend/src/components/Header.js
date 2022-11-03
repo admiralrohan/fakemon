@@ -5,15 +5,11 @@ import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { useConnectWallet, useDetachWallet } from "../utils/mutations";
 import { useEffect } from "react";
-import { LOCALSTORAGE_KEY } from "../utils/data.service";
+import { LOCALSTORAGE_KEY, useTokenBalance } from "../utils/data.service";
 
-export function Header({
-  // walletAddress,
-  tokenBalance,
-  // connectWalletHandler,
-  // detachWalletHandler,
-}) {
+export function Header() {
   const walletAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);
+  const { data: tokenBalance } = useTokenBalance();
   const { mutate: connectWallet } = useConnectWallet();
   const { mutate: detachWallet } = useDetachWallet();
 
