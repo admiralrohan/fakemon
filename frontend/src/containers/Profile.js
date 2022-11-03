@@ -28,16 +28,6 @@ export function Profile({ showLoader }) {
     // showToastMessage("Coming soon");
   };
 
-  // TODO: Fetch details by address
-  const profileDetails = {
-    userAddress: walletAddress,
-    fakemons: fakemons.length,
-    won: 1,
-    totalMatches: 4,
-    tokenBalance,
-    // joinedOn: "09-08-2022",
-  };
-
   const afterWalletImportView = (
     <>
       <Card>
@@ -45,19 +35,19 @@ export function Profile({ showLoader }) {
           <Card.Title>User Profile</Card.Title>
 
           <CardText>
-            <strong>Wallet address:</strong> {profileDetails.userAddress}
+            <strong>Wallet address:</strong> {walletAddress}
           </CardText>
           {isRegistered ? (
             <>
               <CardText>
-                <strong>No of fakemons:</strong> {profileDetails.fakemons}
+                <strong>No of fakemons:</strong> {fakemons.length}
               </CardText>
               {/* <CardText>
                 <strong>No of battles won:</strong> {profileDetails.won} of{" "}
                 {profileDetails.totalMatches}
               </CardText> */}
               <CardText>
-                <strong>Token balance:</strong> {profileDetails.tokenBalance}
+                <strong>Token balance:</strong> {tokenBalance}
               </CardText>
               {/* <CardText>
                 <strong>Joined on:</strong> {profileDetails.joinedOn}
