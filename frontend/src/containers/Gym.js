@@ -21,13 +21,6 @@ export function Gym() {
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
 
-  // useEffect(() => {
-  //   (async () => {
-  //     await fetchFakemonsByGym(gymId);
-  //   })();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [walletAddress]);
-
   const existingGymView = () => (
     <div>
       <Link to="/gyms">

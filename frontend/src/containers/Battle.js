@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
@@ -46,13 +46,6 @@ export function Battle({ showLoader }) {
 
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
-
-  // useEffect(() => {
-  //   (async () => {
-  //     await fetchFakemonsByGym(gymId);
-  //   })();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [walletAddress]);
 
   const getFakemonView = (fakemon, showUseButton = false) => (
     <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
