@@ -10,7 +10,7 @@ export const QueryKeys = {
   CURRENT_BATTLE: "currentBattle",
   FAKEMONS: "fakemons",
   GYMS: "gyms",
-  FAKEMONS_IN_GYM: "fakemonsInGym",
+  FAKEMONS_IN_GYM: "gym",
 };
 
 export function useTokenName() {

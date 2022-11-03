@@ -125,6 +125,7 @@ export function useStartBattle() {
   );
 }
 
+// TODO: Open a gym, then go to different battle page via URL
 const updateBattleView = async (queryClient) => {
   // await getCurrentBattleDetails();
   // await fetchFakemonsByUser();
