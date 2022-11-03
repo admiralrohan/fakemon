@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useBlockchain } from "./utils";
 
+export const LOCALSTORAGE_KEY = "walletAddress";
 export const QueryKeys = {
   BLOCKCHAIN: "blockchain",
   TOKEN_NAME: "tokenName",

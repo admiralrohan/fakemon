@@ -55,7 +55,7 @@ function App() {
   const [toastMessage, setToastMessage] = useState("");
 
   // Login wallet address should match signer address
-  const loginAddress = window.localStorage.getItem("loginAddress");
+  // const loginAddress = window.localStorage.getItem("loginAddress");
 
   // Get QueryClient from the context
   const queryClient = useQueryClient();
@@ -413,50 +413,48 @@ function App() {
   // };
 
   // Fetch initial data if already logged in
-  useEffect(() => {
-    (async () => {
-      if (loginAddress) {
-        // TODO: Auto logout for account change in metamask
-        // TODO: Handle chain id change
-        // setBlockchain(await getBlockchain());
-
-        // // For automatically connecting to
-        // setWalletConnected(true);
-        // queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
-
-        // await checkIfUserRegistered();
-        // await fetchTokenBalance();
-        queryClient.invalidateQueries([QueryKeys.IS_REGISTERED]);
-        queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
-
-        queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
-        queryClient.invalidateQueries([QueryKeys.GYMS]);
-        queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginAddress, blockchain.signerAddress]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (loginAddress) {
+  // TODO: Auto logout for account change in metamask
+  // TODO: Handle chain id change
+  // setBlockchain(await getBlockchain());
+  // // For automatically connecting to
+  // setWalletConnected(true);
+  // queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
+  // await checkIfUserRegistered();
+  // await fetchTokenBalance();
+  // After BC connected
+  // queryClient.invalidateQueries([QueryKeys.IS_REGISTERED]);
+  // queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
+  // queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  // queryClient.invalidateQueries([QueryKeys.GYMS]);
+  // queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  //   }
+  // })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loginAddress, blockchain.signerAddress]);
 
   // Fetch these details if user already registered
-  useEffect(() => {
-    (async () => {
-      // if (isRegistered) {
-      // console.log("Invalidating cache", !!blockchain.signerAddress);
-      // queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
-      // queryClient.invalidateQueries([QueryKeys.GYMS]);
-      // queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-      // await fetchFakemonsByUser();
-      // await fetchGyms();
-      // await getCurrentBattleDetails();
-      // }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isRegistered]);
+  // useEffect(() => {
+  //   (async () => {
+  // if (isRegistered) {
+  // console.log("Invalidating cache", !!blockchain.signerAddress);
+  // queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  // queryClient.invalidateQueries([QueryKeys.GYMS]);
+  // queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  // await fetchFakemonsByUser();
+  // await fetchGyms();
+  // await getCurrentBattleDetails();
+  // }
+  // })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isRegistered]);
 
   return (
     <>
       <Header
-        walletAddress={blockchain.signerAddress}
+        // walletAddress={blockchain.signerAddress}
         tokenBalance={tokenBalance}
         // connectWalletHandler={connectWallet}
         // detachWalletHandler={detachWallet}

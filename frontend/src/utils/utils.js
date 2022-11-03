@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { useAuth } from "../context/auth-context";
-import { QueryKeys } from "./data.service";
+import { LOCALSTORAGE_KEY, QueryKeys } from "./data.service";
 
 export const CardText = styled.p`
   margin-bottom: 0;
@@ -60,7 +60,7 @@ export function useBlockchain() {
     initialData: DEFAULT_BLOCKCHAIN_OBJ,
     onSuccess: (data) => {
       // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], data.signerAddress);
-      window.localStorage.setItem("loginAddress", data.signerAddress);
+      window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
     },
   });
 }

@@ -5,19 +5,21 @@ import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { useConnectWallet, useDetachWallet } from "../utils/mutations";
 import { useEffect } from "react";
+import { LOCALSTORAGE_KEY } from "../utils/data.service";
 
 export function Header({
-  walletAddress,
+  // walletAddress,
   tokenBalance,
   // connectWalletHandler,
   // detachWalletHandler,
 }) {
+  const walletAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);
   const { mutate: connectWallet } = useConnectWallet();
   const { mutate: detachWallet } = useDetachWallet();
 
-  // To automatically connect for existing user
+  // Automatically connect if user has logged in session from earlier
   useEffect(() => {
-    connectWallet();
+    if (walletAddress) connectWallet();
   }, [connectWallet, walletAddress]);
 
   return (
