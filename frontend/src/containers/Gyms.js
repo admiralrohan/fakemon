@@ -6,20 +6,18 @@ import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { AlertLayout } from "../components/AlertLayout";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
-import { useBlockchain } from "../utils/utils";
 import {
   useFakemonsByUser,
   useGyms,
   useIsRegistered,
 } from "../utils/data.service";
 import { useCreateGym } from "../utils/mutations";
+import { useAuth } from "../context/auth-context";
 
 export function Gyms({ showLoader }) {
   const [showModal, setShowModal] = useState(false);
 
-  const {
-    data: { signerAddress: walletAddress },
-  } = useBlockchain();
+  const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();
   const { data: fakemons } = useFakemonsByUser();
   const { data: gyms } = useGyms();

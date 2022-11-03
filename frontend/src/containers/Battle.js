@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import { useAuth } from "../context/auth-context";
 import {
   useCurrentBattle,
   useFakemonsByGym,
@@ -17,12 +18,9 @@ import {
   useFleeBattle,
   useStartBattle,
 } from "../utils/mutations";
-import { useBlockchain } from "../utils/utils";
 
 export function Battle({ showLoader }) {
-  const {
-    data: { signerAddress: walletAddress },
-  } = useBlockchain();
+  const { walletAddress } = useAuth();
   const { data: fakemonsInUserSquad } = useFakemonsByUser();
   const { data: gyms } = useGyms();
   const { data: currentBattle } = useCurrentBattle();

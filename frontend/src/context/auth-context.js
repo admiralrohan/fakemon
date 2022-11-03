@@ -5,13 +5,18 @@ AuthContext.displayName = "AuthContext";
 
 export function AuthProvider(props) {
   const [walletConnected, setWalletConnected] = useState(false);
+  /** Will be synced when fetching new blockchain instance. \
+   * Using this to avoid calling to whole blockchain instance in components. */
+  const [walletAddress, setWalletAddress] = useState(null);
 
-  return (
-    <AuthContext.Provider
-      value={[walletConnected, setWalletConnected]}
-      {...props}
-    />
-  );
+  const exportedMembers = {
+    walletConnected,
+    setWalletAddress,
+    walletAddress,
+    setWalletConnected,
+  };
+
+  return <AuthContext.Provider value={exportedMembers} {...props} />;
 }
 
 export function useAuth() {

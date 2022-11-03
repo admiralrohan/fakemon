@@ -3,15 +3,12 @@ import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { useAuth } from "../context/auth-context";
 import { useFakemonsByGym, useGyms } from "../utils/data.service";
-import { useBlockchain } from "../utils/utils";
 
 export function Gym() {
   const { id: gymId } = useParams();
-
-  const {
-    data: { signerAddress: walletAddress },
-  } = useBlockchain();
+  const { walletAddress } = useAuth();
   const { data: gyms } = useGyms();
   const {
     data: { fakemons: fakemonsInGym },

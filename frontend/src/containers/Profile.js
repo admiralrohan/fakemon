@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { CardText, useBlockchain } from "../utils/utils";
+import { CardText } from "../utils/utils";
 import { Link } from "react-router-dom";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
@@ -11,11 +11,10 @@ import {
   useTokenBalance,
 } from "../utils/data.service";
 import { useMintFakemon, useRegister } from "../utils/mutations";
+import { useAuth } from "../context/auth-context";
 
 export function Profile({ showLoader }) {
-  const {
-    data: { signerAddress: walletAddress },
-  } = useBlockchain();
+  const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();
   const { data: tokenBalance } = useTokenBalance();
   const { data: fakemons } = useFakemonsByUser();

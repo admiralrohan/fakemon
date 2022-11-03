@@ -6,9 +6,9 @@ import { useBlockchain } from "./utils";
 
 // Connect our app with blockchain
 export function useConnectWallet() {
-  const [, setWalletConnected] = useAuth();
+  const { setWalletConnected } = useAuth();
 
-  return useMutation(async () => {
+  return useMutation(() => {
     setWalletConnected(true);
   });
 }
@@ -18,10 +18,11 @@ export function useConnectWallet() {
 // This process here is to just forbid our app to connect with blockchain automatically
 export function useDetachWallet() {
   const queryClient = useQueryClient();
-  const [, setWalletConnected] = useAuth();
+  const { setWalletConnected, setWalletAddress } = useAuth();
 
   return useMutation(async () => {
     setWalletConnected(false);
+    setWalletAddress(null);
     queryClient.removeQueries([QueryKeys.BLOCKCHAIN]);
     window.localStorage.removeItem(LOCALSTORAGE_KEY);
   });

@@ -53,23 +53,14 @@ export const getBlockchain = () => {
 };
 
 export function useBlockchain() {
-  const [walletConnected] = useAuth();
+  const { walletConnected, setWalletAddress } = useAuth();
 
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
     enabled: walletConnected,
     placeholderData: DEFAULT_BLOCKCHAIN_OBJ,
     onSuccess: (data) => {
-      // queryClient.setQueryData([QueryKeys.SIGNER_ADDRESS], data.signerAddress);
+      setWalletAddress(data.signerAddress);
       window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
     },
   });
 }
-
-// export function useSignerAddress() {
-//   const { data: blockchain } = useBlockchain();
-
-//   return useQuery([QueryKeys.SIGNER_ADDRESS], () => blockchain.signerAddress, {onSuccess: (data) => {
-//     window.localStorage.setItem("loginAddress", data.signerAddress);
-
-//   }});
-// }
