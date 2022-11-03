@@ -476,21 +476,7 @@ function App() {
         <Route path="/gyms/:id" element={<Gym />} />
         <Route
           path="/gyms/:id/battle"
-          element={
-            <Battle
-              userAddress={blockchain.signerAddress}
-              fakemonsInUserSquad={fakemons}
-              gyms={gyms}
-              // fetchFakemonsByGym={fetchFakemonsByGym}
-              // fakemonsInGym={fakemonsInGym.fakemons}
-              attackFakemon={attackFakemon}
-              startBattle={startBattle}
-              fleeBattle={fleeBattle}
-              endBattle={endBattle}
-              currentBattle={currentBattle}
-              showLoader={showLoader}
-            />
-          }
+          element={<Battle showLoader={showLoader} />}
         />
       </Routes>
 

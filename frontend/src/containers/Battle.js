@@ -5,21 +5,33 @@ import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
-import { useFakemonsByGym } from "../utils/data.service";
+import {
+  useCurrentBattle,
+  useFakemonsByGym,
+  useFakemonsByUser,
+  useGyms,
+} from "../utils/data.service";
+import {
+  useAttackFakemon,
+  useEndBattle,
+  useFleeBattle,
+  useStartBattle,
+} from "../utils/mutations";
+import { useBlockchain } from "../utils/utils";
 
-export function Battle({
-  userAddress,
-  fakemonsInUserSquad,
-  gyms,
-  // fetchFakemonsByGym,
-  startBattle,
-  fleeBattle,
-  endBattle,
-  attackFakemon,
-  currentBattle,
-  // fakemonsInGym,
-  showLoader,
-}) {
+export function Battle({ showLoader }) {
+  const {
+    data: { signerAddress: walletAddress },
+  } = useBlockchain();
+  const { data: fakemonsInUserSquad } = useFakemonsByUser();
+  const { data: gyms } = useGyms();
+  const { data: currentBattle } = useCurrentBattle();
+
+  const { mutate: startBattle } = useStartBattle();
+  const { mutate: fleeBattle } = useFleeBattle();
+  const { mutate: endBattle } = useEndBattle();
+  const { mutate: attackFakemon } = useAttackFakemon();
+
   const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
     (fakemon) => fakemon.gymId === "0"
   );
@@ -33,14 +45,14 @@ export function Battle({
   } = useFakemonsByGym(gymId);
 
   // Disable link to battle page by default
-  const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
+  const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
 
   // useEffect(() => {
   //   (async () => {
   //     await fetchFakemonsByGym(gymId);
   //   })();
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [userAddress]);
+  // }, [walletAddress]);
 
   const getFakemonView = (fakemon, showUseButton = false) => (
     <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
@@ -181,7 +193,7 @@ export function Battle({
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
-      {!userAddress ? (
+      {!walletAddress ? (
         <BeforeWalletImportNotice />
       ) : !gymDetails ? (
         <AlertLayout content="Gym doesn't exist" />
