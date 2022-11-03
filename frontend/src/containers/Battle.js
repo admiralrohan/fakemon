@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import { useFakemonsByGym } from "../utils/data.service";
 
 export function Battle({
   userAddress,
@@ -27,7 +28,9 @@ export function Battle({
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
-  const fakemonsInGym = [];
+  const {
+    data: { fakemons: fakemonsInGym },
+  } = useFakemonsByGym(gymId);
 
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
