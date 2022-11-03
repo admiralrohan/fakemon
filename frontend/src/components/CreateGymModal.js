@@ -3,6 +3,9 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 
+/**
+ * Will show list of fakemons owned by user and non-staked fakemons can be chosen to create new gym.
+ */
 export function CreateGymModal({ show, dismiss, close, fakemons }) {
   const [selectedIds, setSelectedIds] = useState([]);
 

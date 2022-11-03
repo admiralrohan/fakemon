@@ -474,19 +474,7 @@ function App() {
 
         <Route path="/profile" element={<Profile showLoader={showLoader} />} />
 
-        <Route
-          path="/gyms"
-          element={
-            <Gyms
-              userAddress={blockchain.signerAddress}
-              gyms={gyms}
-              fakemons={fakemons}
-              createGym={createGym}
-              isRegistered={isRegistered}
-              showLoader={showLoader}
-            />
-          }
-        />
+        <Route path="/gyms" element={<Gyms showLoader={showLoader} />} />
         <Route
           path="/gyms/:id"
           element={

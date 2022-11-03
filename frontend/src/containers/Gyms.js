@@ -6,23 +6,32 @@ import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { AlertLayout } from "../components/AlertLayout";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import { useBlockchain } from "../utils/utils";
+import {
+  useFakemonsByUser,
+  useGyms,
+  useIsRegistered,
+} from "../utils/data.service";
+import { useCreateGym } from "../utils/mutations";
 
-export function Gyms({
-  userAddress,
-  gyms,
-  fakemons,
-  createGym,
-  isRegistered,
-  showLoader,
-}) {
+export function Gyms({ showLoader }) {
   const [showModal, setShowModal] = useState(false);
+
+  const {
+    data: { signerAddress: walletAddress },
+  } = useBlockchain();
+  const { data: isRegistered } = useIsRegistered();
+  const { data: fakemons } = useFakemonsByUser();
+  const { data: gyms } = useGyms();
+
+  const { mutate: createGym } = useCreateGym();
 
   const gymList = gyms.map((gym) => (
     <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
       <Card.Body className="d-flex justify-content-between">
         <Card.Title>
           Gym #{gym.id}{" "}
-          {gym.owner === userAddress && <span className="fs-6">(Mine)</span>}
+          {gym.owner === walletAddress && <span className="fs-6">(Mine)</span>}
         </Card.Title>
 
         <Link to={"/gyms/" + gym.id}>
@@ -65,7 +74,7 @@ export function Gyms({
 
   return (
     <div style={{ width: "500px", margin: "25px auto" }}>
-      {!userAddress ? <BeforeWalletImportNotice /> : afterWalletImportView}
+      {!walletAddress ? <BeforeWalletImportNotice /> : afterWalletImportView}
     </div>
   );
 }
