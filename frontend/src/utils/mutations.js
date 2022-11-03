@@ -2,31 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { useAuth } from "../context/auth-context";
 import { LOCALSTORAGE_KEY, QueryKeys } from "./data.service";
-import { DEFAULT_BLOCKCHAIN_OBJ, useBlockchain } from "./utils";
+import { useBlockchain } from "./utils";
 
 // Connect our app with blockchain
 export function useConnectWallet() {
-  const queryClient = useQueryClient();
   const [, setWalletConnected] = useAuth();
 
-  return useMutation(
-    async () => {
-      setWalletConnected(true);
-      queryClient.invalidateQueries([QueryKeys.BLOCKCHAIN]);
-    },
-    {
-      onSuccess: () => {
-        // Fetch details after connecting to blockchain instance
-        queryClient.invalidateQueries([QueryKeys.IS_REGISTERED]);
-        queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
-
-        queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
-        queryClient.invalidateQueries([QueryKeys.GYMS]);
-        queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
-        queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-      },
-    }
-  );
+  return useMutation(async () => {
+    setWalletConnected(true);
+  });
 }
 
 // It doesn't disconnect wallet with metamask
@@ -38,7 +22,7 @@ export function useDetachWallet() {
 
   return useMutation(async () => {
     setWalletConnected(false);
-    queryClient.setQueryData([QueryKeys.BLOCKCHAIN], DEFAULT_BLOCKCHAIN_OBJ);
+    queryClient.removeQueries([QueryKeys.BLOCKCHAIN]);
     window.localStorage.removeItem(LOCALSTORAGE_KEY);
   });
 }
