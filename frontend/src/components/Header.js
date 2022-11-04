@@ -3,9 +3,10 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
-import { useConnectWallet, useDetachWallet } from "../utils/mutations";
+import { useConnectWallet, useDetachWallet } from "../hooks/mutations";
 import { useEffect } from "react";
-import { LOCALSTORAGE_KEY, useTokenBalance } from "../utils/data.service";
+import { LOCALSTORAGE_KEY } from "../utils/utils";
+import { useTokenBalance } from "../hooks/queries";
 
 export function Header() {
   const walletAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);

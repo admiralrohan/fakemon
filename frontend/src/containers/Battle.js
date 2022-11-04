@@ -11,13 +11,13 @@ import {
   useFakemonsByGym,
   useFakemonsByUser,
   useGyms,
-} from "../utils/data.service";
+} from "../hooks/queries";
 import {
   useAttackFakemon,
   useEndBattle,
   useFleeBattle,
   useStartBattle,
-} from "../utils/mutations";
+} from "../hooks/mutations";
 
 export function Battle({ showLoader }) {
   const { walletAddress } = useAuth();

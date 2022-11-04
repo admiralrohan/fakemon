@@ -1,12 +1,4 @@
-import styled from "@emotion/styled";
-import { useQuery } from "@tanstack/react-query";
 import { ethers } from "ethers";
-import { useAuth } from "../context/auth-context";
-import { LOCALSTORAGE_KEY, QueryKeys } from "./data.service";
-
-export const CardText = styled.p`
-  margin-bottom: 0;
-`;
 
 /**
  * Use case: \
@@ -24,6 +16,19 @@ export const DEFAULT_BLOCKCHAIN_OBJ = {
   signerAddress: undefined,
   token: undefined,
   fakemon: undefined,
+};
+
+export const LOCALSTORAGE_KEY = "walletAddress";
+export const QueryKeys = {
+  BLOCKCHAIN: "blockchain",
+  TOKEN_NAME: "tokenName",
+  TOKEN_DECIMALS: "tokenDecimals",
+  TOKEN_BALANCE: "tokenBalance",
+  IS_REGISTERED: "isRegistered",
+  CURRENT_BATTLE: "currentBattle",
+  FAKEMONS: "fakemons",
+  GYMS: "gyms",
+  FAKEMONS_IN_GYM: "gym",
 };
 
 export const getBlockchain = () => {
@@ -56,23 +61,9 @@ export const getBlockchain = () => {
       );
 
       // TODO: Calling thrice - 1 is due to React strict mode
-      // console.log("getBlockchain call");
       resolve({ signerAddress, token, fakemon });
     }
 
     resolve(DEFAULT_BLOCKCHAIN_OBJ);
   });
 };
-
-export function useBlockchain() {
-  const { walletConnected, setWalletAddress } = useAuth();
-
-  return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
-    enabled: walletConnected,
-    placeholderData: DEFAULT_BLOCKCHAIN_OBJ,
-    onSuccess: (data) => {
-      setWalletAddress(data.signerAddress);
-      window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
-    },
-  });
-}

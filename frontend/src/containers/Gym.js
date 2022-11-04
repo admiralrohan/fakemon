@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { useAuth } from "../context/auth-context";
-import { useFakemonsByGym, useGyms } from "../utils/data.service";
+import { useFakemonsByGym, useGyms } from "../hooks/queries";
 
 export function Gym() {
   const { id: gymId } = useParams();

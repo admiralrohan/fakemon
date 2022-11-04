@@ -1,18 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
-import { oneTimeQueryFetchOptions, useBlockchain } from "./utils";
+import { useAuth } from "../context/auth-context";
+import {
+  DEFAULT_BLOCKCHAIN_OBJ,
+  getBlockchain,
+  LOCALSTORAGE_KEY,
+  oneTimeQueryFetchOptions,
+  QueryKeys,
+} from "../utils/utils";
 
-export const LOCALSTORAGE_KEY = "walletAddress";
-export const QueryKeys = {
-  BLOCKCHAIN: "blockchain",
-  TOKEN_NAME: "tokenName",
-  TOKEN_DECIMALS: "tokenDecimals",
-  TOKEN_BALANCE: "tokenBalance",
-  IS_REGISTERED: "isRegistered",
-  CURRENT_BATTLE: "currentBattle",
-  FAKEMONS: "fakemons",
-  GYMS: "gyms",
-  FAKEMONS_IN_GYM: "gym",
-};
+export function useBlockchain() {
+  const { walletConnected, setWalletAddress } = useAuth();
+
+  return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
+    enabled: walletConnected,
+    placeholderData: DEFAULT_BLOCKCHAIN_OBJ,
+    onSuccess: (data) => {
+      setWalletAddress(data.signerAddress);
+      window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
+    },
+  });
+}
 
 export function useTokenName() {
   const { data: blockchain } = useBlockchain();
@@ -124,10 +131,8 @@ export function useFakemonsByUser() {
           });
         }
 
-        // console.log("Fakemons:", processedList);
         return processedList;
       } catch (error) {
-        console.error("Error", error.message);
         // showError(error);
         return [];
       }
@@ -190,10 +195,8 @@ export function useGyms() {
           });
         }
 
-        // console.log("Gyms:", processedList);
         return processedList;
       } catch (error) {
-        console.error(error.message);
         // showError(error);
         return [];
       }
@@ -221,7 +224,6 @@ export function useCurrentBattle() {
           isWon: rawCurrentBattle.isWon,
         };
       } catch (error) {
-        console.error(error.message);
         return {};
       }
     },

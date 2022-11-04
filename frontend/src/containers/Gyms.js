@@ -6,12 +6,8 @@ import { CreateGymModal } from "../components/CreateGymModal";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { AlertLayout } from "../components/AlertLayout";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
-import {
-  useFakemonsByUser,
-  useGyms,
-  useIsRegistered,
-} from "../utils/data.service";
-import { useCreateGym } from "../utils/mutations";
+import { useFakemonsByUser, useGyms, useIsRegistered } from "../hooks/queries";
+import { useCreateGym } from "../hooks/mutations";
 import { useAuth } from "../context/auth-context";
 
 export function Gyms({ showLoader }) {
