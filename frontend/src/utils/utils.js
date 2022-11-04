@@ -8,6 +8,18 @@ export const CardText = styled.p`
   margin-bottom: 0;
 `;
 
+/**
+ * Use case: \
+ * Token name and decimals won't change after contract deployment, so only 1 time fetch \
+ * I can use react state and context for this, but it will be called everytime I fetch `tokenBalance`
+ */
+export const oneTimeQueryFetchOptions = {
+  refetchInterval: false,
+  staleTime: Infinity,
+  cacheTime: Infinity,
+  retry: 3, // If some temp problem happens in node provider like Alchemy, Infura, Quicknode
+};
+
 export const DEFAULT_BLOCKCHAIN_OBJ = {
   signerAddress: undefined,
   token: undefined,

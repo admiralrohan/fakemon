@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { useBlockchain } from "./utils";
+import { oneTimeQueryFetchOptions, useBlockchain } from "./utils";
 
 export const LOCALSTORAGE_KEY = "walletAddress";
 export const QueryKeys = {
   BLOCKCHAIN: "blockchain",
   TOKEN_NAME: "tokenName",
+  TOKEN_DECIMALS: "tokenDecimals",
   TOKEN_BALANCE: "tokenBalance",
   IS_REGISTERED: "isRegistered",
   CURRENT_BATTLE: "currentBattle",
@@ -25,13 +26,36 @@ export function useTokenName() {
         return Promise.reject(error.message);
       }
     },
-    { enabled: !!blockchain.signerAddress, placeholderData: "Loading..." }
+    {
+      enabled: !!blockchain.signerAddress,
+      ...oneTimeQueryFetchOptions,
+    }
   );
 }
 
-// TODO: Refresh it frequently, as someone can send this user these tokens directly from metamask.
+export function useTokenDecimals() {
+  const { data: blockchain } = useBlockchain();
+
+  return useQuery(
+    [QueryKeys.TOKEN_DECIMALS],
+    () => {
+      try {
+        return blockchain.token.decimals();
+      } catch (error) {
+        return Promise.reject(error.message);
+      }
+    },
+    {
+      enabled: !!blockchain.signerAddress,
+      ...oneTimeQueryFetchOptions,
+    }
+  );
+}
+
 export function useTokenBalance() {
   const { data: blockchain } = useBlockchain();
+  const { data: tokenName, isSuccess: isTokenNameFetched } = useTokenName();
+  const { data: decimals, isSuccess: isDecimalsFetched } = useTokenDecimals();
 
   return useQuery(
     [QueryKeys.TOKEN_BALANCE],
@@ -41,15 +65,9 @@ export function useTokenBalance() {
         const fullBalance = await blockchain.token.balanceOf(
           blockchain.signerAddress
         );
-        // TODO: Cache tokenName and decimals, as they won't change very often
-        const tokenName = await blockchain.token.name();
-        // const tokenName = queryClient.getQueryData(["tokenName"]);
-        // console.log(tokenName);
-        const decimals = await blockchain.token.decimals();
 
         // 50*(10**18) Tokens -> 50 FMON
         const balance = fullBalance / 10 ** decimals;
-        // console.log(balance);
 
         return `${balance} ${tokenName}`;
       } catch (error) {
@@ -57,7 +75,8 @@ export function useTokenBalance() {
       }
     },
     {
-      enabled: !!blockchain.signerAddress,
+      enabled:
+        !!blockchain.signerAddress && isTokenNameFetched && isDecimalsFetched,
       placeholderData: "Loading...",
     }
   );
@@ -70,9 +89,7 @@ export function useIsRegistered() {
     [QueryKeys.IS_REGISTERED],
     () => {
       try {
-        // console.log("Is registered", blockchain.signerAddress);
         return blockchain.fakemon.users(blockchain.signerAddress);
-        // return Promise.resolve(false);
       } catch (error) {
         return Promise.reject(error.message);
       }
@@ -83,14 +100,11 @@ export function useIsRegistered() {
 
 export function useFakemonsByUser() {
   const { data: blockchain } = useBlockchain();
-  // console.log(!!blockchain.signerAddress);
 
   return useQuery(
     [QueryKeys.FAKEMONS],
     async () => {
       try {
-        // if (!blockchain.fakemon) return [];
-        console.log("useFakemonsByUser", blockchain.signerAddress);
         const [ids, stats] = await blockchain.fakemon.getAllCharactersByUser(
           blockchain.signerAddress
         );
@@ -162,7 +176,6 @@ export function useGyms() {
     [QueryKeys.GYMS],
     async () => {
       try {
-        // console.log("Inside gym", blockchain.signerAddress);
         const rawGymList = await blockchain.fakemon.getAllGyms();
 
         const processedList = [];
