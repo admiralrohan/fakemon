@@ -23,6 +23,7 @@ export function useTokenName() {
       try {
         return blockchain.token.name();
       } catch (error) {
+        // We want to throw error to trigger retry
         return Promise.reject(error.message);
       }
     },
@@ -42,6 +43,7 @@ export function useTokenDecimals() {
       try {
         return blockchain.token.decimals();
       } catch (error) {
+        // We want to throw error to trigger retry
         return Promise.reject(error.message);
       }
     },
@@ -71,7 +73,7 @@ export function useTokenBalance() {
 
         return `${balance} ${tokenName}`;
       } catch (error) {
-        return Promise.reject(error.message);
+        return "Loading...";
       }
     },
     {
@@ -91,7 +93,7 @@ export function useIsRegistered() {
       try {
         return blockchain.fakemon.users(blockchain.signerAddress);
       } catch (error) {
-        return Promise.reject(error.message);
+        return false;
       }
     },
     { enabled: !!blockchain.signerAddress, placeholderData: false }
@@ -159,10 +161,10 @@ export function useFakemonsByGym(gymId) {
           });
         }
 
-        return Promise.resolve({ id: gymId, fakemons: processedList });
+        return { id: gymId, fakemons: processedList };
       } catch (error) {
         // showError(error);
-        return Promise.resolve(placeholderData);
+        return placeholderData;
       }
     },
     { enabled: !!blockchain.signerAddress, placeholderData }
