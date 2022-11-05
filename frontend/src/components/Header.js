@@ -7,17 +7,20 @@ import { useConnectWallet, useDetachWallet } from "../hooks/mutations";
 import { useEffect } from "react";
 import { LOCALSTORAGE_KEY } from "../utils/utils";
 import { useTokenBalance } from "../hooks/queries";
+import { useAuth } from "../context/auth-context";
 
 export function Header() {
-  const walletAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);
+  const { walletAddress } = useAuth();
   const { data: tokenBalance } = useTokenBalance();
   const { mutate: connectWallet } = useConnectWallet();
   const { mutate: detachWallet } = useDetachWallet();
 
   // Automatically connect if user has logged in session from earlier
   useEffect(() => {
-    if (walletAddress) connectWallet();
-  }, [connectWallet, walletAddress]);
+    const savedAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);
+
+    if (savedAddress) connectWallet();
+  }, [connectWallet]);
 
   return (
     <Navbar bg="dark" variant="dark">
