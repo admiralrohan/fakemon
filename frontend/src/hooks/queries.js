@@ -13,10 +13,14 @@ export function useBlockchain() {
 
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
     enabled: walletConnected,
-    placeholderData: DEFAULT_BLOCKCHAIN_OBJ,
+    placeholderData: null,
     onSuccess: (data) => {
       setWalletAddress(data.signerAddress);
       window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
+    },
+    onError: (error) => {
+      console.error(error);
+      window.localStorage.removeItem(LOCALSTORAGE_KEY);
     },
   });
 }
@@ -35,7 +39,7 @@ export function useTokenName() {
       }
     },
     {
-      enabled: !!blockchain.signerAddress,
+      enabled: !!blockchain,
       ...oneTimeQueryFetchOptions,
     }
   );
@@ -55,7 +59,7 @@ export function useTokenDecimals() {
       }
     },
     {
-      enabled: !!blockchain.signerAddress,
+      enabled: !!blockchain,
       ...oneTimeQueryFetchOptions,
     }
   );
@@ -84,8 +88,7 @@ export function useTokenBalance() {
       }
     },
     {
-      enabled:
-        !!blockchain.signerAddress && isTokenNameFetched && isDecimalsFetched,
+      enabled: !!blockchain && isTokenNameFetched && isDecimalsFetched,
       placeholderData: "Loading...",
     }
   );
@@ -103,7 +106,7 @@ export function useIsRegistered() {
         return false;
       }
     },
-    { enabled: !!blockchain.signerAddress, placeholderData: false }
+    { enabled: !!blockchain, placeholderData: false }
   );
 }
 
@@ -137,7 +140,7 @@ export function useFakemonsByUser() {
         return [];
       }
     },
-    { enabled: !!blockchain.signerAddress, placeholderData: [] }
+    { enabled: !!blockchain, placeholderData: [] }
   );
 }
 
@@ -172,7 +175,7 @@ export function useFakemonsByGym(gymId) {
         return placeholderData;
       }
     },
-    { enabled: !!blockchain.signerAddress, placeholderData }
+    { enabled: !!blockchain, placeholderData }
   );
 }
 
@@ -201,7 +204,7 @@ export function useGyms() {
         return [];
       }
     },
-    { enabled: !!blockchain.signerAddress, placeholderData: [] }
+    { enabled: !!blockchain, placeholderData: [] }
   );
 }
 
@@ -227,6 +230,6 @@ export function useCurrentBattle() {
         return {};
       }
     },
-    { enabled: !!blockchain.signerAddress && isRegistered, placeholderData: {} }
+    { enabled: !!blockchain && isRegistered, placeholderData: {} }
   );
 }
