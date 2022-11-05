@@ -19,16 +19,19 @@ import {
   useStartBattle,
 } from "../hooks/mutations";
 
-export function Battle({ showLoader }) {
+export function Battle() {
   const { walletAddress } = useAuth();
   const { data: fakemonsInUserSquad } = useFakemonsByUser();
   const { data: gyms } = useGyms();
   const { data: currentBattle } = useCurrentBattle();
 
-  const { mutate: startBattle } = useStartBattle();
-  const { mutate: fleeBattle } = useFleeBattle();
-  const { mutate: endBattle } = useEndBattle();
-  const { mutate: attackFakemon } = useAttackFakemon();
+  const { mutate: startBattle, isLoading: isStartBattleLoading } =
+    useStartBattle();
+  const { mutate: fleeBattle, isLoading: isFleeBattleLoading } =
+    useFleeBattle();
+  const { mutate: endBattle, isLoading: isEndBattleLoading } = useEndBattle();
+  const { mutate: attackFakemon, isLoading: isAttackFakemonLoading } =
+    useAttackFakemon();
 
   const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
     (fakemon) => fakemon.gymId === "0"
@@ -66,7 +69,7 @@ export function Battle({ showLoader }) {
                 <ButtonWithLoader
                   size="sm"
                   className="text-end"
-                  disabled={fakemon.hp === "0" || showLoader.attackFakemon}
+                  disabled={fakemon.hp === "0" || isAttackFakemonLoading}
                   title={fakemon.hp === "0" ? "Don't have HP to fight" : null}
                   onClick={() => setSelectedFakemon(fakemon.id)}
                 >
@@ -97,7 +100,7 @@ export function Battle({ showLoader }) {
           <Card.Title className="mb-2 mt-3">You Won!</Card.Title>
 
           <ButtonWithLoader
-            showLoader={showLoader.battle}
+            showLoader={isEndBattleLoading}
             className="me-2"
             onClick={() => endBattle(gymId)}
           >
@@ -106,7 +109,7 @@ export function Battle({ showLoader }) {
         </>
       ) : currentBattle.gymId === "0" ? (
         <ButtonWithLoader
-          showLoader={showLoader.battle}
+          showLoader={isStartBattleLoading}
           disabled={nonStakedFakemonsInUserSquad.length === 0}
           title={
             nonStakedFakemonsInUserSquad.length === 0
@@ -122,7 +125,7 @@ export function Battle({ showLoader }) {
         <div>
           {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
           <ButtonWithLoader
-            showLoader={showLoader.attackFakemon}
+            showLoader={isAttackFakemonLoading}
             className="me-2"
             disabled={!selectedFakemon}
             title={!selectedFakemon ? "Select an fakemon to attack" : null}
@@ -137,8 +140,8 @@ export function Battle({ showLoader }) {
           {/* Flee would save remaining energy, but the user will lose the match on record */}
           {/* You shouldn't flee while an attack is ongoing, so added extra condition for `disabled` */}
           <ButtonWithLoader
-            showLoader={showLoader.fleeBattle}
-            disabled={selectedFakemon || showLoader.attackFakemon}
+            showLoader={isFleeBattleLoading}
+            disabled={selectedFakemon || isAttackFakemonLoading}
             title={!selectedFakemon ? null : "De-select an fakemons to flee"}
             onClick={() => fleeBattle()}
           >

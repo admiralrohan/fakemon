@@ -10,7 +10,7 @@ import { useFakemonsByUser, useGyms, useIsRegistered } from "../hooks/queries";
 import { useCreateGym } from "../hooks/mutations";
 import { useAuth } from "../context/auth-context";
 
-export function Gyms({ showLoader }) {
+export function Gyms() {
   const [showModal, setShowModal] = useState(false);
 
   const { walletAddress } = useAuth();
@@ -18,7 +18,7 @@ export function Gyms({ showLoader }) {
   const { data: fakemons } = useFakemonsByUser();
   const { data: gyms } = useGyms();
 
-  const { mutate: createGym } = useCreateGym();
+  const { mutate: createGym, isLoading: isCreateGymLoading } = useCreateGym();
 
   const gymList = gyms.map((gym) => (
     <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
@@ -39,7 +39,7 @@ export function Gyms({ showLoader }) {
     <>
       <div className="text-end">
         <ButtonWithLoader
-          showLoader={showLoader.createGym}
+          showLoader={isCreateGymLoading}
           size="sm"
           disabled={!isRegistered}
           title={!isRegistered ? "You need to register to create gym" : null}

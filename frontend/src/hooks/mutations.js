@@ -54,7 +54,6 @@ export function useMintFakemon() {
 
   return useMutation(
     async () => {
-      // setIndividualShowLoader({ mintFakemon: true });
       let tx = await blockchain.token.approve(
         blockchain.fakemon.address,
         NFT_FEE

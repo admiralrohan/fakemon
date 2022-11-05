@@ -8,14 +8,6 @@ import { Battle } from "./containers/Battle";
 import { Toastr } from "./components/Toast";
 
 function App() {
-  const [showLoader, setShowLoader] = useState({
-    mintFakemon: false,
-    createGym: false,
-    battle: false,
-    attackFakemon: false,
-    fleeBattle: false,
-  });
-
   // To trigger toast showing for 2s
   const [toastCount, setToastCount] = useState(0);
   const [toastMessage, setToastMessage] = useState("");
@@ -23,10 +15,6 @@ function App() {
   const showToastMessage = (message) => {
     setToastMessage(message);
     setToastCount((curr) => curr + 1);
-  };
-
-  const setIndividualShowLoader = (loaderStatus) => {
-    setShowLoader({ ...showLoader, ...loaderStatus });
   };
 
   const showError = (error) => {
@@ -48,13 +36,10 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate replace to="/profile" />} />
-        <Route path="/profile" element={<Profile showLoader={showLoader} />} />
-        <Route path="/gyms" element={<Gyms showLoader={showLoader} />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/gyms" element={<Gyms />} />
         <Route path="/gyms/:id" element={<Gym />} />
-        <Route
-          path="/gyms/:id/battle"
-          element={<Battle showLoader={showLoader} />}
-        />
+        <Route path="/gyms/:id/battle" element={<Battle />} />
       </Routes>
 
       <Toastr message={toastMessage} toastCount={toastCount} />

@@ -13,14 +13,16 @@ import { useMintFakemon, useRegister } from "../hooks/mutations";
 import { useAuth } from "../context/auth-context";
 import { CardText } from "../utils/styled-components";
 
-export function Profile({ showLoader }) {
+export function Profile() {
   const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();
   const { data: tokenBalance } = useTokenBalance();
   const { data: fakemons } = useFakemonsByUser();
 
-  const { mutate: registerUser } = useRegister();
-  const { mutate: mintFakemon } = useMintFakemon();
+  const { mutate: registerUser, isLoading: isRegisterUserLoading } =
+    useRegister();
+  const { mutate: mintFakemon, isLoading: isMintFakemonLoading } =
+    useMintFakemon();
 
   const getToken = () => {
     // TODO: Implement
@@ -59,7 +61,7 @@ export function Profile({ showLoader }) {
               </Link>
 
               <ButtonWithLoader
-                showLoader={showLoader.mintFakemon}
+                showLoader={isMintFakemonLoading}
                 size="sm"
                 className="mt-2 ms-2"
                 onClick={mintFakemon}
@@ -76,9 +78,15 @@ export function Profile({ showLoader }) {
               <CardText>
                 <strong>Status:</strong> Unregistered
               </CardText>
-              <Button size="sm" className="mt-2" onClick={registerUser}>
+
+              <ButtonWithLoader
+                showLoader={isRegisterUserLoading}
+                size="sm"
+                className="mt-2"
+                onClick={registerUser}
+              >
                 Register now
-              </Button>
+              </ButtonWithLoader>
             </>
           )}
         </Card.Body>
