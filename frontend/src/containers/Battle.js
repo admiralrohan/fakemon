@@ -11,6 +11,7 @@ import {
   useFakemonsByGym,
   useFakemonsByUser,
   useGyms,
+  useIsRegistered,
 } from "../hooks/queries";
 import {
   useAttackFakemon,
@@ -21,6 +22,7 @@ import {
 
 export function Battle() {
   const { walletAddress } = useAuth();
+  const { data: isRegistered } = useIsRegistered();
   const { data: fakemonsInUserSquad } = useFakemonsByUser();
   const { data: gyms } = useGyms();
   const { data: currentBattle } = useCurrentBattle();
@@ -153,11 +155,7 @@ export function Battle() {
   );
 
   const battleView = (
-    <div style={{ width: 500, margin: "25px auto" }}>
-      <Link to={"/gyms/" + gymId}>
-        <Button size="sm">Back</Button>
-      </Link>
-
+    <main>
       <Card.Title className="mb-2 text-center">
         Battle with Gym #{gymId}
       </Card.Title>
@@ -182,15 +180,23 @@ export function Battle() {
 
       {fakemonsInGym.map((fakemon) => getFakemonView(fakemon))}
       {buttonView}
-    </div>
+    </main>
   );
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
+      <Link to={"/gyms/" + gymId}>
+        <Button size="sm" className="mb-3">
+          Back
+        </Button>
+      </Link>
+
       {!walletAddress ? (
         <BeforeWalletImportNotice />
       ) : !gymDetails ? (
         <AlertLayout content="Gym doesn't exist" />
+      ) : !isRegistered ? (
+        <AlertLayout content="You need to register first" />
       ) : isOwnGym ? (
         <AlertLayout content="You can't fight with your own gym" />
       ) : (
