@@ -71,7 +71,6 @@ export const getBlockchain = () => {
         signer
       );
 
-      // TODO: Calling thrice - 1 is due to React strict mode
       resolve({ signerAddress, token, fakemon });
     }
 
