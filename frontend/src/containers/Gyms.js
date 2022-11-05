@@ -41,8 +41,14 @@ export function Gyms() {
         <ButtonWithLoader
           showLoader={isCreateGymLoading}
           size="sm"
-          disabled={!isRegistered}
-          title={!isRegistered ? "You need to register to create gym" : null}
+          disabled={!isRegistered || fakemons.length === 0}
+          title={
+            !isRegistered
+              ? "You need to register first"
+              : fakemons.length === 0
+              ? "You need some fakemons"
+              : null
+          }
           onClick={() => setShowModal(true)}
         >
           Create gym
