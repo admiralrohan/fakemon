@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Badge from "react-bootstrap/Badge";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
@@ -53,7 +54,11 @@ export function Battle() {
   const getFakemonView = (fakemon, showUseButton = false) => (
     <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
       <Card.Body>
-        <Card.Title>Fakemon #{fakemon.id}</Card.Title>
+        <Card.Title className="d-flex justify-content-between align-items-baseline">
+          Fakemon #{fakemon.id}
+          {fakemon.hp === "0" && <Badge bg="danger">Fainted</Badge>}
+        </Card.Title>
+
         <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
           <span>
             <strong>HP:</strong> {fakemon.hp}
