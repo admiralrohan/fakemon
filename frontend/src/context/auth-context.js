@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 
 const AuthContext = createContext();
 AuthContext.displayName = "AuthContext";
@@ -9,11 +9,16 @@ export function AuthProvider(props) {
    * Using this to avoid calling to whole blockchain instance in components. */
   const [walletAddress, setWalletAddress] = useState(null);
 
+  const handleAccountsChanged = useRef(() => window.location.reload());
+  const handleChainChanged = useRef(() => window.location.reload());
+
   const exportedMembers = {
     walletConnected,
     setWalletAddress,
     walletAddress,
     setWalletConnected,
+    handleAccountsChanged: handleAccountsChanged.current,
+    handleChainChanged: handleChainChanged.current,
   };
 
   return <AuthContext.Provider value={exportedMembers} {...props} />;

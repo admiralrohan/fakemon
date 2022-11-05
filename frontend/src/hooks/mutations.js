@@ -6,11 +6,20 @@ import { useBlockchain } from "./queries";
 
 // Connect our app with blockchain
 export function useConnectWallet() {
-  const { setWalletConnected } = useAuth();
+  const { setWalletConnected, handleAccountsChanged, handleChainChanged } =
+    useAuth();
 
-  return useMutation(() => {
-    setWalletConnected(true);
-  });
+  return useMutation(
+    () => {
+      setWalletConnected(true);
+    },
+    {
+      onSuccess: () => {
+        window.ethereum.on("accountsChanged", handleAccountsChanged);
+        window.ethereum.on("chainChanged", handleChainChanged);
+      },
+    }
+  );
 }
 
 // It doesn't disconnect wallet with metamask
@@ -18,14 +27,30 @@ export function useConnectWallet() {
 // This process here is to just forbid our app to connect with blockchain automatically
 export function useDetachWallet() {
   const queryClient = useQueryClient();
-  const { setWalletConnected, setWalletAddress } = useAuth();
+  const {
+    setWalletConnected,
+    setWalletAddress,
+    handleAccountsChanged,
+    handleChainChanged,
+  } = useAuth();
 
-  return useMutation(async () => {
-    setWalletConnected(false);
-    setWalletAddress(null);
-    queryClient.removeQueries([QueryKeys.BLOCKCHAIN]);
-    window.localStorage.removeItem(LOCALSTORAGE_KEY);
-  });
+  return useMutation(
+    async () => {
+      setWalletConnected(false);
+      setWalletAddress(null);
+      queryClient.removeQueries([QueryKeys.BLOCKCHAIN]);
+      window.localStorage.removeItem(LOCALSTORAGE_KEY);
+    },
+    {
+      onSuccess: () => {
+        window.ethereum.removeListener(
+          "accountsChanged",
+          handleAccountsChanged
+        );
+        window.ethereum.removeListener("chainChanged", handleChainChanged);
+      },
+    }
+  );
 }
 
 export function useRegister() {
