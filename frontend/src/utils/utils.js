@@ -77,3 +77,18 @@ export const getBlockchain = () => {
     resolve(DEFAULT_BLOCKCHAIN_OBJ);
   });
 };
+
+export const showError = (error) => {
+  // Convert "Error: VM Exception while processing transaction: reverted with reason string 'Battle expired'" into "Battle expired"
+  const errorMessage = error.error
+    ? error.error.data.message
+        .split(
+          "Error: VM Exception while processing transaction: reverted with reason string "
+        )[1]
+        .split("'")[1]
+    : error.message;
+
+  console.error(errorMessage);
+
+  return errorMessage;
+};

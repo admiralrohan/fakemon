@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { Gyms } from "./containers/Gyms";
 import { Header } from "./components/Header";
@@ -8,19 +7,6 @@ import { Battle } from "./containers/Battle";
 import { Toastr } from "./components/Toast";
 
 function App() {
-  const showError = (error) => {
-    // Convert "Error: VM Exception while processing transaction: reverted with reason string 'Battle expired'" into "Battle expired"
-    const errorMessage = error.error
-      ? error.error.data.message
-          .split(
-            "Error: VM Exception while processing transaction: reverted with reason string "
-          )[1]
-          .split("'")[1]
-      : error.message;
-
-    // showToastMessage(errorMessage);
-  };
-
   return (
     <>
       <Header />
