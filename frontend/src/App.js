@@ -8,15 +8,6 @@ import { Battle } from "./containers/Battle";
 import { Toastr } from "./components/Toast";
 
 function App() {
-  // To trigger toast showing for 2s
-  const [toastCount, setToastCount] = useState(0);
-  const [toastMessage, setToastMessage] = useState("");
-
-  const showToastMessage = (message) => {
-    setToastMessage(message);
-    setToastCount((curr) => curr + 1);
-  };
-
   const showError = (error) => {
     // Convert "Error: VM Exception while processing transaction: reverted with reason string 'Battle expired'" into "Battle expired"
     const errorMessage = error.error
@@ -27,7 +18,7 @@ function App() {
           .split("'")[1]
       : error.message;
 
-    showToastMessage(errorMessage);
+    // showToastMessage(errorMessage);
   };
 
   return (
@@ -42,7 +33,7 @@ function App() {
         <Route path="/gyms/:id/battle" element={<Battle />} />
       </Routes>
 
-      <Toastr message={toastMessage} toastCount={toastCount} />
+      <Toastr />
     </>
   );
 }

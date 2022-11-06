@@ -12,6 +12,7 @@ import {
 import { useMintFakemon, useRegister } from "../hooks/mutations";
 import { useAuth } from "../context/auth-context";
 import { CardText } from "../utils/styled-components";
+import { useToast } from "../context/toast-context";
 
 export function Profile() {
   const { walletAddress } = useAuth();
@@ -24,9 +25,11 @@ export function Profile() {
   const { mutate: mintFakemon, isLoading: isMintFakemonLoading } =
     useMintFakemon();
 
+  const { showToast } = useToast();
+
   const getToken = () => {
     // TODO: Implement
-    // showToastMessage("Coming soon");
+    showToast("Coming soon");
   };
 
   const afterWalletImportView = (
