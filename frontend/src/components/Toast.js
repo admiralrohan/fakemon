@@ -6,15 +6,10 @@ import { useToast } from "../context/toast-context";
 export function Toastr() {
   const [show, setShow] = useState(false);
   const { toastCount, toastMessage } = useToast();
+  const delay = 3000;
 
-  console.log("Toast comp", toastCount, toastMessage);
   useEffect(() => {
-    if (toastCount > 0) {
-      setShow(true);
-      setTimeout(() => {
-        setShow(false);
-      }, 2000);
-    }
+    if (toastCount > 0) setShow(true);
   }, [toastCount]);
 
   return (
@@ -24,7 +19,7 @@ export function Toastr() {
       position="top-end"
       onClick={() => setShow(false)}
     >
-      <Toast onClose={() => setShow(false)}>
+      <Toast onClose={() => setShow(false)} delay={delay} autohide>
         <Toast.Header>
           <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
           <strong className="me-auto">Fakemon</strong>
