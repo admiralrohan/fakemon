@@ -16,10 +16,11 @@ export function Toastr() {
     <ToastContainer
       hidden={!show}
       className="p-3"
-      position="top-end"
+      containerPosition="fixed"
+      position="bottom-end"
       onClick={() => setShow(false)}
     >
-      <Toast onClose={() => setShow(false)} delay={delay} autohide>
+      <Toast onClose={() => setShow(false)} delay={delay} autohide={show}>
         <Toast.Header>
           <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
           <strong className="me-auto">Fakemon</strong>
