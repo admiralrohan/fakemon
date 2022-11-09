@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { useAuth } from "../context/auth-context";
+import { useToast } from "../context/toast-context";
 import { LOCALSTORAGE_KEY, QueryKeys } from "../utils/utils";
 import { useBlockchain } from "./queries";
 
@@ -75,6 +76,7 @@ export function useRegister() {
 export function useMintFakemon() {
   const { data: blockchain } = useBlockchain();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const NFT_FEE = ethers.utils.parseEther("5");
 
   return useMutation(
@@ -92,7 +94,7 @@ export function useMintFakemon() {
       onSuccess: () => {
         queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
         queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
-        // TODO: Show toast
+        showToast("New fakemon minted");
       },
     }
   );
@@ -101,6 +103,7 @@ export function useMintFakemon() {
 export function useCreateGym() {
   const { data: blockchain } = useBlockchain();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   return useMutation(
     async (selectedIds) => {
@@ -112,6 +115,7 @@ export function useCreateGym() {
         queryClient.invalidateQueries([QueryKeys.TOKEN_BALANCE]);
         queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
         queryClient.invalidateQueries([QueryKeys.GYMS]);
+        showToast("New gym created");
       },
     }
   );
