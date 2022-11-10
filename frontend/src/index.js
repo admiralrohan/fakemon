@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./context/auth-context";
 import { ToastProvider } from "./context/toast-context";
+import { inject } from "@vercel/analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +40,9 @@ root.render(
   </QueryClientProvider>
   // </React.StrictMode>
 );
+
+// Make sure to call this only once in your app
+inject();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
