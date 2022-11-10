@@ -1,29 +1,22 @@
-import { useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
+import { useAuth } from "../context/auth-context";
+import { useFakemonsByGym, useGyms } from "../hooks/queries";
 
-export function Gym({
-  userAddress,
-  fetchFakemonsByGym,
-  gyms,
-  fakemonsInGym,
-  showLoader,
-}) {
+export function Gym() {
   const { id: gymId } = useParams();
+  const { walletAddress } = useAuth();
+  const { data: gyms } = useGyms();
+  const {
+    data: { fakemons: fakemonsInGym },
+  } = useFakemonsByGym(gymId);
+
   const gymDetails = gyms.find((gym) => gym.id === gymId);
-
   // Disable link to battle page by default
-  const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
-
-  useEffect(() => {
-    (async () => {
-      await fetchFakemonsByGym(gymId);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress]);
+  const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
 
   const existingGymView = () => (
     <div>
@@ -94,7 +87,7 @@ export function Gym({
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
-      {!userAddress ? (
+      {!walletAddress ? (
         <BeforeWalletImportNotice />
       ) : gymDetails ? (
         existingGymView()

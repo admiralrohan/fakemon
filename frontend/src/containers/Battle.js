@@ -1,43 +1,64 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Badge from "react-bootstrap/Badge";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
 import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import { useAuth } from "../context/auth-context";
+import {
+  useCurrentBattle,
+  useFakemonsByGym,
+  useFakemonsByUser,
+  useGyms,
+  useIsRegistered,
+} from "../hooks/queries";
+import {
+  useAttackFakemon,
+  useEndBattle,
+  useFleeBattle,
+  useStartBattle,
+} from "../hooks/mutations";
 
-export function Battle({
-  userAddress,
-  fakemonsInUserSquad,
-  gyms,
-  fetchFakemonsByGym,
-  startBattle,
-  fleeBattle,
-  endBattle,
-  attackFakemon,
-  currentBattle,
-  fakemonsInGym,
-  showLoader,
-}) {
+export function Battle() {
+  const { walletAddress } = useAuth();
+  const { data: isRegistered } = useIsRegistered();
+  const { data: fakemonsInUserSquad } = useFakemonsByUser();
+  const { data: gyms } = useGyms();
+  const { data: currentBattle } = useCurrentBattle();
+
+  const { mutate: startBattle, isLoading: isStartBattleLoading } =
+    useStartBattle();
+  const { mutate: fleeBattle, isLoading: isFleeBattleLoading } =
+    useFleeBattle();
+  const { mutate: endBattle, isLoading: isEndBattleLoading } = useEndBattle();
+  const { mutate: attackFakemon, isLoading: isAttackFakemonLoading } =
+    useAttackFakemon();
+
+  const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
+    (fakemon) => fakemon.gymId === "0"
+  );
   const [selectedFakemon, setSelectedFakemon] = useState(null);
 
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
 
-  // Disable link to battle page by default
-  const isOwnGym = gymDetails ? gymDetails.owner === userAddress : true;
+  const {
+    data: { fakemons: fakemonsInGym },
+  } = useFakemonsByGym(gymId);
 
-  useEffect(() => {
-    (async () => {
-      await fetchFakemonsByGym(gymId);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress]);
+  // Disable link to battle page by default
+  const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
 
   const getFakemonView = (fakemon, showUseButton = false) => (
     <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
       <Card.Body>
-        <Card.Title>Fakemon #{fakemon.id}</Card.Title>
+        <Card.Title className="d-flex justify-content-between align-items-baseline">
+          Fakemon #{fakemon.id}
+          {fakemon.hp === "0" && <Badge bg="danger">Fainted</Badge>}
+        </Card.Title>
+
         <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
           <span>
             <strong>HP:</strong> {fakemon.hp}
@@ -55,7 +76,7 @@ export function Battle({
                 <ButtonWithLoader
                   size="sm"
                   className="text-end"
-                  disabled={fakemon.hp === "0" || showLoader.attackFakemon}
+                  disabled={fakemon.hp === "0" || isAttackFakemonLoading}
                   title={fakemon.hp === "0" ? "Don't have HP to fight" : null}
                   onClick={() => setSelectedFakemon(fakemon.id)}
                 >
@@ -86,7 +107,7 @@ export function Battle({
           <Card.Title className="mb-2 mt-3">You Won!</Card.Title>
 
           <ButtonWithLoader
-            showLoader={showLoader.battle}
+            showLoader={isEndBattleLoading}
             className="me-2"
             onClick={() => endBattle(gymId)}
           >
@@ -95,7 +116,13 @@ export function Battle({
         </>
       ) : currentBattle.gymId === "0" ? (
         <ButtonWithLoader
-          showLoader={showLoader.battle}
+          showLoader={isStartBattleLoading}
+          disabled={nonStakedFakemonsInUserSquad.length === 0}
+          title={
+            nonStakedFakemonsInUserSquad.length === 0
+              ? "No pokemon to fight with"
+              : null
+          }
           className="me-2"
           onClick={() => startBattle(gymId)}
         >
@@ -105,7 +132,7 @@ export function Battle({
         <div>
           {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
           <ButtonWithLoader
-            showLoader={showLoader.attackFakemon}
+            showLoader={isAttackFakemonLoading}
             className="me-2"
             disabled={!selectedFakemon}
             title={!selectedFakemon ? "Select an fakemon to attack" : null}
@@ -120,8 +147,8 @@ export function Battle({
           {/* Flee would save remaining energy, but the user will lose the match on record */}
           {/* You shouldn't flee while an attack is ongoing, so added extra condition for `disabled` */}
           <ButtonWithLoader
-            showLoader={showLoader.fleeBattle}
-            disabled={selectedFakemon || showLoader.attackFakemon}
+            showLoader={isFleeBattleLoading}
+            disabled={selectedFakemon || isAttackFakemonLoading}
             title={!selectedFakemon ? null : "De-select an fakemons to flee"}
             onClick={() => fleeBattle()}
           >
@@ -133,11 +160,7 @@ export function Battle({
   );
 
   const battleView = (
-    <div style={{ width: 500, margin: "25px auto" }}>
-      <Link to={"/gyms/" + gymId}>
-        <Button size="sm">Back</Button>
-      </Link>
-
+    <main>
       <Card.Title className="mb-2 text-center">
         Battle with Gym #{gymId}
       </Card.Title>
@@ -149,24 +172,36 @@ export function Battle({
 
       <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
 
+      {nonStakedFakemonsInUserSquad.length === 0 && (
+        <AlertLayout content="You have no non-staked Fakemon" />
+      )}
+
       {/* Only non-staked fakemons can be used for attack */}
-      {fakemonsInUserSquad
-        .filter((fakemon) => fakemon.gymId !== "0")
-        .map((fakemon) => getFakemonView(fakemon, true))}
+      {nonStakedFakemonsInUserSquad.map((fakemon) =>
+        getFakemonView(fakemon, true)
+      )}
 
       <Card.Subtitle className="text-center my-3">Gym squad</Card.Subtitle>
 
       {fakemonsInGym.map((fakemon) => getFakemonView(fakemon))}
       {buttonView}
-    </div>
+    </main>
   );
 
   return (
     <div style={{ width: 500, margin: "25px auto" }}>
-      {!userAddress ? (
+      <Link to={"/gyms/" + gymId}>
+        <Button size="sm" className="mb-3">
+          Back
+        </Button>
+      </Link>
+
+      {!walletAddress ? (
         <BeforeWalletImportNotice />
       ) : !gymDetails ? (
         <AlertLayout content="Gym doesn't exist" />
+      ) : !isRegistered ? (
+        <AlertLayout content="You need to register first" />
       ) : isOwnGym ? (
         <AlertLayout content="You can't fight with your own gym" />
       ) : (

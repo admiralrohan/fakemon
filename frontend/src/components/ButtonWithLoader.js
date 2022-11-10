@@ -2,8 +2,11 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
 /**
- * Will show spinner and disable the button while `showLoader` is true \
- * All APIs are same as React bootstrap
+ * We want to show why the button is disabled in tooltip. \
+ * This component is a wrapper of bootstrap button component. \
+ * It is needed to show the tooltip, which is not visible for disabled buttons. \
+ * Will show spinner and disable the button while `showLoader` is true. \
+ * All APIs are same as React bootstrap.
  */
 export function ButtonWithLoader({
   children = "",
