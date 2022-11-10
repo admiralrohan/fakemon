@@ -2,7 +2,7 @@
 
 A pokemon type turn-based battle game on-chain.
 
-Currently deployed on Rinkeby testnet, but as Alchemy stopped supporting it the app isn't working. We are in process of moving to a different testnet soon. You can try it locally for now.
+Currently deployed on Goerli testnet, but as Alchemy stopped supporting it the app isn't working. We are in process of moving to a different testnet soon. You can try it locally for now.
 
 ## Features
 

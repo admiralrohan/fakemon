@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "REACT_APP_NETWORK=hardhat react-scripts start",
-    "build": "REACT_APP_NETWORK=rinkeby react-scripts build",
+    "build": "REACT_APP_NETWORK=goerli react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

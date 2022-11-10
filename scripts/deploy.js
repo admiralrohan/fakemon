@@ -38,7 +38,7 @@ async function deployContracts(network) {
   const FakemonArtifact = hre.artifacts.readArtifactSync("Fakemon");
 
   // We will have one deployment for one network at a time
-  // Using different folders for different networks eg. hardhat, rinkeby, etc
+  // Using different folders for different networks eg. hardhat, goerli, etc
   // Otherwise during local development previous artifact from different network will be overwritten
   // And push the artifacts in git
   const contractDir =
