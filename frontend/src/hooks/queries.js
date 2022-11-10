@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../context/auth-context";
+import { useToast } from "../context/toast-context";
 import {
   getBlockchain,
   LOCALSTORAGE_KEY,
@@ -9,6 +10,7 @@ import {
 
 export function useBlockchain() {
   const { walletConnected, setWalletAddress } = useAuth();
+  const { showToast } = useToast();
 
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
     enabled: walletConnected,
@@ -18,7 +20,7 @@ export function useBlockchain() {
       window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
     },
     onError: (error) => {
-      console.error(error);
+      showToast(error);
       window.localStorage.removeItem(LOCALSTORAGE_KEY);
     },
   });
