@@ -27,7 +27,8 @@ Deployed on Goerli testnet.
 
 First
 
-- First start hardhat network `npx hardhat node`
+- Clone `.env.example` file with the name `.env` and add details.
+- Then start hardhat network `npx hardhat node`
 - Then deploy the contracts `npm run deploy`
 - Then start the frontend `cd frontend && npm start`
 
