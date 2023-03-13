@@ -45,7 +45,7 @@ Extras
 
 ### Confusion regarding "hardhat" vs "localhost"
 
-For local development we are using Hardhat network. But for the deployment script we are using `--network localhost` which can generate confusion.
+For local development we are using Hardhat network. But for the deployment script we are using `--network localhost` which can create confusions.
 
 Hardhat network comes in two modes - `hardhat` (in-process blockchain which is used for testing and running tasks if not specified any network) and `localhost` (standalone background process which is used to connect with wallets and FE app).
 
