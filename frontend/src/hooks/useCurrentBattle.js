@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "../utils/utils";
-import { useIsRegistered } from "./queries";
 import useBlockchain from "./useBlockchain";
+import useIsRegistered from "./useIsRegistered";
 
 function useCurrentBattle() {
   const { data: blockchain } = useBlockchain();
