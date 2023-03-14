@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Alert from "../Alert";
-import { useMintFakemon } from "../../hooks/mutations";
 import { CardText } from "../../utils/styled-components";
 import ButtonWithLoader from "../ButtonWithLoader";
 import useAuth from "../../hooks/useAuth";
@@ -13,6 +12,7 @@ import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import useIsRegistered from "../../hooks/useIsRegistered";
 import useTokenBalance from "../../hooks/useTokenBalance";
 import useRegister from "../../hooks/useRegister";
+import useMintFakemon from "../../hooks/useMintFakemon";
 
 function Profile() {
   const { walletAddress } = useAuth();
