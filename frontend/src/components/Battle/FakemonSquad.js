@@ -1,8 +1,8 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import Badge from "react-bootstrap/Badge";
-import { useAttackFakemon } from "../../hooks/mutations";
 import ButtonWithLoader from "../ButtonWithLoader";
+import useAttackFakemon from "../../hooks/useAttackFakemon";
 
 function FakemonSquad({
   fakemon,

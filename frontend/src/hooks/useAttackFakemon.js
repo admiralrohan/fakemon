@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import { updateBattleView } from "../utils/utils";
 import useBlockchain from "./useBlockchain";
 
-export function useAttackFakemon() {
+function useAttackFakemon() {
   const { data: blockchain } = useBlockchain();
   const queryClient = useQueryClient();
 
@@ -19,3 +18,5 @@ export function useAttackFakemon() {
     }
   );
 }
+
+export default useAttackFakemon;
