@@ -4,7 +4,6 @@ import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Alert from "../Alert";
-import { CardText } from "../../utils/styled-components";
 import ButtonWithLoader from "../ButtonWithLoader";
 import useAuth from "../../hooks/useAuth";
 import useToast from "../../hooks/useToast";
@@ -13,6 +12,7 @@ import useIsRegistered from "../../hooks/useIsRegistered";
 import useTokenBalance from "../../hooks/useTokenBalance";
 import useRegister from "../../hooks/useRegister";
 import useMintFakemon from "../../hooks/useMintFakemon";
+import styled from "@emotion/styled";
 
 function Profile() {
   const { walletAddress } = useAuth();
@@ -122,5 +122,9 @@ function Profile() {
     </>
   );
 }
+
+const CardText = styled.p`
+  margin-bottom: 0;
+`;
 
 export default Profile;
