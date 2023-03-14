@@ -1,13 +1,10 @@
 import React from "react";
 import Card from "react-bootstrap/Card";
 import { useParams } from "react-router-dom";
-import {
-  useAttackFakemon,
-  useEndBattle,
-  useFleeBattle,
-} from "../../hooks/mutations";
+import { useAttackFakemon, useEndBattle } from "../../hooks/mutations";
 import useCurrentBattle from "../../hooks/useCurrentBattle";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
+import useFleeBattle from "../../hooks/useFleeBattle";
 import useStartBattle from "../../hooks/useStartBattle";
 import ButtonWithLoader from "../ButtonWithLoader";
 

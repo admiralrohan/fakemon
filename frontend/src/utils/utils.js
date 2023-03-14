@@ -92,3 +92,15 @@ export const showError = (error) => {
 
   return errorMessage;
 };
+
+// TODO: Open a gym, then go to different battle page via URL
+export const updateBattleView = async (queryClient) => {
+  // await getCurrentBattleDetails();
+  // await fetchFakemonsByUser();
+  // await fetchFakemonsByGym(currentBattle.gymId);
+
+  queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  //  TODO: How to pass on gymId?
+  queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
+};
