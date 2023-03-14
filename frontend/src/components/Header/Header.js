@@ -1,22 +1,22 @@
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
-import { useConnectWallet, useDetachWallet } from "../hooks/mutations";
-import { useEffect } from "react";
-import { LOCALSTORAGE_KEY } from "../utils/utils";
-import { useTokenBalance } from "../hooks/queries";
-import { useAuth } from "../context/auth-context";
+import { useAuth } from "../../context/auth-context";
+import { useTokenBalance } from "../../hooks/queries";
+import { useConnectWallet, useDetachWallet } from "../../hooks/mutations";
+import { LOCALSTORAGE_KEY } from "../../utils/utils";
 
-export function Header() {
+function Header() {
   const { walletAddress } = useAuth();
   const { data: tokenBalance } = useTokenBalance();
   const { mutate: connectWallet } = useConnectWallet();
   const { mutate: detachWallet } = useDetachWallet();
 
   // Automatically connect if user has logged in session from earlier
-  useEffect(() => {
+  React.useEffect(() => {
     const savedAddress = window.localStorage.getItem(LOCALSTORAGE_KEY);
 
     if (savedAddress) connectWallet();
@@ -53,3 +53,5 @@ export function Header() {
     </Navbar>
   );
 }
+
+export default Header;

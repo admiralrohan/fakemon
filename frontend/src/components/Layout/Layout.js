@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Battle from "../Battle";
 import Gym from "../Gym";
 import Gyms from "../Gyms";
-import { Header } from "../Header";
+import Header from "../Header";
 import Profile from "../Profile";
 import Toastr from "../Toastr";
 
