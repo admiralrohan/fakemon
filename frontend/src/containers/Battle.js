@@ -21,6 +21,7 @@ import {
   useStartBattle,
 } from "../hooks/mutations";
 
+/** @deprecated */
 export function Battle() {
   const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();

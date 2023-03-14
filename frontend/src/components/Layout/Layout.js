@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Battle } from "../../containers/Battle";
+import Battle from "../Battle";
 import Gym from "../Gym";
 import Gyms from "../Gyms";
 import { Header } from "../Header";
