@@ -1,40 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
-import { LOCALSTORAGE_KEY, QueryKeys } from "../utils/utils";
-import useAuth from "./useAuth";
+import { QueryKeys } from "../utils/utils";
 import useBlockchain from "./useBlockchain";
 import useToast from "./useToast";
-
-// It doesn't disconnect wallet with metamask
-// User has to do it manually
-// This process here is to just forbid our app to connect with blockchain automatically
-export function useDetachWallet() {
-  const queryClient = useQueryClient();
-  const {
-    setWalletConnected,
-    setWalletAddress,
-    handleAccountsChanged,
-    handleChainChanged,
-  } = useAuth();
-
-  return useMutation(
-    async () => {
-      setWalletConnected(false);
-      setWalletAddress(null);
-      queryClient.removeQueries([QueryKeys.BLOCKCHAIN]);
-      window.localStorage.removeItem(LOCALSTORAGE_KEY);
-    },
-    {
-      onSuccess: () => {
-        window.ethereum.removeListener(
-          "accountsChanged",
-          handleAccountsChanged
-        );
-        window.ethereum.removeListener("chainChanged", handleChainChanged);
-      },
-    }
-  );
-}
 
 export function useRegister() {
   const { data: blockchain } = useBlockchain();
