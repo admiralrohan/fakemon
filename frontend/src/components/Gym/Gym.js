@@ -1,11 +1,12 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { useFakemonsByGym, useGyms } from "../../hooks/queries";
+import { useFakemonsByGym } from "../../hooks/queries";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "../Alert";
 import useAuth from "../../hooks/useAuth";
+import { useGyms } from "../../hooks/useGyms";
 
 function Gym() {
   const { id: gymId } = useParams();

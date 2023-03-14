@@ -6,11 +6,11 @@ import { useParams } from "react-router-dom";
 import {
   useFakemonsByGym,
   useFakemonsByUser,
-  useGyms,
   useIsRegistered,
 } from "../../hooks/queries";
 import useAuth from "../../hooks/useAuth";
 import useCurrentBattle from "../../hooks/useCurrentBattle";
+import { useGyms } from "../../hooks/useGyms";
 import Alert from "../Alert";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";
