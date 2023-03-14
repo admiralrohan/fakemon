@@ -7,8 +7,8 @@ import {
   useFleeBattle,
   useStartBattle,
 } from "../../hooks/mutations";
-import { useFakemonsByUser } from "../../hooks/queries";
 import useCurrentBattle from "../../hooks/useCurrentBattle";
+import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import ButtonWithLoader from "../ButtonWithLoader";
 
 function Actions({ selectedFakemon, setSelectedFakemon }) {
