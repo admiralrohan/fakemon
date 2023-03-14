@@ -10,6 +10,7 @@ import { useFakemonsByUser, useGyms, useIsRegistered } from "../hooks/queries";
 import { useCreateGym } from "../hooks/mutations";
 import { useAuth } from "../context/auth-context";
 
+/** @deprecated */
 export function Gyms() {
   const [showModal, setShowModal] = useState(false);
 
