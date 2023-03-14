@@ -2,13 +2,13 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
 import { useCreateGym } from "../../hooks/mutations";
 import {
   useFakemonsByUser,
   useGyms,
   useIsRegistered,
 } from "../../hooks/queries";
+import useAuth from "../../hooks/useAuth";
 import Alert from "../Alert";
 import ButtonWithLoader from "../ButtonWithLoader";
 import CreateGymModal from "../CreateGymModal";

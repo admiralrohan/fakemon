@@ -7,9 +7,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { AuthProvider } from "./context/auth-context";
 import { ToastProvider } from "./context/toast-context";
 import { inject } from "@vercel/analytics";
+import AuthProvider from "./components/AuthProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {

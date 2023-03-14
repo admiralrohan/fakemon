@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../context/auth-context";
 import {
   useCurrentBattle,
   useFakemonsByGym,
@@ -11,6 +10,7 @@ import {
   useGyms,
   useIsRegistered,
 } from "../../hooks/queries";
+import useAuth from "../../hooks/useAuth";
 import Alert from "../Alert";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";

@@ -12,8 +12,8 @@ import Alert from "../Alert";
 import { useMintFakemon, useRegister } from "../../hooks/mutations";
 import { useToast } from "../../context/toast-context";
 import { CardText } from "../../utils/styled-components";
-import { useAuth } from "../../context/auth-context";
 import ButtonWithLoader from "../ButtonWithLoader";
+import useAuth from "../../hooks/useAuth";
 
 function Profile() {
   const { walletAddress } = useAuth();
