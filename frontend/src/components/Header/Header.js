@@ -4,10 +4,10 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
-import { useTokenBalance } from "../../hooks/queries";
 import { useConnectWallet, useDetachWallet } from "../../hooks/mutations";
 import { LOCALSTORAGE_KEY } from "../../utils/utils";
 import useAuth from "../../hooks/useAuth";
+import useTokenBalance from "../../hooks/useTokenBalance";
 
 function Header() {
   const { walletAddress } = useAuth();

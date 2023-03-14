@@ -2,7 +2,6 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import { useTokenBalance } from "../../hooks/queries";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Alert from "../Alert";
 import { useMintFakemon, useRegister } from "../../hooks/mutations";
@@ -12,6 +11,7 @@ import useAuth from "../../hooks/useAuth";
 import useToast from "../../hooks/useToast";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import useIsRegistered from "../../hooks/useIsRegistered";
+import useTokenBalance from "../../hooks/useTokenBalance";
 
 function Profile() {
   const { walletAddress } = useAuth();
