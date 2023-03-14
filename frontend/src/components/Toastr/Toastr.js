@@ -1,7 +1,7 @@
 import React from "react";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import Toast from "react-bootstrap/Toast";
-import { useToast } from "../../context/toast-context";
+import useToast from "../../hooks/useToast";
 
 function Toastr() {
   const [show, setShow] = React.useState(false);

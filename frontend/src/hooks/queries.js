@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useToast } from "../context/toast-context";
 import {
   getBlockchain,
   LOCALSTORAGE_KEY,
@@ -7,6 +6,7 @@ import {
   QueryKeys,
 } from "../utils/utils";
 import useAuth from "./useAuth";
+import useToast from "./useToast";
 
 export function useBlockchain() {
   const { walletConnected, setWalletAddress } = useAuth();

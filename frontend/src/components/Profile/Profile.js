@@ -10,10 +10,10 @@ import {
 import ImportWalletAlert from "../ImportWalletAlert";
 import Alert from "../Alert";
 import { useMintFakemon, useRegister } from "../../hooks/mutations";
-import { useToast } from "../../context/toast-context";
 import { CardText } from "../../utils/styled-components";
 import ButtonWithLoader from "../ButtonWithLoader";
 import useAuth from "../../hooks/useAuth";
+import useToast from "../../hooks/useToast";
 
 function Profile() {
   const { walletAddress } = useAuth();

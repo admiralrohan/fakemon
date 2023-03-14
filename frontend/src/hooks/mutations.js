@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
-import { useToast } from "../context/toast-context";
 import { LOCALSTORAGE_KEY, QueryKeys } from "../utils/utils";
 import { useBlockchain } from "./queries";
 import useAuth from "./useAuth";
+import useToast from "./useToast";
 
 // Connect our app with blockchain
 export function useConnectWallet() {
