@@ -4,13 +4,13 @@ import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
-  useCurrentBattle,
   useFakemonsByGym,
   useFakemonsByUser,
   useGyms,
   useIsRegistered,
 } from "../../hooks/queries";
 import useAuth from "../../hooks/useAuth";
+import useCurrentBattle from "../../hooks/useCurrentBattle";
 import Alert from "../Alert";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";
