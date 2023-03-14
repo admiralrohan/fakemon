@@ -1,15 +1,14 @@
+import React from "react";
 import ToastContainer from "react-bootstrap/ToastContainer";
 import Toast from "react-bootstrap/Toast";
-import { useEffect, useState } from "react";
-import { useToast } from "../context/toast-context";
+import { useToast } from "../../context/toast-context";
 
-/** @deprecated */
-export function Toastr() {
-  const [show, setShow] = useState(false);
+function Toastr() {
+  const [show, setShow] = React.useState(false);
   const { toastCount, toastMessage } = useToast();
   const delay = 3000;
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (toastCount > 0) setShow(true);
   }, [toastCount]);
 
@@ -31,3 +30,5 @@ export function Toastr() {
     </ToastContainer>
   );
 }
+
+export default Toastr;

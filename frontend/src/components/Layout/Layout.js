@@ -6,7 +6,7 @@ import Gym from "../Gym";
 import Gyms from "../Gyms";
 import { Header } from "../Header";
 import Profile from "../Profile";
-import { Toastr } from "../Toast";
+import Toastr from "../Toastr";
 
 function Layout() {
   return (
