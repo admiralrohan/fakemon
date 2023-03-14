@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "../Alert";
 import useAuth from "../../hooks/useAuth";
-import { useGyms } from "../../hooks/useGyms";
+import useGyms from "../../hooks/useGyms";
 
 function Gym() {
   const { id: gymId } = useParams();

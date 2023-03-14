@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useCreateGym } from "../../hooks/mutations";
 import { useFakemonsByUser, useIsRegistered } from "../../hooks/queries";
 import useAuth from "../../hooks/useAuth";
-import { useGyms } from "../../hooks/useGyms";
+import useGyms from "../../hooks/useGyms";
 import Alert from "../Alert";
 import ButtonWithLoader from "../ButtonWithLoader";
 import CreateGymModal from "../CreateGymModal";

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { QueryKeys } from "../utils/utils";
 import useBlockchain from "./useBlockchain";
 
-export function useGyms() {
+function useGyms() {
   const { data: blockchain } = useBlockchain();
 
   return useQuery(
@@ -30,3 +30,5 @@ export function useGyms() {
     { enabled: !!blockchain, placeholderData: [] }
   );
 }
+
+export default useGyms;
