@@ -1,13 +1,13 @@
+import React from "react";
+import { Link, useParams } from "react-router-dom";
+import { useAuth } from "../../context/auth-context";
+import { useFakemonsByGym, useGyms } from "../../hooks/queries";
+import ImportWalletAlert from "../ImportWalletAlert";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-import { Link, useParams } from "react-router-dom";
-import { AlertLayout } from "../components/AlertLayout";
-import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
-import { useAuth } from "../context/auth-context";
-import { useFakemonsByGym, useGyms } from "../hooks/queries";
+import Alert from "../Alert";
 
-/** @deprecated */
-export function Gym() {
+function Gym() {
   const { id: gymId } = useParams();
   const { walletAddress } = useAuth();
   const { data: gyms } = useGyms();
@@ -19,7 +19,10 @@ export function Gym() {
   // Disable link to battle page by default
   const isOwnGym = gymDetails ? gymDetails.owner === walletAddress : true;
 
-  const existingGymView = () => (
+  if (!walletAddress) return <ImportWalletAlert />;
+  if (!gymDetails) return <Alert>Gym doesn't exist</Alert>;
+
+  return (
     <div>
       <Link to="/gyms">
         <Button size="sm">Back</Button>
@@ -31,7 +34,7 @@ export function Gym() {
 
       {/* We are certain as user can't create gym without fakemon */}
       {fakemonsInGym.length === 0 ? (
-        <AlertLayout content="Can't fetch details, reload page" />
+        <Alert>Can't fetch details, reload page</Alert>
       ) : (
         fakemonsInGym.map((fakemon) => (
           <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
@@ -85,16 +88,6 @@ export function Gym() {
       </div>
     </div>
   );
-
-  return (
-    <div style={{ width: 500, margin: "25px auto" }}>
-      {!walletAddress ? (
-        <BeforeWalletImportNotice />
-      ) : gymDetails ? (
-        existingGymView()
-      ) : (
-        <AlertLayout content="Gym doesn't exist" />
-      )}
-    </div>
-  );
 }
+
+export default Gym;
