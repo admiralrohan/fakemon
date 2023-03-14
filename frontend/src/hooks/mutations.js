@@ -5,24 +5,6 @@ import useAuth from "./useAuth";
 import useBlockchain from "./useBlockchain";
 import useToast from "./useToast";
 
-// Connect our app with blockchain
-export function useConnectWallet() {
-  const { setWalletConnected, handleAccountsChanged, handleChainChanged } =
-    useAuth();
-
-  return useMutation(
-    () => {
-      setWalletConnected(true);
-    },
-    {
-      onSuccess: () => {
-        window.ethereum.on("accountsChanged", handleAccountsChanged);
-        window.ethereum.on("chainChanged", handleChainChanged);
-      },
-    }
-  );
-}
-
 // It doesn't disconnect wallet with metamask
 // User has to do it manually
 // This process here is to just forbid our app to connect with blockchain automatically
