@@ -3,23 +3,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { QueryKeys } from "../utils/utils";
 import useBlockchain from "./useBlockchain";
 
-export function useStartBattle() {
-  const { data: blockchain } = useBlockchain();
-  const queryClient = useQueryClient();
-
-  return useMutation(
-    async (gymId) => {
-      const tx = await blockchain.fakemon.startBattle(gymId);
-      await tx.wait();
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
-      },
-    }
-  );
-}
-
 // TODO: Open a gym, then go to different battle page via URL
 const updateBattleView = async (queryClient) => {
   // await getCurrentBattleDetails();
