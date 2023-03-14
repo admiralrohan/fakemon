@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ethers } from "ethers";
 import { LOCALSTORAGE_KEY, QueryKeys } from "../utils/utils";
-import { useBlockchain } from "./queries";
 import useAuth from "./useAuth";
+import useBlockchain from "./useBlockchain";
 import useToast from "./useToast";
 
 // Connect our app with blockchain
