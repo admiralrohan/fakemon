@@ -1,21 +1,21 @@
-import Button from "react-bootstrap/Button";
+import React from "react";
 import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
-import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
-import { ButtonWithLoader } from "../components/ButtonWithLoader";
-import { AlertLayout } from "../components/AlertLayout";
 import {
   useFakemonsByUser,
   useIsRegistered,
   useTokenBalance,
-} from "../hooks/queries";
-import { useMintFakemon, useRegister } from "../hooks/mutations";
-import { useAuth } from "../context/auth-context";
-import { CardText } from "../utils/styled-components";
-import { useToast } from "../context/toast-context";
+} from "../../hooks/queries";
+import ImportWalletAlert from "../ImportWalletAlert";
+import Alert from "../Alert";
+import { useMintFakemon, useRegister } from "../../hooks/mutations";
+import { useToast } from "../../context/toast-context";
+import { CardText } from "../../utils/styled-components";
+import { useAuth } from "../../context/auth-context";
+import ButtonWithLoader from "../ButtonWithLoader";
 
-/** @deprecated */
-export function Profile() {
+function Profile() {
   const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();
   const { data: tokenBalance } = useTokenBalance();
@@ -33,7 +33,9 @@ export function Profile() {
     showToast("Coming soon");
   };
 
-  const afterWalletImportView = (
+  if (!walletAddress) return <ImportWalletAlert />;
+
+  return (
     <>
       <Card>
         <Card.Body>
@@ -98,7 +100,7 @@ export function Profile() {
 
       {/* User squad */}
       <h4 className="text-center mt-3 mb-2">Your Squad</h4>
-      {fakemons.length === 0 && <AlertLayout content="You have no fakemons" />}
+      {fakemons.length === 0 && <Alert content="You have no fakemons" />}
 
       {fakemons.map((fakemon) => (
         <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
@@ -120,10 +122,6 @@ export function Profile() {
       ))}
     </>
   );
-
-  return (
-    <div style={{ width: "500px", margin: "25px auto" }}>
-      {walletAddress ? afterWalletImportView : <BeforeWalletImportNotice />}
-    </div>
-  );
 }
+
+export default Profile;

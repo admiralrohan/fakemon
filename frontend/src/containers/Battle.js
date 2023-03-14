@@ -5,7 +5,7 @@ import Badge from "react-bootstrap/Badge";
 import { Link, useParams } from "react-router-dom";
 import { AlertLayout } from "../components/AlertLayout";
 import { BeforeWalletImportNotice } from "../components/BeforeWalletImportNotice";
-import { ButtonWithLoader } from "../components/ButtonWithLoader";
+import ButtonWithLoader from "../components/ButtonWithLoader";
 import { useAuth } from "../context/auth-context";
 import {
   useCurrentBattle,

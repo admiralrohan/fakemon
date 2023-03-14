@@ -1,3 +1,4 @@
+import React from "react";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -8,7 +9,7 @@ import Spinner from "react-bootstrap/Spinner";
  * Will show spinner and disable the button while `showLoader` is true. \
  * All APIs are same as React bootstrap.
  */
-export function ButtonWithLoader({
+function ButtonWithLoader({
   children = "",
   showLoader = false,
   size = "",
@@ -36,3 +37,5 @@ export function ButtonWithLoader({
     </span>
   );
 }
+
+export default ButtonWithLoader;

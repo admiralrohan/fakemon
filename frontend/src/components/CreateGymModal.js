@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
-import { ButtonWithLoader } from "./ButtonWithLoader";
+import ButtonWithLoader from "./ButtonWithLoader";
 
 /**
  * Will show list of fakemons owned by user and non-staked fakemons can be chosen to create new gym.
