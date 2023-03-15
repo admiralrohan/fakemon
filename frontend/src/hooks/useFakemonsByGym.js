@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { QueryKeys } from "../utils/utils";
 import useBlockchain from "./useBlockchain";
-const { useQuery } = require("@tanstack/react-query");
-const { QueryKeys } = require("../utils/utils");
 
 function useFakemonsByGym(gymId) {
   const { data: blockchain } = useBlockchain();
