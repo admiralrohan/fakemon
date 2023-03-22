@@ -2,6 +2,7 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
+import * as S from "./Profile.styled";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Alert from "../Alert";
 import ButtonWithLoader from "../ButtonWithLoader";
@@ -12,7 +13,7 @@ import useIsRegistered from "../../hooks/useIsRegistered";
 import useTokenBalance from "../../hooks/useTokenBalance";
 import useRegister from "../../hooks/useRegister";
 import useMintFakemon from "../../hooks/useMintFakemon";
-import styled from "@emotion/styled";
+import Stats from "./Stats";
 
 function Profile() {
   const { walletAddress } = useAuth();
@@ -36,28 +37,31 @@ function Profile() {
 
   return (
     <>
+      <Stats />
+
       <Card>
         <Card.Body>
           <Card.Title>User Profile</Card.Title>
 
-          <CardText>
+          <S.CardText>
             <strong>Wallet address:</strong> {walletAddress}
-          </CardText>
+          </S.CardText>
+
           {isRegistered ? (
             <>
-              <CardText>
+              <S.CardText>
                 <strong>No of fakemons:</strong> {fakemons.length}
-              </CardText>
-              {/* <CardText>
+              </S.CardText>
+              {/* <S.CardText>
                 <strong>No of battles won:</strong> {profileDetails.won} of{" "}
                 {profileDetails.totalMatches}
-              </CardText> */}
-              <CardText>
+              </S.CardText> */}
+              <S.CardText>
                 <strong>Token balance:</strong> {tokenBalance}
-              </CardText>
-              {/* <CardText>
+              </S.CardText>
+              {/* <S.CardText>
                 <strong>Joined on:</strong> {profileDetails.joinedOn}
-              </CardText> */}
+              </S.CardText> */}
 
               <Link to="/gyms">
                 <Button size="sm" className="mt-2">
@@ -80,9 +84,9 @@ function Profile() {
             </>
           ) : (
             <>
-              <CardText>
+              <S.CardText>
                 <strong>Status:</strong> Unregistered
-              </CardText>
+              </S.CardText>
 
               <ButtonWithLoader
                 showLoader={isRegisterUserLoading}
@@ -99,32 +103,33 @@ function Profile() {
 
       {/* User squad */}
       <h4 className="text-center mt-3 mb-2">Your Squad</h4>
-      {fakemons.length === 0 && <Alert content="You have no fakemons" />}
-
+      {fakemons.length === 0 && <Alert>You have no fakemons</Alert>}
       {fakemons.map((fakemon) => (
-        <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
-          <Card.Body>
-            <Card.Title>Fakemon #{fakemon.id}</Card.Title>
-            <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
-              <span>
-                <strong>HP:</strong> {fakemon.hp}
-              </span>
-              <span>
-                <strong>Attack:</strong> {fakemon.attack}
-              </span>
-              <span>
-                <strong>Defense:</strong> {fakemon.defense}
-              </span>
-            </Card.Subtitle>
-          </Card.Body>
-        </Card>
+        <FakemonView key={fakemon.id} fakemon={fakemon} />
       ))}
     </>
   );
 }
 
-const CardText = styled.p`
-  margin-bottom: 0;
-`;
+function FakemonView({ fakemon }) {
+  return (
+    <Card className="mb-2" style={{ width: "500px" }}>
+      <Card.Body>
+        <Card.Title>Fakemon #{fakemon.id}</Card.Title>
+        <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
+          <span>
+            <strong>HP:</strong> {fakemon.hp}
+          </span>
+          <span>
+            <strong>Attack:</strong> {fakemon.attack}
+          </span>
+          <span>
+            <strong>Defense:</strong> {fakemon.defense}
+          </span>
+        </Card.Subtitle>
+      </Card.Body>
+    </Card>
+  );
+}
 
 export default Profile;
