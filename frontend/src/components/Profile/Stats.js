@@ -1,32 +1,15 @@
 import styled from "@emotion/styled";
-import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import useIsRegistered from "../../hooks/useIsRegistered";
-import useMintFakemon from "../../hooks/useMintFakemon";
-import useRegister from "../../hooks/useRegister";
-import useToast from "../../hooks/useToast";
 import useTokenBalance from "../../hooks/useTokenBalance";
-import ButtonWithLoader from "../ButtonWithLoader";
+import ActionButtons from "./ActionButtons";
 
 function Stats() {
   const { walletAddress } = useAuth();
   const { data: isRegistered } = useIsRegistered();
   const { data: tokenBalance } = useTokenBalance();
   const { data: fakemons } = useFakemonsByUser();
-
-  const { mutate: registerUser, isLoading: isRegisterUserLoading } =
-    useRegister();
-  const { mutate: mintFakemon, isLoading: isMintFakemonLoading } =
-    useMintFakemon();
-
-  const { showToast } = useToast();
-
-  const getToken = () => {
-    // TODO: Implement
-    showToast("Coming soon");
-  };
 
   const truncatedWalletAddress =
     walletAddress.slice(0, 10) + "..." + walletAddress.slice(-6, -1);
@@ -35,60 +18,52 @@ function Stats() {
     <Wrapper>
       <Title>User Profile</Title>
       <List>
-        <dt>Wallet Address</dt>
-        <dd>{truncatedWalletAddress}</dd>
+        <List.DT>Wallet Address</List.DT>
+        <List.DD>{truncatedWalletAddress}</List.DD>
 
-        <dt>No of Fakemons</dt>
-        <dd>{fakemons.length}</dd>
+        <List.DT>Status</List.DT>
+        <List.DD>{isRegistered ? "Registered" : "Unregistered"}</List.DD>
 
-        <dt>Token Balance</dt>
-        <dd>{tokenBalance}</dd>
+        {isRegistered && (
+          <>
+            <List.DT>No of Fakemons</List.DT>
+            <List.DD>{fakemons.length}</List.DD>
+
+            <List.DT>Token Balance</List.DT>
+            <List.DD>{tokenBalance}</List.DD>
+          </>
+        )}
       </List>
 
-      <Actions>
-        <Link to="/gyms">
-          <Button size="sm" className="mt-2">
-            Battle now
-          </Button>
-        </Link>
-
-        <ButtonWithLoader
-          showLoader={isMintFakemonLoading}
-          size="sm"
-          className="mt-2 ms-2"
-          onClick={mintFakemon}
-        >
-          Mint fakemon
-        </ButtonWithLoader>
-
-        <Button size="sm" className="mt-2 ms-2" onClick={getToken}>
-          Get token
-        </Button>
-      </Actions>
+      <ActionButtons />
     </Wrapper>
   );
 }
 
 export const Wrapper = styled.div`
-  /* border: 1px solid; */
+  --gap: 16px;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--gap);
 `;
+
 const Title = styled.h2`
   text-align: center;
   font-size: 1.25rem;
+  margin: 0;
 `;
+
 const List = styled.dl`
   display: grid;
   grid-template-columns: max-content 1fr;
-  column-gap: 16px;
+  column-gap: var(--gap);
   row-gap: 0;
+  margin: 0;
 `;
-const Actions = styled.div`
-  display: flex;
-  justify-content: center;
+List.DT = styled.dt``;
+List.DD = styled.dd`
+  margin: 0;
 `;
 
 export default Stats;
