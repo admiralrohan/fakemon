@@ -48,7 +48,7 @@ export const Wrapper = styled.div`
   gap: var(--gap);
 `;
 
-const Title = styled.h2`
+const Title = styled.h1`
   text-align: center;
   font-size: 1.25rem;
   margin: 0;
