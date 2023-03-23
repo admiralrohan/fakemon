@@ -98,4 +98,18 @@ async function loadDummyData(TokenContract, FakemonContract) {
   await createNewGym([RESERVED_NFTS + 9, RESERVED_NFTS + 10], user2);
 }
 
+async function loadMinimalData(TokenContract, FakemonContract) {
+  const [user1, user2] = await ethers.getSigners();
+  const { registerUser, mintNewNfts, createNewGym } = testHelpers(
+    FakemonContract,
+    TokenContract,
+    user1,
+    user2
+  );
+
+  await registerUser(user1);
+  await registerUser(user2);
+  await mintNewNfts(2, user1);
+}
+
 module.exports = { deployContracts };
