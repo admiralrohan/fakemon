@@ -20,7 +20,7 @@ task("deploy", "Deploy all contracts").setAction(async () => {
 module.exports = {
   solidity: "0.8.9",
   networks: {
-    hardhat: { mining: { auto: false, interval: 2000 } },
+    hardhat: { mining: { auto: true, interval: 0 } },
     goerli: {
       url: PROVIDER_URL,
       accounts: [WALLET_PRIVATE_KEY],
