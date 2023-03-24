@@ -42,7 +42,7 @@ function Stats() {
 
 export const Wrapper = styled.div`
   --gap: 16px;
-  padding: 16px;
+  padding: 0 var(--gap);
   display: flex;
   flex-direction: column;
   gap: var(--gap);

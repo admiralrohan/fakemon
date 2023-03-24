@@ -30,7 +30,8 @@ function Layout() {
 
 const Wrapper = styled.div`
   width: 500px;
-  margin: 25px auto;
+  margin: 0 auto;
+  padding: 32px 0;
 `;
 
 export default Layout;
