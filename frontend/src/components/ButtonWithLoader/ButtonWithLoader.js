@@ -20,13 +20,8 @@ function ButtonWithLoader({
 }) {
   return (
     // Used span for tooltip as it would not work for disabled buttons
-    <span title={showLoader ? null : title}>
-      <Button
-        size={size}
-        className={className}
-        onClick={onClick}
-        disabled={disabled || showLoader}
-      >
+    <span title={showLoader ? null : title} className={className}>
+      <Button size={size} onClick={onClick} disabled={disabled || showLoader}>
         {showLoader && (
           <Spinner animation="border" size="sm" className="me-1" role="status">
             <span className="visually-hidden">Loading...</span>

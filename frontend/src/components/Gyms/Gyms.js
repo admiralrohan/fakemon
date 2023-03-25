@@ -1,7 +1,5 @@
+import styled from "@emotion/styled";
 import React from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useCreateGym from "../../hooks/useCreateGym";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
@@ -11,6 +9,7 @@ import Alert from "../Alert";
 import ButtonWithLoader from "../ButtonWithLoader";
 import CreateGymModal from "../CreateGymModal";
 import ImportWalletAlert from "../ImportWalletAlert";
+import GymList from "./GymList";
 
 function Gyms() {
   const [showModal, setShowModal] = React.useState(false);
@@ -25,25 +24,23 @@ function Gyms() {
   if (!walletAddress) return <ImportWalletAlert />;
 
   return (
-    <>
-      <div className="text-end">
-        <ButtonWithLoader
-          showLoader={isCreateGymLoading}
-          size="sm"
-          disabled={!isRegistered || fakemons.length === 0}
-          title={
-            !isRegistered
-              ? "You need to register first"
-              : fakemons.length === 0
-              ? "You need some fakemons"
-              : null
-          }
-          onClick={() => setShowModal(true)}
-        >
-          Create gym
-        </ButtonWithLoader>
-      </div>
-      <Card.Title className="mb-3 text-center">Gyms</Card.Title>
+    <Wrapper>
+      <GymsTitle>Gyms</GymsTitle>
+      <CreateGymButton
+        showLoader={isCreateGymLoading}
+        size="sm"
+        disabled={!isRegistered || fakemons.length === 0}
+        title={
+          !isRegistered
+            ? "You need to register first"
+            : fakemons.length === 0
+            ? "You need some fakemons"
+            : null
+        }
+        onClick={() => setShowModal(true)}
+      >
+        Create gym
+      </CreateGymButton>
 
       {isRegistered && (
         <CreateGymModal
@@ -58,28 +55,24 @@ function Gyms() {
       )}
 
       {gyms.length === 0 ? <Alert>No gyms yet</Alert> : <GymList />}
-    </>
+    </Wrapper>
   );
 }
 
-function GymList() {
-  const { walletAddress } = useAuth();
-  const { data: gyms } = useGyms();
+const Wrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
 
-  return gyms.map((gym) => (
-    <Card className="mb-2" style={{ width: "500px" }} key={gym.id}>
-      <Card.Body className="d-flex justify-content-between">
-        <Card.Title>
-          Gym #{gym.id}{" "}
-          {gym.owner === walletAddress && <span className="fs-6">(Mine)</span>}
-        </Card.Title>
+const GymsTitle = styled.h1`
+  font-size: 1.25rem;
+  text-align: center;
+  margin: 0;
+`;
 
-        <Link to={"/gyms/" + gym.id}>
-          <Button size="sm">Check squad</Button>
-        </Link>
-      </Card.Body>
-    </Card>
-  ));
-}
+const CreateGymButton = styled(ButtonWithLoader)`
+  align-self: flex-end;
+`;
 
 export default Gyms;
