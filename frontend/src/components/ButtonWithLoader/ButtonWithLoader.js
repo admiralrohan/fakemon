@@ -1,6 +1,6 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import Button from "../Button";
 
 /**
  * We want to show why the button is disabled in tooltip. \

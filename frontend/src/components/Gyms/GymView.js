@@ -1,7 +1,7 @@
-import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import styled from "@emotion/styled";
+import Button from "../Button";
 
 function GymView({ gym }) {
   const { walletAddress } = useAuth();

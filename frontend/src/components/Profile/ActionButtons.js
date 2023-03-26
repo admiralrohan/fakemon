@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 import useIsRegistered from "../../hooks/useIsRegistered";
 import useMintFakemon from "../../hooks/useMintFakemon";
 import useRegister from "../../hooks/useRegister";
 import useToast from "../../hooks/useToast";
+import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
 
 function ActionButtons() {

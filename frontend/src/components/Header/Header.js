@@ -2,13 +2,13 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
 import { LinkContainer } from "react-router-bootstrap";
 import { LOCALSTORAGE_KEY } from "../../utils/utils";
 import useAuth from "../../hooks/useAuth";
 import useTokenBalance from "../../hooks/useTokenBalance";
 import useConnectWallet from "../../hooks/useConnectWallet";
 import useDetachWallet from "../../hooks/useDetachWallet";
+import Button from "../Button";
 
 function Header() {
   const { walletAddress } = useAuth();

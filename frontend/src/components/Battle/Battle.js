@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import useGyms from "../../hooks/useGyms";
 import useIsRegistered from "../../hooks/useIsRegistered";
 import Alert from "../Alert";
+import Button from "../Button";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";
 import FakemonSquad from "./FakemonSquad";

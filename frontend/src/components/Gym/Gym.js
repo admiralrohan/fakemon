@@ -1,12 +1,12 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import ImportWalletAlert from "../ImportWalletAlert";
-import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import Alert from "../Alert";
 import useAuth from "../../hooks/useAuth";
 import useGyms from "../../hooks/useGyms";
 import useFakemonsByGym from "../../hooks/useFakemonsByGym";
+import Button from "../Button";
 
 function Gym() {
   const { id: gymId } = useParams();
