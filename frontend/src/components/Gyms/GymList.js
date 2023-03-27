@@ -1,4 +1,3 @@
-import useAuth from "../../hooks/useAuth";
 import useGyms from "../../hooks/useGyms";
 import styled from "@emotion/styled";
 import GymView from "./GymView";
