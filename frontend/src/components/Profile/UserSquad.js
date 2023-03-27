@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import Alert from "../Alert";
-import FakemonView from "./FakemonView";
+import FakemonView from "../FakemonView";
 
 function UserSquad() {
   const { data: fakemons } = useFakemonsByUser();
