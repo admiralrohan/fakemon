@@ -39,7 +39,7 @@ function Battle() {
   if (!walletAddress) return <ImportWalletAlert />;
   if (!gymDetails) return <Alert>Gym doesn't exist</Alert>;
   if (!isRegistered) return <Alert>You need to register first</Alert>;
-  if (!isOwnGym) return <Alert>You can't fight with your own gym</Alert>;
+  if (isOwnGym) return <Alert>You can't fight with your own gym</Alert>;
 
   return (
     <>
