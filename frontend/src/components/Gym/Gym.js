@@ -1,12 +1,13 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import styled from "@emotion/styled";
+import { useParams } from "react-router-dom";
 import ImportWalletAlert from "../ImportWalletAlert";
-import Card from "react-bootstrap/Card";
 import Alert from "../Alert";
 import useAuth from "../../hooks/useAuth";
 import useGyms from "../../hooks/useGyms";
 import useFakemonsByGym from "../../hooks/useFakemonsByGym";
-import Button from "../Button";
+import FakemonList from "../FakemonList";
+import ActionButtons from "./ActionButtons";
 
 function Gym() {
   const { id: gymId } = useParams();
@@ -24,71 +25,45 @@ function Gym() {
   if (!gymDetails) return <Alert>Gym doesn't exist</Alert>;
 
   return (
-    <div>
-      <Link to="/gyms">
-        <Button size="sm">Back</Button>
-      </Link>
-      <Card.Title className="text-center mb-2">Gym #{gymId}</Card.Title>
-      <Card.Subtitle className="text-center mb-3">
-        Owner {gymDetails.owner}
-      </Card.Subtitle>
+    <Wrapper>
+      <TitleWrapper>
+        <Title>Gym #{gymId}</Title>
+        <Subtitle>Owner {gymDetails.owner}</Subtitle>
+      </TitleWrapper>
 
       {/* We are certain as user can't create gym without fakemon */}
       {fakemonsInGym.length === 0 ? (
         <Alert>Can't fetch details, reload page</Alert>
       ) : (
-        fakemonsInGym.map((fakemon) => (
-          <Card className="mb-2" style={{ width: "500px" }} key={fakemon.id}>
-            <Card.Body>
-              <Card.Title>Fakemon #{fakemon.id}</Card.Title>
-              <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
-                <span>
-                  <strong>HP:</strong> {fakemon.hp}
-                </span>
-                <span>
-                  <strong>Attack:</strong> {fakemon.attack}
-                </span>
-                <span>
-                  <strong>Defense:</strong> {fakemon.defense}
-                </span>
-              </Card.Subtitle>
-            </Card.Body>
-          </Card>
-        ))
+        <FakemonList fakemons={fakemonsInGym} />
       )}
 
-      <div
-        title={
-          fakemonsInGym.length === 0
-            ? "Reload page"
-            : isOwnGym
-            ? "You can't battle against your own gym"
-            : null
-        }
-      >
-        <Link
-          to={`/gyms/${gymId}/battle`}
-          style={{
-            pointerEvents:
-              isOwnGym || fakemonsInGym.length === 0 ? "none" : "auto",
-          }}
-        >
-          <Button
-            disabled={isOwnGym || fakemonsInGym.length === 0}
-            title={
-              isOwnGym
-                ? "You can't battle against your own gym"
-                : fakemonsInGym.length === 0
-                ? "Reload page"
-                : null
-            }
-          >
-            Battle
-          </Button>
-        </Link>
-      </div>
-    </div>
+      <ActionButtons
+        gymId={gymId}
+        isOwnGym={isOwnGym}
+        noOfFakemons={fakemonsInGym.length}
+      />
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const TitleWrapper = styled.div``;
+const Title = styled.h1`
+  text-align: center;
+  font-size: 1.25rem;
+  margin: 0;
+`;
+const Subtitle = styled.h2`
+  text-align: center;
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 400;
+`;
 
 export default Gym;
