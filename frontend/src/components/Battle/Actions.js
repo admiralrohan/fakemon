@@ -1,12 +1,13 @@
+import styled from "@emotion/styled";
 import React from "react";
-import Card from "react-bootstrap/Card";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useAttackFakemon from "../../hooks/useAttackFakemon";
 import useCurrentBattle from "../../hooks/useCurrentBattle";
 import useEndBattle from "../../hooks/useEndBattle";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
 import useFleeBattle from "../../hooks/useFleeBattle";
 import useStartBattle from "../../hooks/useStartBattle";
+import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
 
 function Actions({ selectedFakemon, setSelectedFakemon }) {
@@ -26,71 +27,93 @@ function Actions({ selectedFakemon, setSelectedFakemon }) {
   );
   const { id: gymId } = useParams();
 
-  // End battle
-  if (currentBattle.isWon) {
-    return (
-      <>
-        <Card.Title className="mb-2 mt-3">You Won!</Card.Title>
+  const isGymFreeToBattle = currentBattle.gymId === "0";
+  const isBattlingActiveGym = currentBattle.gymId === gymId;
 
-        <ButtonWithLoader
-          showLoader={isEndBattleLoading}
-          className="me-2"
-          onClick={() => endBattle(gymId)}
-        >
-          End Battle
-        </ButtonWithLoader>
-      </>
-    );
-  }
-
-  // Start battle
-  if (currentBattle.gymId === "0") {
-    return (
-      <ButtonWithLoader
-        showLoader={isStartBattleLoading}
-        disabled={nonStakedFakemonsInUserSquad.length === 0}
-        title={
-          nonStakedFakemonsInUserSquad.length === 0
-            ? "No pokemon to fight with"
-            : null
-        }
-        className="me-2"
-        onClick={() => startBattle(gymId)}
-      >
-        Start Battle
-      </ButtonWithLoader>
-    );
-  }
-
-  // During battle
   return (
-    <div>
-      {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
-      <ButtonWithLoader
-        showLoader={isAttackFakemonLoading}
-        className="me-2"
-        disabled={!selectedFakemon}
-        title={!selectedFakemon ? "Select an fakemon to attack" : null}
-        onClick={() => {
-          attackFakemon(selectedFakemon);
-          setSelectedFakemon(null); // To prevent highlighted button "De-select" after attack
-        }}
-      >
-        Attack
-      </ButtonWithLoader>
+    <Wrapper>
+      {currentBattle.isWon && <Title>You Won!</Title>}
 
-      {/* Flee would save remaining energy, but the user will lose the match on record */}
-      {/* You shouldn't flee while an attack is ongoing, so added extra condition for `disabled` */}
-      <ButtonWithLoader
-        showLoader={isFleeBattleLoading}
-        disabled={selectedFakemon || isAttackFakemonLoading}
-        title={!selectedFakemon ? null : "De-select an fakemons to flee"}
-        onClick={() => fleeBattle()}
-      >
-        Flee
-      </ButtonWithLoader>
-    </div>
+      <ButtonList>
+        <Button as={Link} to={"/gyms/" + gymId} size="sm">
+          Back
+        </Button>
+
+        {isGymFreeToBattle && (
+          <ButtonWithLoader
+            size="sm"
+            showLoader={isStartBattleLoading}
+            disabled={nonStakedFakemonsInUserSquad.length === 0}
+            title={
+              nonStakedFakemonsInUserSquad.length === 0
+                ? "No pokemon to fight with"
+                : null
+            }
+            onClick={() => startBattle(gymId)}
+          >
+            Start Battle
+          </ButtonWithLoader>
+        )}
+
+        {currentBattle.isWon && (
+          <ButtonWithLoader
+            size="sm"
+            showLoader={isEndBattleLoading}
+            onClick={() => endBattle(gymId)}
+          >
+            End Battle
+          </ButtonWithLoader>
+        )}
+
+        {isBattlingActiveGym && (
+          <>
+            {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
+            <ButtonWithLoader
+              size="sm"
+              showLoader={isAttackFakemonLoading}
+              disabled={!selectedFakemon}
+              title={!selectedFakemon ? "Select an fakemon to attack" : null}
+              onClick={() => {
+                attackFakemon(selectedFakemon);
+                setSelectedFakemon(null); // To prevent highlighted button "De-select" after attack
+              }}
+            >
+              Attack
+            </ButtonWithLoader>
+
+            {/* Flee would save remaining energy, but the user will lose the match on record */}
+            {/* You shouldn't flee while an attack is ongoing, so added extra condition for `disabled` */}
+            <ButtonWithLoader
+              size="sm"
+              showLoader={isFleeBattleLoading}
+              disabled={selectedFakemon || isAttackFakemonLoading}
+              title={!selectedFakemon ? null : "De-select an fakemons to flee"}
+              onClick={() => fleeBattle()}
+            >
+              Flee
+            </ButtonWithLoader>
+          </>
+        )}
+      </ButtonList>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+`;
+const ButtonList = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const Title = styled.h3`
+  text-align: center;
+  font-size: 1.25rem;
+  margin: 0;
+`;
 
 export default Actions;

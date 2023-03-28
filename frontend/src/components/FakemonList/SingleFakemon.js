@@ -5,13 +5,17 @@ import useListContext from "./useListContext";
 
 function SingleFakemon({ fakemon }) {
   const { showUseButton } = useListContext();
+  const isFainted = fakemon.hp === "0";
 
   return (
     <Wrapper>
       <TitleWrapper>
         <Side></Side>
         <Title>Fakemon #{fakemon.id}</Title>
-        <Side>{showUseButton && <ActionButtons fakemon={fakemon} />}</Side>
+        <Side>
+          {showUseButton && <ActionButtons fakemon={fakemon} />}
+          {isFainted && <Badge bg="danger">Fainted</Badge>}
+        </Side>
       </TitleWrapper>
 
       <List>
@@ -45,6 +49,7 @@ const Side = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 `;
 
 const List = styled.dl`
@@ -57,6 +62,12 @@ const List = styled.dl`
 List.DT = styled.dt``;
 List.DD = styled.dd`
   margin: 0;
+`;
+
+const Badge = styled.div`
+  color: white;
+  background-color: rgba(220, 53, 69, 1);
+  padding: 3px 6px;
 `;
 
 export default SingleFakemon;
