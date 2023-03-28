@@ -1,14 +1,22 @@
 import styled from "@emotion/styled";
 import React from "react";
-import FakemonView from "../FakemonView";
+import SingleFakemon from "./SingleFakemon";
 
-function FakemonList({ fakemons }) {
+export const ListContext = React.createContext();
+ListContext.displayName = "ListContext";
+
+function FakemonList({ fakemons, showUseButton = false }) {
+  const [selectedFakemon, setSelectedFakemon] = React.useState("");
+  const contextValue = { selectedFakemon, setSelectedFakemon, showUseButton };
+
   return (
-    <Wrapper>
-      {fakemons.map((fakemon) => (
-        <FakemonView key={fakemon.id} fakemon={fakemon} />
-      ))}
-    </Wrapper>
+    <ListContext.Provider value={contextValue}>
+      <Wrapper>
+        {fakemons.map((fakemon) => (
+          <SingleFakemon key={fakemon.id} fakemon={fakemon} />
+        ))}
+      </Wrapper>
+    </ListContext.Provider>
   );
 }
 

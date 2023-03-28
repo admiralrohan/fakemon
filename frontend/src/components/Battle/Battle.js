@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import React from "react";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
@@ -10,9 +11,9 @@ import useGyms from "../../hooks/useGyms";
 import useIsRegistered from "../../hooks/useIsRegistered";
 import Alert from "../Alert";
 import Button from "../Button";
+import FakemonList from "../FakemonList";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";
-import FakemonSquad from "./FakemonSquad";
 
 function Battle() {
   const { walletAddress } = useAuth();
@@ -42,14 +43,14 @@ function Battle() {
   if (isOwnGym) return <Alert>You can't fight with your own gym</Alert>;
 
   return (
-    <>
+    <Wrapper>
       <Link to={"/gyms/" + gymId}>
         <Button size="sm" className="mb-3">
           Back
         </Button>
       </Link>
 
-      <main>
+      <section>
         <Card.Title className="mb-2 text-center">
           Battle with Gym #{gymId}
         </Card.Title>
@@ -59,42 +60,32 @@ function Battle() {
           </div>
         )}
 
+        {/* Only non-staked fakemons can be used for attack */}
         <Card.Subtitle className="mb-2 text-center">Your squad</Card.Subtitle>
-
         {nonStakedFakemonsInUserSquad.length === 0 && (
           <Alert>You have no non-staked Fakemon</Alert>
         )}
-
-        {/* Only non-staked fakemons can be used for attack */}
-        {nonStakedFakemonsInUserSquad.map((fakemon) => (
-          <FakemonSquad
-            key={fakemon.id}
-            fakemon={fakemon}
-            showUseButton={true}
-            selectedFakemon={selectedFakemon}
-            setSelectedFakemon={setSelectedFakemon}
-          />
-        ))}
+        <FakemonList
+          fakemons={nonStakedFakemonsInUserSquad}
+          showUseButton={true}
+        />
 
         <Card.Subtitle className="text-center my-3">Gym squad</Card.Subtitle>
-
-        {fakemonsInGym.map((fakemon) => (
-          <FakemonSquad
-            key={fakemon.id}
-            fakemon={fakemon}
-            showUseButton={false}
-            selectedFakemon={selectedFakemon}
-            setSelectedFakemon={setSelectedFakemon}
-          />
-        ))}
-      </main>
+        <FakemonList fakemons={fakemonsInGym} showUseButton={false} />
+      </section>
 
       <Actions
         selectedFakemon={selectedFakemon}
         setSelectedFakemon={setSelectedFakemon}
       />
-    </>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.main`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
 
 export default Battle;
