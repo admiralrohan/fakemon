@@ -1,15 +1,16 @@
+import styled from "@emotion/styled";
 import React from "react";
-import Card from "react-bootstrap/Card";
 
 /** Will use whenever we need to show some alert message for user */
 function Alert({ children = "Some error happened" }) {
-  return (
-    <Card className="mb-3">
-      <Card.Body>
-        <Card.Subtitle className="text-center">{children}</Card.Subtitle>
-      </Card.Body>
-    </Card>
-  );
+  return <Wrapper>{children}</Wrapper>;
 }
+
+const Wrapper = styled.div`
+  border: 1px solid;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: center;
+`;
 
 export default Alert;
