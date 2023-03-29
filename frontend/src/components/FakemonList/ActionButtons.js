@@ -6,14 +6,15 @@ function ActionButtons({ fakemon }) {
   const { isLoading } = useAttackFakemon();
   const { selectedFakemon, setSelectedFakemon } = useListContext();
   const isCurrentFakemonSelected = selectedFakemon === fakemon.id;
+  const isFainted = fakemon.hp === "0";
 
   return (
     <>
       {!selectedFakemon && (
         <ButtonWithLoader
           size="sm"
-          disabled={fakemon.hp === "0" || isLoading}
-          title={fakemon.hp === "0" ? "Don't have HP to fight" : null}
+          disabled={isFainted || isLoading}
+          title={isFainted ? "Fainted, can't fight" : null}
           onClick={() => setSelectedFakemon(fakemon.id)}
         >
           Use
