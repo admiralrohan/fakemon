@@ -32,7 +32,7 @@ function SingleFakemon({ fakemon }) {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.li`
   border: 1px solid;
   padding: 8px 16px;
 `;

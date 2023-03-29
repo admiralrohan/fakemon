@@ -20,10 +20,11 @@ function FakemonList({ fakemons, showUseButton = false }) {
   );
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  list-style-type: none;
 `;
 
 export default FakemonList;
