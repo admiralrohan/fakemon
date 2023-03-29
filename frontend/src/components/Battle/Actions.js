@@ -31,7 +31,7 @@ function Actions() {
   const { selectedFakemon, setSelectedFakemon } = useFakemonSelect();
 
   const isGymFreeToBattle = currentBattle.gymId === "0";
-  const isBattlingActiveGym = currentBattle.gymId === gymId;
+  const isBattleOngoing = currentBattle.gymId === gymId && !currentBattle.isWon;
 
   return (
     <Wrapper>
@@ -68,7 +68,7 @@ function Actions() {
           </ButtonWithLoader>
         )}
 
-        {isBattlingActiveGym && (
+        {isBattleOngoing && (
           <>
             {/* You shouldn't attack while fleeing, but no extra condition is required for `disabled`. ALready covered by existing checks. */}
             <ButtonWithLoader
