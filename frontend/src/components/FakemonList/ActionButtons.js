@@ -1,10 +1,10 @@
 import ButtonWithLoader from "../ButtonWithLoader";
-import useListContext from "./useListContext";
 import useAttackFakemon from "../../hooks/useAttackFakemon";
+import useFakemonSelect from "../../hooks/useFakemonSelect";
 
 function ActionButtons({ fakemon }) {
   const { isLoading } = useAttackFakemon();
-  const { selectedFakemon, setSelectedFakemon } = useListContext();
+  const { selectedFakemon, setSelectedFakemon } = useFakemonSelect();
   const isCurrentFakemonSelected = selectedFakemon === fakemon.id;
   const isFainted = fakemon.hp === "0";
 

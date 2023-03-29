@@ -5,12 +5,13 @@ import useAttackFakemon from "../../hooks/useAttackFakemon";
 import useCurrentBattle from "../../hooks/useCurrentBattle";
 import useEndBattle from "../../hooks/useEndBattle";
 import useFakemonsByUser from "../../hooks/useFakemonsByUser";
+import useFakemonSelect from "../../hooks/useFakemonSelect";
 import useFleeBattle from "../../hooks/useFleeBattle";
 import useStartBattle from "../../hooks/useStartBattle";
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
 
-function Actions({ selectedFakemon, setSelectedFakemon }) {
+function Actions() {
   const { data: currentBattle } = useCurrentBattle();
   const { data: fakemonsInUserSquad } = useFakemonsByUser();
 
@@ -26,6 +27,8 @@ function Actions({ selectedFakemon, setSelectedFakemon }) {
     (fakemon) => fakemon.gymId === "0"
   );
   const { id: gymId } = useParams();
+
+  const { selectedFakemon, setSelectedFakemon } = useFakemonSelect();
 
   const isGymFreeToBattle = currentBattle.gymId === "0";
   const isBattlingActiveGym = currentBattle.gymId === gymId;

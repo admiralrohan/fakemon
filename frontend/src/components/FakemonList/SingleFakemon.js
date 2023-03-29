@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "@emotion/styled";
 import ActionButtons from "./ActionButtons";
-import useListContext from "./useListContext";
 
-function SingleFakemon({ fakemon }) {
-  const { showUseButton } = useListContext();
+/**
+ * If `showUseButton = true`, render the parent component in
+ */
+function SingleFakemon({ fakemon, showUseButton }) {
   const isFainted = fakemon.hp === "0";
 
   return (

@@ -9,6 +9,7 @@ import useGyms from "../../hooks/useGyms";
 import useIsRegistered from "../../hooks/useIsRegistered";
 import Alert from "../Alert";
 import FakemonList from "../FakemonList";
+import FakemonSelectProvider from "../FakemonSelectProvider";
 import ImportWalletAlert from "../ImportWalletAlert";
 import Actions from "./Actions";
 
@@ -22,7 +23,6 @@ function Battle() {
   const nonStakedFakemonsInUserSquad = fakemonsInUserSquad.filter(
     (fakemon) => fakemon.gymId === "0"
   );
-  const [selectedFakemon, setSelectedFakemon] = React.useState(null);
 
   const { id: gymId } = useParams();
   const gymDetails = gyms.find((gym) => gym.id === gymId);
@@ -41,42 +41,41 @@ function Battle() {
   if (isOwnGym) return <Alert>You can't fight with your own gym</Alert>;
 
   return (
-    <Wrapper>
-      <TitleWrapper>
-        <Title>Battle with Gym #{gymId}</Title>
-        {isBattleLive && (
-          <BattleExpiryText>
-            Battle expiring at {`${currentBattle.expirationTime}`}
-          </BattleExpiryText>
-        )}
-      </TitleWrapper>
-
-      <MainSection>
-        <YourSquad>
-          {/* Only non-staked fakemons can be used for attack */}
-          <SquadHeading>Your squad</SquadHeading>
-
-          {nonStakedFakemonsInUserSquad.length === 0 && (
-            <Alert>You have no non-staked Fakemon</Alert>
+    <FakemonSelectProvider>
+      <Wrapper>
+        <TitleWrapper>
+          <Title>Battle with Gym #{gymId}</Title>
+          {isBattleLive && (
+            <BattleExpiryText>
+              Battle expiring at {`${currentBattle.expirationTime}`}
+            </BattleExpiryText>
           )}
+        </TitleWrapper>
 
-          <FakemonList
-            fakemons={nonStakedFakemonsInUserSquad}
-            showUseButton={true}
-          />
-        </YourSquad>
+        <MainSection>
+          <YourSquad>
+            {/* Only non-staked fakemons can be used for attack */}
+            <SquadHeading>Your squad</SquadHeading>
 
-        <GymSquad>
-          <SquadHeading>Gym squad</SquadHeading>
-          <FakemonList fakemons={fakemonsInGym} showUseButton={false} />
-        </GymSquad>
-      </MainSection>
+            {nonStakedFakemonsInUserSquad.length === 0 && (
+              <Alert>You have no non-staked Fakemon</Alert>
+            )}
 
-      <Actions
-        selectedFakemon={selectedFakemon}
-        setSelectedFakemon={setSelectedFakemon}
-      />
-    </Wrapper>
+            <FakemonList
+              fakemons={nonStakedFakemonsInUserSquad}
+              showUseButton={true}
+            />
+          </YourSquad>
+
+          <GymSquad>
+            <SquadHeading>Gym squad</SquadHeading>
+            <FakemonList fakemons={fakemonsInGym} showUseButton={false} />
+          </GymSquad>
+        </MainSection>
+
+        <Actions />
+      </Wrapper>
+    </FakemonSelectProvider>
   );
 }
 
