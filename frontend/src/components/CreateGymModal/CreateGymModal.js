@@ -1,8 +1,9 @@
 import React from "react";
-import Card from "react-bootstrap/Card";
 import Modal from "react-bootstrap/Modal";
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
+import FakemonList from "../FakemonList";
+import FakemonActions from "./FakemonActions";
 
 /**
  * Will show list of non-staked fakemons which can be chosen to create new gym.
@@ -20,48 +21,15 @@ function CreateGymModal({ show, dismiss, close, fakemons }) {
       </Modal.Header>
 
       <Modal.Body>
-        {nonStakedFakemons.map((fakemon) => (
-          <div className="d-flex mb-2" key={fakemon.id}>
-            <Card className="me-2" style={{ width: "400px" }}>
-              <Card.Body>
-                <Card.Title>Fakemon #{fakemon.id}</Card.Title>
-                <Card.Subtitle className="d-flex justify-content-between align-items-baseline">
-                  <span>
-                    <strong>HP:</strong> {fakemon.hp}
-                  </span>
-                  <span>
-                    <strong>Attack:</strong> {fakemon.attack}
-                  </span>
-                  <span>
-                    <strong>Defense:</strong> {fakemon.defense}
-                  </span>
-                </Card.Subtitle>
-              </Card.Body>
-            </Card>
-
-            {!selectedIds.includes(fakemon.id) ? (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setSelectedIds([...selectedIds, fakemon.id]);
-                }}
-              >
-                Add
-              </Button>
-            ) : (
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setSelectedIds([
-                    ...selectedIds.filter((id) => id !== fakemon.id),
-                  ]);
-                }}
-              >
-                Remove
-              </Button>
-            )}
-          </div>
-        ))}
+        <FakemonList
+          fakemons={nonStakedFakemons}
+          actions={
+            <FakemonActions
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+            />
+          }
+        />
 
         <div>
           Your {noOfStakedFakemons} fakemons are staked which can't be used
