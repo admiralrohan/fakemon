@@ -94,25 +94,8 @@ const Actions = styled.div`
   gap: 8px;
   flex-direction: row-reverse;
 `;
-const CreateGymButton = styled.button`
+const CreateGymButton = styled(Button)`
   align-self: flex-end;
-  color: white;
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-  transition: background-color 200ms;
-
-  &:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
-    transition: background-color 500ms;
-  }
-
-  &:disabled {
-    opacity: 0.65;
-  }
 `;
 
 export default CreateGymModal;

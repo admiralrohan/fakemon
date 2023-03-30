@@ -18,7 +18,7 @@ function ActionButtons({ gymId, isOwnGym, noOfFakemons }) {
         Back
       </Button>
 
-      <div title={reasonForPreventBattle}>
+      <span title={reasonForPreventBattle}>
         <Button
           as={Link}
           to={`/gyms/${gymId}/battle`}
@@ -30,7 +30,7 @@ function ActionButtons({ gymId, isOwnGym, noOfFakemons }) {
         >
           Battle
         </Button>
-      </div>
+      </span>
     </Wrapper>
   );
 }
