@@ -1,14 +1,12 @@
 import React from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { LinkContainer } from "react-router-bootstrap";
+import styled from "@emotion/styled";
 import { LOCALSTORAGE_KEY } from "../../utils/utils";
 import useAuth from "../../hooks/useAuth";
 import useTokenBalance from "../../hooks/useTokenBalance";
 import useConnectWallet from "../../hooks/useConnectWallet";
 import useDetachWallet from "../../hooks/useDetachWallet";
 import Button from "../Button";
+import NavLink from "./NavLink";
 
 function Header() {
   const { walletAddress } = useAuth();
@@ -23,36 +21,68 @@ function Header() {
     if (savedAddress) connectWallet();
   }, [connectWallet]);
 
+  const targetNetwork = process.env.REACT_APP_NETWORK
+    ? process.env.REACT_APP_NETWORK
+    : "hardhat";
+
   return (
-    <Navbar bg="dark" variant="dark">
-      <Container>
-        <Navbar.Brand>Fakemon</Navbar.Brand>
+    <Wrapper>
+      <Brand>
+        Fakemon
+        <Brand.NetworkName>{targetNetwork}</Brand.NetworkName>
+      </Brand>
 
-        <Nav className="me-auto">
-          <LinkContainer to="/profile">
-            <Nav.Link>Profile</Nav.Link>
-          </LinkContainer>
+      <NavLinks>
+        <NavLink to="/profile">Profile</NavLink>
+        <NavLink to="/gyms">Gyms</NavLink>
+      </NavLinks>
 
-          <LinkContainer to="/gyms">
-            <Nav.Link>Gyms</Nav.Link>
-          </LinkContainer>
-        </Nav>
+      <NavActions>
+        <Button size="sm" onClick={connectWallet}>
+          {walletAddress ? tokenBalance : "Connect wallet"}
+        </Button>
 
-        <Nav>
-          {/* TODO: When loading disable button */}
-          <Button size="sm" onClick={connectWallet}>
-            {walletAddress ? tokenBalance : "Connect wallet"}
+        {walletAddress && (
+          <Button size="sm" className="ms-2" onClick={detachWallet}>
+            Detach wallet
           </Button>
-
-          {walletAddress && (
-            <Button size="sm" className="ms-2" onClick={detachWallet}>
-              Detach wallet
-            </Button>
-          )}
-        </Nav>
-      </Container>
-    </Navbar>
+        )}
+      </NavActions>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.nav`
+  color: white;
+  background-color: rgba(33, 37, 41, 1);
+  padding: 12px 64px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 32px;
+`;
+
+const Brand = styled.div`
+  font-size: ${20 / 16}rem;
+  line-height: 30px;
+  white-space: nowrap;
+
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+`;
+Brand.NetworkName = styled.span`
+  font-size: ${12 / 16}rem;
+  border: 1px solid;
+  padding: 0px 6px;
+`;
+
+const NavLinks = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-right: auto;
+`;
+const NavActions = styled.div``;
 
 export default Header;
