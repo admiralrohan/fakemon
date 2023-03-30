@@ -5,36 +5,13 @@ import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
 
 /**
- * Will show list of fakemons owned by user and non-staked fakemons can be chosen to create new gym.
+ * Will show list of non-staked fakemons which can be chosen to create new gym.
  */
 function CreateGymModal({ show, dismiss, close, fakemons }) {
   const [selectedIds, setSelectedIds] = React.useState([]);
 
-  const stakedButton = () => (
-    <Button variant="secondary" disabled>
-      Staked
-    </Button>
-  );
-  const addButton = (fakemon) => (
-    <Button
-      variant="secondary"
-      onClick={() => {
-        setSelectedIds([...selectedIds, fakemon.id]);
-      }}
-    >
-      Add
-    </Button>
-  );
-  const removeButton = (fakemon) => (
-    <Button
-      variant="secondary"
-      onClick={() => {
-        setSelectedIds([...selectedIds.filter((id) => id !== fakemon.id)]);
-      }}
-    >
-      Remove
-    </Button>
-  );
+  const nonStakedFakemons = fakemons.filter((fakemon) => fakemon.gymId === "0");
+  const noOfStakedFakemons = fakemons.length - nonStakedFakemons.length;
 
   return (
     <Modal show={show} onHide={dismiss}>
@@ -43,7 +20,7 @@ function CreateGymModal({ show, dismiss, close, fakemons }) {
       </Modal.Header>
 
       <Modal.Body>
-        {fakemons.map((fakemon) => (
+        {nonStakedFakemons.map((fakemon) => (
           <div className="d-flex mb-2" key={fakemon.id}>
             <Card className="me-2" style={{ width: "400px" }}>
               <Card.Body>
@@ -62,14 +39,34 @@ function CreateGymModal({ show, dismiss, close, fakemons }) {
               </Card.Body>
             </Card>
 
-            {/* TODO: Optimize use of `array.includes()`, use mapping */}
-            {fakemon.gymId > 0
-              ? stakedButton()
-              : !selectedIds.includes(fakemon.id)
-              ? addButton(fakemon)
-              : removeButton(fakemon)}
+            {!selectedIds.includes(fakemon.id) ? (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setSelectedIds([...selectedIds, fakemon.id]);
+                }}
+              >
+                Add
+              </Button>
+            ) : (
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setSelectedIds([
+                    ...selectedIds.filter((id) => id !== fakemon.id),
+                  ]);
+                }}
+              >
+                Remove
+              </Button>
+            )}
           </div>
         ))}
+
+        <div>
+          Your {noOfStakedFakemons} fakemons are staked which can't be used
+          until freed
+        </div>
       </Modal.Body>
 
       <Modal.Footer>
@@ -79,7 +76,9 @@ function CreateGymModal({ show, dismiss, close, fakemons }) {
 
         <ButtonWithLoader
           variant="primary"
-          title={selectedIds.length === 0 ? "Select some fakemons" : null}
+          title={
+            selectedIds.length === 0 ? "Select fakemons to create gym" : null
+          }
           onClick={() => {
             close(selectedIds);
             setSelectedIds([]);
