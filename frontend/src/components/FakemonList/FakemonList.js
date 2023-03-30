@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import React from "react";
 import SingleFakemon from "./SingleFakemon";
 
-function FakemonList({ fakemons, showUseButton = false }) {
+function FakemonList({ fakemons, actions }) {
   return (
     <Wrapper>
       {fakemons.map((fakemon) => (
         <SingleFakemon
           key={fakemon.id}
           fakemon={fakemon}
-          showUseButton={showUseButton}
+          actions={actions && React.cloneElement(actions, { fakemon })}
         />
       ))}
     </Wrapper>

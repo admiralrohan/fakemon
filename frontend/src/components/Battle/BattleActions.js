@@ -11,7 +11,7 @@ import useStartBattle from "../../hooks/useStartBattle";
 import Button from "../Button";
 import ButtonWithLoader from "../ButtonWithLoader";
 
-function Actions() {
+function BattleActions() {
   const { data: currentBattle } = useCurrentBattle();
   const { data: fakemonsInUserSquad } = useFakemonsByUser();
 
@@ -119,4 +119,4 @@ const Title = styled.h3`
   margin: 0;
 `;
 
-export default Actions;
+export default BattleActions;

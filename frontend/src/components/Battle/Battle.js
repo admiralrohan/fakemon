@@ -11,7 +11,8 @@ import Alert from "../Alert";
 import FakemonList from "../FakemonList";
 import FakemonSelectProvider from "../FakemonSelectProvider";
 import ImportWalletAlert from "../ImportWalletAlert";
-import Actions from "./Actions";
+import BattleActions from "./BattleActions";
+import FakemonActions from "./FakemonActions";
 
 function Battle() {
   const { walletAddress } = useAuth();
@@ -63,17 +64,17 @@ function Battle() {
 
             <FakemonList
               fakemons={nonStakedFakemonsInUserSquad}
-              showUseButton={true}
+              actions={<FakemonActions />}
             />
           </YourSquad>
 
           <GymSquad>
             <SquadHeading>Gym squad</SquadHeading>
-            <FakemonList fakemons={fakemonsInGym} showUseButton={false} />
+            <FakemonList fakemons={fakemonsInGym} />
           </GymSquad>
         </MainSection>
 
-        <Actions />
+        <BattleActions />
       </Wrapper>
     </FakemonSelectProvider>
   );

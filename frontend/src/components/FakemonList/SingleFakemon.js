@@ -1,22 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import ActionButtons from "./ActionButtons";
 
-/**
- * If `showUseButton = true`, render the parent component in
- */
-function SingleFakemon({ fakemon, showUseButton }) {
-  const isFainted = fakemon.hp === "0";
-
+function SingleFakemon({ fakemon, actions }) {
   return (
     <Wrapper>
       <TitleWrapper>
         <Side></Side>
         <Title>Fakemon #{fakemon.id}</Title>
-        <Side>
-          {showUseButton && <ActionButtons fakemon={fakemon} />}
-          {isFainted && <Badge bg="danger">Fainted</Badge>}
-        </Side>
+        <Side>{actions}</Side>
       </TitleWrapper>
 
       <List>
@@ -63,12 +54,6 @@ const List = styled.dl`
 List.DT = styled.dt``;
 List.DD = styled.dd`
   margin: 0;
-`;
-
-const Badge = styled.div`
-  color: white;
-  background-color: rgba(220, 53, 69, 1);
-  padding: 3px 6px;
 `;
 
 export default SingleFakemon;
