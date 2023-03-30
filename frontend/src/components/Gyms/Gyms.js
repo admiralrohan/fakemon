@@ -9,6 +9,7 @@ import Alert from "../Alert";
 import ButtonWithLoader from "../ButtonWithLoader";
 import CreateGymModal from "../CreateGymModal";
 import ImportWalletAlert from "../ImportWalletAlert";
+import Modal from "../Modal";
 import GymList from "./GymList";
 
 function Gyms() {
@@ -26,6 +27,8 @@ function Gyms() {
   return (
     <Wrapper>
       <GymsTitle>Gyms</GymsTitle>
+      <Modal fakemons={fakemons} dismiss />
+
       <CreateGymButton
         showLoader={isCreateGymLoading}
         size="sm"
