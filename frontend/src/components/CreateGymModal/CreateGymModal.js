@@ -12,7 +12,7 @@ import useIsRegistered from "../../hooks/useIsRegistered";
 /**
  * Will show list of non-staked fakemons which can be chosen to create new gym.
  */
-function CreateGymModal({ close }) {
+function CreateGymModal() {
   const [selectedIds, setSelectedIds] = React.useState([]);
   const [isOpen, setIsOpen] = React.useState(false);
 
