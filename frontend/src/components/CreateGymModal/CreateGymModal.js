@@ -29,6 +29,14 @@ function CreateGymModal() {
     createGym(selectedIds);
   };
 
+  // TODO: Show proper error if user tries to create multiple gyms.
+  // To reproduce, submit a tx request. Then without accepting the tx from metamask, submit another tx with same Fakemons. It should throw error from backend.
+  const popupText = !isRegistered
+    ? "You need to register first"
+    : fakemons.length === 0
+    ? "You need some fakemons"
+    : null;
+
   return (
     <Modal
       title="Create new gym"
@@ -37,13 +45,7 @@ function CreateGymModal() {
           showLoader={isCreateGymLoading}
           size="sm"
           disabled={!isRegistered || fakemons.length === 0}
-          title={
-            !isRegistered
-              ? "You need to register first"
-              : fakemons.length === 0
-              ? "You need some fakemons"
-              : null
-          }
+          title={popupText}
         >
           Create gym
         </CreateGymButton>
@@ -94,7 +96,7 @@ const Actions = styled.div`
   gap: 8px;
   flex-direction: row-reverse;
 `;
-const CreateGymButton = styled(Button)`
+const CreateGymButton = styled(ButtonWithLoader)`
   align-self: flex-end;
 `;
 
