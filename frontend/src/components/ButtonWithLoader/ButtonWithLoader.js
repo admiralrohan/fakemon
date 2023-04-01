@@ -1,13 +1,13 @@
 import React from "react";
-import Spinner from "react-bootstrap/Spinner";
 import Button from "../Button";
+import Spinner from "../Spinner/Spinner";
+import styled from "@emotion/styled";
 
 /**
  * We want to show why the button is disabled in tooltip. \
- * This component is a wrapper of bootstrap button component. \
+ * This component is a wrapper of our `Button` component. \
  * It is needed to show the tooltip, which is not visible for disabled buttons. \
- * Will show spinner and disable the button while `showLoader` is true. \
- * All APIs are same as React bootstrap.
+ * Will show spinner and disable the button while `showLoader` is true.
  */
 function ButtonWithLoader({
   children = "",
@@ -21,16 +21,24 @@ function ButtonWithLoader({
   return (
     // Used span for tooltip as it would not work for disabled buttons
     <span title={showLoader ? null : title} className={className}>
-      <Button size={size} onClick={onClick} disabled={disabled || showLoader}>
-        {showLoader && (
-          <Spinner animation="border" size="sm" className="me-1" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </Spinner>
-        )}
+      <ButtonWrapper
+        size={size}
+        onClick={onClick}
+        disabled={disabled || showLoader}
+      >
+        {showLoader && <Loader />}
         {children}
-      </Button>
+      </ButtonWrapper>
     </span>
   );
 }
+
+const ButtonWrapper = styled(Button)`
+  display: flex;
+  align-items: center;
+`;
+const Loader = styled(Spinner)`
+  margin-right: 0.25rem;
+`;
 
 export default ButtonWithLoader;
