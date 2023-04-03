@@ -59,7 +59,9 @@ const List = styled.dl`
   column-gap: var(--gap);
   row-gap: 0;
 `;
-List.DT = styled.dt``;
+List.DT = styled.dt`
+  font-weight: 550;
+`;
 List.DD = styled.dd``;
 
 export default Stats;

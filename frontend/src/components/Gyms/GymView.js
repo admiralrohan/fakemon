@@ -35,7 +35,7 @@ const Title = styled.h4`
 `;
 Title.AddedNote = styled.span`
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 300;
 `;
 
 export default GymView;

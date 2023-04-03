@@ -36,6 +36,7 @@ const TitleWrapper = styled.div`
 const Title = styled.h2`
   font-size: 1.25rem;
   text-align: center;
+  font-weight: 600;
 `;
 // Empty content, for layout purposes only
 const Side = styled.div`
@@ -51,7 +52,9 @@ const List = styled.dl`
   column-gap: 16px;
   row-gap: 0;
 `;
-List.DT = styled.dt``;
+List.DT = styled.dt`
+  font-weight: 550;
+`;
 List.DD = styled.dd``;
 
 export default SingleFakemon;

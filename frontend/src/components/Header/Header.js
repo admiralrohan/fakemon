@@ -85,6 +85,7 @@ const NavLinks = styled.div`
 `;
 const NavActions = styled.div`
   display: flex;
+  gap: 8px;
 `;
 
 export default Header;

@@ -110,7 +110,7 @@ const GymSquad = styled(YourSquad)``;
 const SquadHeading = styled.h2`
   text-align: center;
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 550;
 `;
 
 export default Battle;
