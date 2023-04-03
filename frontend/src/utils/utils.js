@@ -72,6 +72,8 @@ export const getBlockchain = () => {
       );
 
       resolve({ signerAddress, token, fakemon });
+    } else {
+      reject("Install metamask wallet");
     }
 
     resolve(DEFAULT_BLOCKCHAIN_OBJ);

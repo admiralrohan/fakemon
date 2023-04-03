@@ -14,6 +14,8 @@ function useConnectWallet() {
     },
     {
       onSuccess: () => {
+        if (!window.ethereum) return;
+
         window.ethereum.on("accountsChanged", handleAccountsChanged);
         window.ethereum.on("chainChanged", handleChainChanged);
       },

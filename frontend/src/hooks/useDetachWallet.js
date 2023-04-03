@@ -24,6 +24,8 @@ function useDetachWallet() {
     },
     {
       onSuccess: () => {
+        if (!window.ethereum) return;
+
         window.ethereum.removeListener(
           "accountsChanged",
           handleAccountsChanged
