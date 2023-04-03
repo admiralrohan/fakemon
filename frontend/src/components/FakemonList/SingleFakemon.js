@@ -31,6 +31,7 @@ const Wrapper = styled.li`
 
 const TitleWrapper = styled.div`
   display: flex;
+  min-height: 36px; // To stop layout shifts. We are conditionally rendering button on same line, causing layout shifts when the button goes off screen.
 `;
 const Title = styled.h2`
   font-size: 1.25rem;
