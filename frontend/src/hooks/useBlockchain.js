@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import useToast from "./useToast";
 
 function useBlockchain() {
-  const { walletConnected, setWalletAddress } = useAuth();
+  const { walletConnected, setWalletConnected, setWalletAddress } = useAuth();
   const { showToast } = useToast();
 
   return useQuery([QueryKeys.BLOCKCHAIN], getBlockchain, {
@@ -15,6 +15,7 @@ function useBlockchain() {
       window.localStorage.setItem(LOCALSTORAGE_KEY, data.signerAddress);
     },
     onError: (error) => {
+      setWalletConnected(false);
       showToast(error);
       window.localStorage.removeItem(LOCALSTORAGE_KEY);
     },
