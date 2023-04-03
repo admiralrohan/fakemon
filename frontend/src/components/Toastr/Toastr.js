@@ -1,34 +1,52 @@
 import React from "react";
-import ToastContainer from "react-bootstrap/ToastContainer";
-import Toast from "react-bootstrap/Toast";
+import * as Toast from "@radix-ui/react-toast";
 import useToast from "../../hooks/useToast";
+import styled from "@emotion/styled";
+import { keyframes } from "@emotion/react";
 
 function Toastr() {
-  const [show, setShow] = React.useState(false);
-  const { toastCount, toastMessage } = useToast();
-  const delay = 3000;
+  const { toasts } = useToast();
 
-  React.useEffect(() => {
-    if (toastCount > 0) setShow(true);
-  }, [toastCount]);
-
-  return (
-    <ToastContainer
-      hidden={!show}
-      className="p-3"
-      containerPosition="fixed"
-      position="bottom-end"
-      onClick={() => setShow(false)}
-    >
-      <Toast onClose={() => setShow(false)} delay={delay} autohide={show}>
-        <Toast.Header>
-          <img src="holder.js/20x20?text=%20" className="rounded me-2" alt="" />
-          <strong className="me-auto">Fakemon</strong>
-        </Toast.Header>
-        <Toast.Body>{toastMessage}</Toast.Body>
-      </Toast>
-    </ToastContainer>
-  );
+  return toasts.map((toast, i) => (
+    <ToastRoot key={toast.id}>
+      <ToastMessage>{toast.message}</ToastMessage>
+      <CloseButton aria-label="Close">
+        <span aria-hidden>x</span>
+      </CloseButton>
+    </ToastRoot>
+  ));
 }
+
+const Animation = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+`;
+
+const ToastRoot = styled(Toast.Root)`
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+
+  border: 1px solid black;
+  padding: 8px 12px;
+  width: 250px;
+
+  animation: ${Animation} 250ms linear;
+`;
+const ToastMessage = styled(Toast.Description)``;
+const CloseButton = styled(Toast.Close)`
+  align-self: flex-start;
+  transform: translateY(1px); // Aligned with eye, no particular logic
+
+  & > span {
+    display: block; // To apply transform
+    line-height: 1; // To remove space below the cross icon, turning the shape into rectangle
+    transform: translateY(-2px);
+  }
+`;
 
 export default Toastr;
