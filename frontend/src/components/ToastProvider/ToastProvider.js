@@ -28,6 +28,7 @@ function ToastProvider({ children, ...props }) {
 
 const ToastViewport = styled(Toast.Viewport)`
   position: fixed;
+  max-height: 500px; // Limit height otherwise user might spam this
   bottom: 16px;
   right: 16px;
   padding: 0;
