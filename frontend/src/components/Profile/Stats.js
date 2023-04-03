@@ -51,7 +51,6 @@ export const Wrapper = styled.div`
 const Title = styled.h1`
   text-align: center;
   font-size: 1.25rem;
-  margin: 0;
 `;
 
 const List = styled.dl`
@@ -59,11 +58,8 @@ const List = styled.dl`
   grid-template-columns: max-content 1fr;
   column-gap: var(--gap);
   row-gap: 0;
-  margin: 0;
 `;
 List.DT = styled.dt``;
-List.DD = styled.dd`
-  margin: 0;
-`;
+List.DD = styled.dd``;
 
 export default Stats;

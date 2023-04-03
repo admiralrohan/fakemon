@@ -90,11 +90,9 @@ const TitleWrapper = styled.div`
 `;
 const Title = styled.h1`
   font-size: 1.25rem;
-  margin: 0;
 `;
 const BattleExpiryText = styled.h2`
   font-size: 1rem;
-  margin: 0;
   font-weight: 400;
 `;
 
@@ -112,7 +110,6 @@ const GymSquad = styled(YourSquad)``;
 const SquadHeading = styled.h2`
   text-align: center;
   font-size: 1.15rem;
-  margin: 0;
   font-weight: 600;
 `;
 

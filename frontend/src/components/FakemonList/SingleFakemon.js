@@ -49,11 +49,8 @@ const List = styled.dl`
   grid-template-columns: repeat(3, max-content 1fr);
   column-gap: 16px;
   row-gap: 0;
-  margin: 0;
 `;
 List.DT = styled.dt``;
-List.DD = styled.dd`
-  margin: 0;
-`;
+List.DD = styled.dd``;
 
 export default SingleFakemon;

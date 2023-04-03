@@ -57,12 +57,10 @@ const TitleWrapper = styled.div``;
 const Title = styled.h1`
   text-align: center;
   font-size: 1.25rem;
-  margin: 0;
 `;
 const Subtitle = styled.h2`
   text-align: center;
   font-size: 1rem;
-  margin: 0;
   font-weight: 400;
 `;
 

@@ -24,7 +24,6 @@ const Wrapper = styled.div`
 const Title = styled.h2`
   text-align: center;
   font-size: 1.25rem;
-  margin: 0;
 `;
 
 export default UserSquad;

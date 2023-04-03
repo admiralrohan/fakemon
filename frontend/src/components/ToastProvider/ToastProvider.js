@@ -30,7 +30,6 @@ const ToastViewport = styled(Toast.Viewport)`
   position: fixed;
   bottom: 16px;
   right: 16px;
-  margin: 0;
   padding: 0;
   list-style-type: none;
 

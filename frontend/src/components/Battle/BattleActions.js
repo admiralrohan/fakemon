@@ -116,7 +116,6 @@ const ButtonList = styled.div`
 const Title = styled.h3`
   text-align: center;
   font-size: 1.25rem;
-  margin: 0;
 `;
 
 export default BattleActions;

@@ -40,7 +40,6 @@ const Content = styled(Dialog.Content)`
 const Title = styled(Dialog.Title)`
   font-size: ${20 / 16}rem;
   text-align: center;
-  margin: 0;
 `;
 
 export default Modal;

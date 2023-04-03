@@ -75,7 +75,7 @@ const Brand = styled.div`
 Brand.NetworkName = styled.span`
   font-size: ${12 / 16}rem;
   border: 1px solid;
-  padding: 0px 6px;
+  padding: 0 6px;
 `;
 
 const NavLinks = styled.div`
