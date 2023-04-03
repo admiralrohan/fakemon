@@ -38,43 +38,42 @@ const chainIds = {
 
 export const getBlockchain = () => {
   return new Promise(async (resolve, reject) => {
-    if (window.ethereum) {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const signerAddress = await signer.getAddress();
+    if (!window.ethereum) reject("Install metamask wallet");
 
-      const targetNetwork = process.env.REACT_APP_NETWORK
-        ? process.env.REACT_APP_NETWORK
-        : "hardhat";
-      const TokenContract = await import(
-        `../artifacts/contracts/${targetNetwork}/fmon.json`
-      );
-      const FakemonContract = await import(
-        `../artifacts/contracts/${targetNetwork}/fakemon.json`
-      );
+    // Will ask to connect wallet even if user has wrong network set
+    await window.ethereum.request({ method: "eth_requestAccounts" });
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const signerAddress = await signer.getAddress();
 
-      const { chainId: userNetworkChainId } = await provider.getNetwork();
+    const targetNetwork = process.env.REACT_APP_NETWORK
+      ? process.env.REACT_APP_NETWORK
+      : "hardhat";
+    const TokenContract = await import(
+      `../artifacts/contracts/${targetNetwork}/fmon.json`
+    );
+    const FakemonContract = await import(
+      `../artifacts/contracts/${targetNetwork}/fakemon.json`
+    );
 
-      if (chainIds[targetNetwork] !== userNetworkChainId) {
-        reject(`Change your network to ${targetNetwork}`);
-      }
+    const { chainId: userNetworkChainId } = await provider.getNetwork();
 
-      const token = new ethers.Contract(
-        TokenContract.address,
-        TokenContract.abi,
-        signer
-      );
-      const fakemon = new ethers.Contract(
-        FakemonContract.address,
-        FakemonContract.abi,
-        signer
-      );
-
-      resolve({ signerAddress, token, fakemon });
+    if (chainIds[targetNetwork] !== userNetworkChainId) {
+      reject(`Change your network to ${targetNetwork}`);
     }
 
-    resolve(DEFAULT_BLOCKCHAIN_OBJ);
+    const token = new ethers.Contract(
+      TokenContract.address,
+      TokenContract.abi,
+      signer
+    );
+    const fakemon = new ethers.Contract(
+      FakemonContract.address,
+      FakemonContract.abi,
+      signer
+    );
+
+    resolve({ signerAddress, token, fakemon });
   });
 };
 
@@ -91,4 +90,16 @@ export const showError = (error) => {
   console.error(errorMessage);
 
   return errorMessage;
+};
+
+// TODO: Open a gym, then go to different battle page via URL
+export const updateBattleView = async (queryClient) => {
+  // await getCurrentBattleDetails();
+  // await fetchFakemonsByUser();
+  // await fetchFakemonsByGym(currentBattle.gymId);
+
+  queryClient.invalidateQueries([QueryKeys.CURRENT_BATTLE]);
+  queryClient.invalidateQueries([QueryKeys.FAKEMONS]);
+  //  TODO: How to pass on gymId?
+  queryClient.invalidateQueries([QueryKeys.FAKEMONS_IN_GYM]);
 };

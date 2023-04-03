@@ -6,7 +6,14 @@ const { PROVIDER_URL, WALLET_PRIVATE_KEY } = process.env;
 
 // Available networks: hardhat, goerli
 task("deploy", "Deploy all contracts").setAction(async () => {
-  await deployContracts(hre.network.name);
+  // To keep artifacts
+  const folderName =
+    hre.network.name === "localhost" ? "hardhat" : hre.network.name;
+  const isAutomineOn =
+    hre.network.name === "localhost" &&
+    hre.userConfig.networks.hardhat.mining.auto;
+
+  await deployContracts(folderName, isAutomineOn);
 });
 
 /** @type import('hardhat/config').HardhatUserConfig */

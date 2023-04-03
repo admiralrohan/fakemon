@@ -9,7 +9,12 @@ const {
 } = require("../constants/constants");
 const { testHelpers } = require("../utils/helper");
 
-async function deployContracts(network) {
+/**
+ * Deploy contracts
+ * @param folderName To keep artifacts in frontend
+ * @param isAutomineOn Will push dummy data if automine on
+ */
+async function deployContracts(folderName, isAutomineOn = false) {
   // We get the contracts to deploy
   const Token = await hre.ethers.getContractFactory("Fmon");
   const Fakemon = await hre.ethers.getContractFactory("Fakemon");
@@ -42,9 +47,7 @@ async function deployContracts(network) {
   // Otherwise during local development previous artifact from different network will be overwritten
   // And push the artifacts in git
   const contractDir =
-    __dirname +
-    "/../frontend/src/artifacts/contracts/" +
-    (network === "localhost" ? "hardhat" : network);
+    __dirname + "/../frontend/src/artifacts/contracts/" + folderName;
   if (!fs.existsSync(contractDir))
     fs.mkdirSync(contractDir, { recursive: true });
 
@@ -67,8 +70,8 @@ async function deployContracts(network) {
 
   console.log("Save contract artifacts in Frontend folder");
 
-  // We are deploying in Hardhat network, but in "localhost" mode. To clear confusion, see "Deployment" section of the project readme
-  if (network === "localhost") {
+  if (isAutomineOn) {
+    console.log("Automine on, so loading dummy data...");
     await loadDummyData(TokenContract, FakemonContract);
     console.log("Dummy data loaded in blockchain");
   }
@@ -93,6 +96,20 @@ async function loadDummyData(TokenContract, FakemonContract) {
   await createNewGym([RESERVED_NFTS + 3, RESERVED_NFTS + 4], user1);
   await createNewGym([RESERVED_NFTS + 5], user1);
   await createNewGym([RESERVED_NFTS + 9, RESERVED_NFTS + 10], user2);
+}
+
+async function loadMinimalData(TokenContract, FakemonContract) {
+  const [user1, user2] = await ethers.getSigners();
+  const { registerUser, mintNewNfts, createNewGym } = testHelpers(
+    FakemonContract,
+    TokenContract,
+    user1,
+    user2
+  );
+
+  await registerUser(user1);
+  await registerUser(user2);
+  await mintNewNfts(2, user1);
 }
 
 module.exports = { deployContracts };
